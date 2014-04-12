@@ -200,11 +200,25 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		
 	my $name = $info->{'name'};
 	my $email = $info->{'email'};
+	my $uid = $info->{'id'};
 
-	my $user = $c->model('DB::User')->find_or_create( { email => $email } );
-    $user->name($name) if $name;
-    #$user->password( $data->{password}, 1 ) if $data->{password};
-    $user->update;
+	# TODO: use a transaction!
+	my $user_pmb = $c->model('DB::UsersPmb')->find( { facebook_id => $uid } );
+	
+	if (!$user_pmb) {
+		my $user = $c->model('DB::User')->find_or_create({ email => $email });
+		$user->name($name);
+		$user->update;
+		
+		my $user_pmb = $c->model('DB::UsersPmb')->create( { id => $user->id, facebook_id => $uid } );
+		$user_pmb->update;
+	}
+
+	#my $user = $c->model('DB::User')->find_or_create( { email => $email } );
+    #$user->name($name) if $name;
+    ##$user->password( $data->{password}, 1 ) if $data->{password};
+    #$user->update;
+    
     $c->authenticate( { email => $email }, 'no_password' );
 
     # send the user to their page
@@ -220,6 +234,7 @@ Starts the Twitter authentication sequence.
 sub twitter_login : Private {
 	my( $self, $c ) = @_;
 	
+	# TODO: move Tweeter App ID/Secret to general.yaml!
 	my %consumer_tokens = (
 		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
 		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
@@ -233,9 +248,9 @@ sub twitter_login : Private {
 		token_secret => $twitter->request_token_secret,
 	};
 	
-	$c->log->debug('=== OAuth REQUEST ================');
-	$c->log->debug($twitter->request_token);
-	$c->log->debug($twitter->request_token_secret);
+	#$c->log->debug('=== OAuth REQUEST ================');
+	#$c->log->debug($twitter->request_token);
+	#$c->log->debug($twitter->request_token_secret);
 
 	$c->res->redirect($url);
 }
@@ -252,33 +267,29 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my $request_token = $c->req->param('oauth_token');
     my $verifier      = $c->req->param('oauth_verifier');
 
-    # exchange the request token for access tokens
+    # TODO: move Tweeter App ID/Secret to general.yaml!
     my %consumer_tokens = (
 		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
 		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
 	);
 	
 	my $oauth = $c->session->{oauth};
-	$c->log->debug('=== OAuth RESPONSE ================');
-	$c->log->debug($oauth->{token});
-	$c->log->debug($oauth->{token_secret});
+	#$c->log->debug('=== OAuth RESPONSE ================');
+	#$c->log->debug($oauth->{token});
+	#$c->log->debug($oauth->{token_secret});
 	
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
 	$twitter->request_token($oauth->{token});
 	$twitter->request_token_secret($oauth->{token_secret});
 	
-	#my($access_token, $access_token_secret, $user_id, $screen_name) =
-	#	$nt->request_access_token(verifier => $verifier);
-	
-    my @access_tokens = $twitter->request_access_token(verifier => $verifier);
+	my($access_token, $access_token_secret, $user_id, $screen_name) =
+		$twitter->request_access_token(verifier => $verifier);
    
-    $c->log->debug('=== Tokens ================');
-    $c->log->debug($_) for @access_tokens;
-    
-    my $settings = $twitter->account_settings();
-    $c->log->debug('=== Settings ================');
-    $c->log->debug($_) for keys $settings;
-    $c->log->debug($_) for values $settings;
+	#my $user = $c->model('DB::User')->find_or_create( { name => $screen_name } );
+    #$user->name($name) if $name;
+    ##$user->password( $data->{password}, 1 ) if $data->{password};
+    #$user->update;
+    #$c->authenticate( { email => $email }, 'no_password' );
 
     # send the user to their page
     $c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
