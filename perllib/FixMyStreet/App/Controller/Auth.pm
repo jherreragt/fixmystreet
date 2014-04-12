@@ -9,6 +9,8 @@ use Net::Domain::TLD;
 use mySociety::AuthToken;
 use JSON;
 use Net::Facebook::Oauth2;
+use Net::Twitter::Lite::WithAPIv1_1;
+use Digest::HMAC_SHA1;
 
 =head1 NAME
 
@@ -38,11 +40,11 @@ sub general : Path : Args(0) {
     return unless $req->method eq 'POST';
 
     # decide which action to take
-    $c->detach('email_sign_in') if $req->param('email_sign_in')
-        || $c->req->param('name') || $c->req->param('password_register');
-    
     $c->detach('facebook_login') if $req->param('facebook_login');
     $c->detach('twitter_login') if $req->param('twitter_login');
+
+    $c->detach('email_sign_in') if $req->param('email_sign_in')
+        || $c->req->param('name') || $c->req->param('password_register');
 
        $c->forward( 'sign_in' )
     && $c->detach( 'redirect_on_signin', [ $req->param('r') ] );
@@ -192,7 +194,7 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $access_token = $fb->get_access_token( code => $params->{code} );
 	
 	###save this token in database or session
-	$c->session->{access_token} =  $access_token;
+	$c->session->{oauth} =  $access_token;
 	
 	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 		
@@ -218,9 +220,68 @@ Starts the Twitter authentication sequence.
 sub twitter_login : Private {
 	my( $self, $c ) = @_;
 	
-	my $params = $c->req->parameters;
-       
+	my %consumer_tokens = (
+		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
+		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
+	);
 	
+	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
+    my $url = $twitter->get_authorization_url(callback => 'http://ituland.no-ip.org:9000/auth/Twitter');
+
+	$c->session->{oauth} = {
+		token => $twitter->request_token,
+		token_secret => $twitter->request_token_secret,
+	};
+	
+	$c->log->debug('=== OAuth REQUEST ================');
+	$c->log->debug($twitter->request_token);
+	$c->log->debug($twitter->request_token_secret);
+
+	$c->res->redirect($url);
+}
+
+=head2 twitter_callback
+
+Handles the Twitter callback request and completes the authentication sequence.
+
+=cut
+
+sub twitter_callback: Path('/auth/Twitter') : Args(0) {
+	my( $self, $c ) = @_;
+	
+	my $request_token = $c->req->param('oauth_token');
+    my $verifier      = $c->req->param('oauth_verifier');
+
+    # exchange the request token for access tokens
+    my %consumer_tokens = (
+		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
+		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
+	);
+	
+	my $oauth = $c->session->{oauth};
+	$c->log->debug('=== OAuth RESPONSE ================');
+	$c->log->debug($oauth->{token});
+	$c->log->debug($oauth->{token_secret});
+	
+	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
+	$twitter->request_token($oauth->{token});
+	$twitter->request_token_secret($oauth->{token_secret});
+	
+	#my($access_token, $access_token_secret, $user_id, $screen_name) =
+	#	$nt->request_access_token(verifier => $verifier);
+	
+    my @access_tokens = $twitter->request_access_token(verifier => $verifier);
+   
+    $c->log->debug('=== Tokens ================');
+    $c->log->debug($_) for @access_tokens;
+    
+    my $settings = $twitter->account_settings();
+    $c->log->debug('=== Settings ================');
+    $c->log->debug($_) for keys $settings;
+    $c->log->debug($_) for values $settings;
+
+    # send the user to their page
+    $c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
 }
 
 =head2 token
