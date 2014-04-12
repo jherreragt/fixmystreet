@@ -41,12 +41,8 @@ sub general : Path : Args(0) {
     $c->detach('email_sign_in') if $req->param('email_sign_in')
         || $c->req->param('name') || $c->req->param('password_register');
     
-    #$c->log->debug('========> no es email_sign_in');
-
     $c->detach('facebook_login') if $req->param('facebook_login');
-
-	#$c->log->debug('========> facebook_login value: '.$req->param('facebook_login'));
-	#$c->log->debug('========> no es facebook_login');
+    $c->detach('twitter_login') if $req->param('twitter_login');
 
        $c->forward( 'sign_in' )
     && $c->detach( 'redirect_on_signin', [ $req->param('r') ] );
@@ -140,15 +136,22 @@ sub email_sign_in : Private {
     $c->stash->{template} = 'auth/token.html';
 }
 
+=head2 facebook_login
+
+Starts the Facebook authentication sequence.
+
+=cut
+
 sub facebook_login : Private {
 	my( $self, $c ) = @_;
 	
 	my $params = $c->req->parameters;
-       
+    
+    # TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => '1479349985610467',  ##get this from your facebook developers platform
 		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/FB',  ##Callback URL, facebook will redirect users after authintication
+		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
 	);
 	
 	##there is no verifier code passed so let's create authorization URL and redirect to it
@@ -167,15 +170,22 @@ sub facebook_login : Private {
 	$c->res->redirect($url);
 }
 
-sub facebook: Path('/auth/FB/') : Args(0) {
+=head2 facebook_callback
+
+Handles the Facebook callback request and completes the authentication sequence.
+
+=cut
+
+sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my( $self, $c ) = @_;
 	
 	my $params = $c->req->parameters;
 
+	# TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => '1479349985610467',  ##get this from your facebook developers platform
 		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/FB',  ##Callback URL, facebook will redirect users after authintication
+		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
 	);
 	
 	###you need to pass the verifier code to get access_token	
@@ -183,33 +193,34 @@ sub facebook: Path('/auth/FB/') : Args(0) {
 	
 	###save this token in database or session
 	$c->session->{access_token} =  $access_token;
-	#$c->res->body('Welcome from facebook');
 	
 	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 		
-	#$c->log->debug($items);
-	#$c->log->debug($_) for keys $items;
-	#$c->log->debug($_) for values $items;
-	
 	my $name = $info->{'name'};
-	$c->log->debug(">>> Your name is $name");
-	
 	my $email = $info->{'email'};
-	$c->log->debug(">>> Your email is $email");
 
-	#$c->log->debug($_) for values %info;
-	#$c->log->debug($_) for values %info;
-
-	$c->res->redirect( $c->uri_for( "/" ) );	
-	
 	my $user = $c->model('DB::User')->find_or_create( { email => $email } );
-    $user->name( $name ) if $name;
+    $user->name($name) if $name;
     #$user->password( $data->{password}, 1 ) if $data->{password};
     $user->update;
     $c->authenticate( { email => $email }, 'no_password' );
 
     # send the user to their page
     $c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+}
+
+=head2 twitter_login
+
+Starts the Twitter authentication sequence.
+
+=cut
+
+sub twitter_login : Private {
+	my( $self, $c ) = @_;
+	
+	my $params = $c->req->parameters;
+       
+	
 }
 
 =head2 token
