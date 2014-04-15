@@ -62,14 +62,22 @@
                     <input class="green-btn" type="submit" name="email_sign_in" value="[% loc('Sign in') %]">
                 </div>
             </div>
-			<div>
-				<!-- TODO: move STYLES to CSS files -->
+            <!-- TODO: move STYLES to CSS files -->
+			<!--<div>
 				<input type="image" src="/i/FB-f-Logo__blue_50.png" name="facebook_login" id="facebook_login" value="facebook_login" style="margin: 10px;" /><input 
 					type="image" src="/i/Twitter_logo_blue_50px_50px.png" name="twitter_login" id="twitter_login" value="twitter_login" style="margin: 10px;" />
-			</div>
+			</div>-->
         </div>
     </fieldset>    
 </form>
-
+<form action="[% c.uri_for() %]" method="post" name="social_auth" class="validate">
+	<fieldset>
+		<div>
+			<!-- TODO: move STYLES to CSS files -->
+			<input type="image" src="/i/FB-f-Logo__blue_50.png" name="facebook_login" id="facebook_login" value="facebook_login" style="margin: 10px;" /><input 
+				type="image" src="/i/Twitter_logo_blue_50px_50px.png" name="twitter_login" id="twitter_login" value="twitter_login" style="margin: 10px;" />
+		</div>
+	</fieldset>
+</form>
 
 [% INCLUDE 'footer.html' %]

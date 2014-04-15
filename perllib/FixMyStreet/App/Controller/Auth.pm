@@ -202,27 +202,23 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $email = $info->{'email'};
 	my $uid = $info->{'id'};
 
-	# TODO: use a transaction!
 	my $user_pmb = $c->model('DB::UsersPmb')->find( { facebook_id => $uid } );
 	
 	if (!$user_pmb) {
-		my $user = $c->model('DB::User')->find_or_create({ email => $email });
-		$user->name($name);
-		$user->update;
-		
-		my $user_pmb = $c->model('DB::UsersPmb')->create( { id => $user->id, facebook_id => $uid } );
-		$user_pmb->update;
+		$c->session->{social_info} = {
+			email => $email,
+			name => $name,
+			facebook_id => $uid,
+			twitter_id => undef
+		};
+
+		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
+	} else {	
+		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+
+		# send the user to their page
+		$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
 	}
-
-	#my $user = $c->model('DB::User')->find_or_create( { email => $email } );
-    #$user->name($name) if $name;
-    ##$user->password( $data->{password}, 1 ) if $data->{password};
-    #$user->update;
-    
-    $c->authenticate( { email => $email }, 'no_password' );
-
-    # send the user to their page
-    $c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
 }
 
 =head2 twitter_login
@@ -282,17 +278,79 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	$twitter->request_token($oauth->{token});
 	$twitter->request_token_secret($oauth->{token_secret});
 	
-	my($access_token, $access_token_secret, $user_id, $screen_name) =
+	my($access_token, $access_token_secret, $uid, $name) =
 		$twitter->request_access_token(verifier => $verifier);
    
-	#my $user = $c->model('DB::User')->find_or_create( { name => $screen_name } );
-    #$user->name($name) if $name;
-    ##$user->password( $data->{password}, 1 ) if $data->{password};
-    #$user->update;
-    #$c->authenticate( { email => $email }, 'no_password' );
+	# TODO: use a transaction!
+	my $user_pmb = $c->model('DB::UsersPmb')->find( { twitter_id => $uid } );
+	
+	if (!$user_pmb) {
+		$c->session->{social_info} = {
+			email => undef,
+			name => $name,
+			facebook_id => undef,
+			twitter_id => $uid
+		};
 
-    # send the user to their page
-    $c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
+	} else {
+		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+
+		# send the user to their page
+		$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+	}
+}
+
+sub social_signup : Path('/auth/social_signup') : Args(0) {
+	my ( $self, $c ) = @_;
+	
+	my $social_info = $c->session->{social_info};
+	my $name = $social_info->{name};
+	my $email = $social_info->{email};
+	my $facebook_id = $social_info->{facebook_id};
+	my $twitter_id = $social_info->{twitter_id};
+	
+	$c->log->debug($name);
+	$c->log->debug($email);
+	$c->log->debug($facebook_id);
+	$c->log->debug($twitter_id);
+	
+	$name = $c->req->param('fullname') if $c->req->param('fullname');
+	$email = $c->req->param('email') if $c->req->param('email');
+	my $ci = $c->req->param('ci') if $c->req->param('ci');
+
+	$c->log->debug($name);
+	$c->log->debug($email);
+	$c->log->debug($ci);
+
+	$c->stash->{fullname} = $name;
+	$c->stash->{email} = $email;
+	$c->stash->{ci} = $ci;
+
+	if ($name and $email and $ci and ($facebook_id or $twitter_id)) {
+		# TODO: use a DB transaction
+		my $user_none = $c->model('DB::User')->find({ email => $email });
+		
+		# e-mail must not exist
+		if (!$user_none) {
+			my $user = $c->model('DB::User')->create({ email => $email, name => $name });
+			$user->update;
+		
+			my $user_pmb = $c->model('DB::UsersPmb')->create( { 
+				id => $user->id, 
+				facebook_id => $facebook_id,
+				twitter_id => $twitter_id } );
+				
+			$user_pmb->update;
+			
+			$c->authenticate( { email => $email }, 'no_password' );
+
+			# send the user to their page
+			$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+		} else {
+			# ERROR... email is already in use
+		}
+	}
 }
 
 =head2 token
