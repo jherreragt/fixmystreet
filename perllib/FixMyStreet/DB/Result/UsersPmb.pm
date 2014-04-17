@@ -17,7 +17,7 @@ __PACKAGE__->add_columns(
   { data_type => "bigint", is_nullable => 1 },
   "facebook_id",
   { data_type => "bigint", is_nullable => 1 },
-  "ci",
+  "document",
   { data_type => "integer", is_nullable => 1 },
 );
 __PACKAGE__->belongs_to(
@@ -57,6 +57,8 @@ __PACKAGE__->add_columns(
   { data_type => "bigint", is_nullable => 1 },
   "facebook_id",
   { data_type => "bigint", is_nullable => 1 },
+  "document",
+  { data_type => "integer", is_nullable => 0 },
 );
 __PACKAGE__->belongs_to(
   "id",

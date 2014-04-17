@@ -10,6 +10,7 @@ use mySociety::Config;
 use DateTime::Format::W3CDTF;
 use Open311;
 use Readonly;
+use FixMyStreet::Cobrand;
 
 Readonly::Scalar my $COUNCIL_ID_OXFORDSHIRE => 2237;
 
@@ -18,13 +19,6 @@ sub send {
     my ( $row, $h ) = @_;
 
     my $result = -1;
-    #Agregado
-    use Data::Dumper;
-    open (MYFILE, '>>open311.log');
-    print MYFILE "ROW:\n";
-    print MYFILE Dumper($row);
-    close (MYFILE);
-
     #foreach(@columns)
     #{
     #    print "$_\r\n";
@@ -65,6 +59,18 @@ sub send {
             $open311_params{test_mode} = 1;
             $open311_params{test_get_returns} = { 'requests.xml' => $test_res };
         }
+
+        #PMB
+        my $user = FixMyStreet::App->model('DB::UsersPmb')->find( { id => $row->user->id } );
+
+        unless ( $user ) {
+            next; 
+        }
+        my $extra = $row->extra;
+        push @$extra, { name => 'document', value => $user->document };
+        push @$extra, { name => 'category', value => $row->category };
+        #$extra_processed = open311_extra( $row );
+        $row->extra( $extra );
 
         my $open311 = Open311->new( %open311_params );
 
