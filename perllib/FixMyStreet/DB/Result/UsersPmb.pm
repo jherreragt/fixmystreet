@@ -20,6 +20,7 @@ __PACKAGE__->add_columns(
   "ci",
   { data_type => "integer", is_nullable => 1 },
 );
+__PACKAGE__->set_primary_key("id");
 __PACKAGE__->belongs_to(
   "id",
   "FixMyStreet::DB::Result::User",

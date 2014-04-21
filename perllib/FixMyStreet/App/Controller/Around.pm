@@ -33,6 +33,20 @@ If no search redirect back to the homepage.
 sub around_index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+    # Loads additional user info
+    if ( $c->user ) {
+        my $user_pmb = undef;
+
+        if ( $c->session->{user_pmb} ) {
+            $user_pmb = $c->session->{user_pmb};
+        } else {
+            $user_pmb = $c->model('DB::UsersPmb')->find( { id => $c->user->id } );
+            $c->session->{user_pmb} = $user_pmb;
+        }
+
+        $c->stash->{user_pmb} = $user_pmb;
+    }
+
     # handle old coord systems
     $c->forward('redirect_en_or_xy_to_latlon');
 

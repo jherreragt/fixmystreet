@@ -163,11 +163,13 @@ sub facebook_login : Private {
 		display => 'page' ## how to display authorization page, other options popup "to display as popup window" and wab "for mobile apps"
 	);
 	
-	###scope/Extended Permissions description
-	##offline_access : Allow your application to edit profile while user is not online
-	##publish_stream : read write access
-	##you can find more about facebook scopes/Extended Permissions at
-	##http://developers.facebook.com/docs/authentication/permissions
+	###save this token in session
+	my $return_url = $c->stash->{return_url} or $c->req->param('r');
+	$c->log->debug('========== facebook_login token_url: '.$return_url);
+	
+	$c->session->{oauth} =  {
+		r => $return_url
+	};
 	
 	$c->res->redirect($url);
 }
@@ -193,8 +195,11 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	###you need to pass the verifier code to get access_token	
 	my $access_token = $fb->get_access_token( code => $params->{code} );
 	
-	###save this token in database or session
-	$c->session->{oauth} =  $access_token;
+	###save this token in session
+	$c->session->{oauth} =  {
+		token => $access_token,
+		r => $c->session->{oauth}{r}
+	};
 	
 	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 		
@@ -214,10 +219,11 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {	
+        $c->session->{user_pmb} = $user_pmb;
 		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
 
 		# send the user to their page
-		$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
 	}
 }
 
@@ -242,11 +248,8 @@ sub twitter_login : Private {
 	$c->session->{oauth} = {
 		token => $twitter->request_token,
 		token_secret => $twitter->request_token_secret,
+		r => $c->req->param('r')
 	};
-	
-	#$c->log->debug('=== OAuth REQUEST ================');
-	#$c->log->debug($twitter->request_token);
-	#$c->log->debug($twitter->request_token_secret);
 
 	$c->res->redirect($url);
 }
@@ -294,62 +297,103 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {
+        $c->session->{user_pmb} = $user_pmb;
 		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
 
 		# send the user to their page
-		$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
+		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
 	}
 }
+
+=head2 social_signup
+
+Asks the user to confirm data returned from facebook/twitter and signs up the user.
+
+=cut
 
 sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my ( $self, $c ) = @_;
 	
 	my $social_info = $c->session->{social_info};
+	
 	my $name = $social_info->{name};
 	my $email = $social_info->{email};
 	my $facebook_id = $social_info->{facebook_id};
 	my $twitter_id = $social_info->{twitter_id};
 	
-	$c->log->debug($name);
-	$c->log->debug($email);
-	$c->log->debug($facebook_id);
-	$c->log->debug($twitter_id);
-	
 	$name = $c->req->param('fullname') if $c->req->param('fullname');
 	$email = $c->req->param('email') if $c->req->param('email');
 	my $ci = $c->req->param('ci') if $c->req->param('ci');
-
-	$c->log->debug($name);
-	$c->log->debug($email);
-	$c->log->debug($ci);
 
 	$c->stash->{fullname} = $name;
 	$c->stash->{email} = $email;
 	$c->stash->{ci} = $ci;
 
-	if ($name and $email and $ci and ($facebook_id or $twitter_id)) {
-		# TODO: use a DB transaction
-		my $user_none = $c->model('DB::User')->find({ email => $email });
+    # check that the email is valid - otherwise flag an error
+    my $raw_email = lc( $email || '' );
+
+    my $email_checker = Email::Valid->new(
+        -mxcheck  => 1,
+        -tldcheck => 1,
+        -fqdn     => 1,
+    );
+
+    my $good_email = $email_checker->address($raw_email);
+    if ( !$good_email ) {
+        $c->stash->{email} = $raw_email;
+        $c->stash->{email_error} =
+          $raw_email ? $email_checker->details : 'missing';
+        return;
+    }
+
+	if ($name and $good_email and $ci and ($facebook_id or $twitter_id)) {
+		my $user = $c->model('DB::User')->find_or_create({ email => $good_email });
 		
-		# e-mail must not exist
-		if (!$user_none) {
-			my $user = $c->model('DB::User')->create({ email => $email, name => $name });
-			$user->update;
-		
-			my $user_pmb = $c->model('DB::UsersPmb')->create( { 
+		if ( $user ) {
+			my $token_data = {
 				id => $user->id, 
 				facebook_id => $facebook_id,
-				twitter_id => $twitter_id } );
-				
-			$user_pmb->update;
+				twitter_id => $twitter_id,
+				name => $name,
+				email => $good_email,
+				ci => $ci
+			};
 			
-			$c->authenticate( { email => $email }, 'no_password' );
+			my $token_social_sign_up = $c->model("DB::Token")->create( {
+				scope => 'email_sign_in/social',
+				data => {
+					%$token_data,
+					r => $c->session->{oauth}{r}
+				}
+			} );
 
-			# send the user to their page
-			$c->detach( 'redirect_on_signin', [ $c->req->param('r') ] );
-		} else {
-			# ERROR... email is already in use
+			$c->session->{social_info} = undef;
+			
+			$c->stash->{token} = $token_social_sign_up->token;
+			$c->send_email( 'login.txt', { to => $good_email } );
+			$c->stash->{template} = 'auth/token.html';
+
+			#$user->name( $name );
+		
+			#my $user_pmb = $c->model('DB::UsersPmb')->create( { 
+				#id => $user->id, 
+				#facebook_id => $facebook_id,
+				#twitter_id => $twitter_id,
+				#ci => $ci } );
+				
+			#$user_pmb->update;
+			#$user->update;
+			
+			#$c->session->{social_info} = undef;		
+			#$c->session->{user_pmb} = $user_pmb;	
+			#$c->authenticate( { email => $email }, 'no_password' );
+
+			## send the user to their page
+			#$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
 		}
+		#} else {
+			#$c->stash->{email_error} = 'inuse';
+		#}
 	}
 }
 
@@ -363,31 +407,63 @@ Handle the 'email_sign_in' tokens. Find the account for the email address
 sub token : Path('/M') : Args(1) {
     my ( $self, $c, $url_token ) = @_;
 
-    # retrieve the token or return
+    # retrieve the token
     my $token_obj = $url_token
       ? $c->model('DB::Token')->find( {
           scope => 'email_sign_in', token => $url_token
         } )
       : undef;
 
-    if ( !$token_obj ) {
-        $c->stash->{token_not_found} = 1;
-        return;
-    }
+	if ( $token_obj ) {
+		# Sign out in case we are another user
+		$c->logout();
 
-    # Sign out in case we are another user
-    $c->logout();
+		# find or create the user related to the token.
+		my $data = $token_obj->data;
+		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
+		$user->name( $data->{name} ) if $data->{name};
+		$user->password( $data->{password}, 1 ) if $data->{password};
+		$user->update;
+		$c->authenticate( { email => $user->email }, 'no_password' );
 
-    # find or create the user related to the token.
-    my $data = $token_obj->data;
-    my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
-    $user->name( $data->{name} ) if $data->{name};
-    $user->password( $data->{password}, 1 ) if $data->{password};
-    $user->update;
-    $c->authenticate( { email => $user->email }, 'no_password' );
+		# send the user to their page
+		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
+    
+	} else {
+		# retrieve the social token or return
+		my $token_obj = $url_token
+		  ? $c->model('DB::Token')->find( {
+			  scope => 'email_sign_in/social', token => $url_token
+			} )
+		  : undef;
 
-    # send the user to their page
-    $c->detach( 'redirect_on_signin', [ $data->{r} ] );
+		if ( !$token_obj ) {
+			$c->stash->{token_not_found} = 1;
+			return;
+		}
+			
+		my $data = $token_obj->data;
+		
+		$c->log->debug($_) for keys $data;
+		$c->log->debug($_) for values $data;
+		
+		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
+		$user->name( $data->{name} );
+		$user->update;
+		
+		my $user_pmb = $c->model('DB::UsersPmb')->find_or_create( { id => $data->{id} } );
+		$user_pmb->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
+		$user_pmb->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
+		$user_pmb->ci( $data->{ci} );
+		$user_pmb->update;
+		
+		$c->session->{user_pmb} = $user_pmb;	
+		$c->authenticate( { email => $data->{email} }, 'no_password' );
+
+		## send the user to their page
+		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
+		
+	}
 }
 
 =head2 redirect_on_signin
@@ -400,10 +476,15 @@ Used after signing in to take the person back to where they were.
 sub redirect_on_signin : Private {
     my ( $self, $c, $redirect ) = @_;
     $redirect = 'my' unless $redirect;
+    
     if ( $c->cobrand->moniker eq 'zurich' ) {
         $redirect = 'my' if $redirect eq 'admin';
         $redirect = 'admin' if $c->user->from_body;
     }
+    
+    $c->log->debug("===> Redirect $redirect");
+    $c->log->debug('===> Redirect url '.$c->uri_for( "/$redirect" ));
+    
     $c->res->redirect( $c->uri_for( "/$redirect" ) );
 }
 

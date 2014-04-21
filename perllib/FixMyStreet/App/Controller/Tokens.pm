@@ -105,6 +105,77 @@ sub confirm_problem : Path('/P') {
     return 1;
 }
 
+=head2 confirm_problem_after_social_login
+
+    /P/([0-9A-Za-z]{16,18}).*$
+
+Confirm a problem after the user authenticated using a social network.
+
+=cut
+
+sub confirm_problem_with_social_login : Path('/PS') {
+    my ( $self, $c, $token_code ) = @_;
+
+    my $auth_token =
+      $c->forward( 'load_auth_token', [ $token_code, 'problem/social' ] );
+
+    # Load the problem
+    my $data = $auth_token->data;
+    my $problem_id = ref $data ? $data->{id} : $data;
+    
+    # Look at all problems, not just cobrand, in case am approving something we don't actually show
+    my $problem = $c->model('DB::Problem')->find( { id => $problem_id } )
+      || $c->detach('token_error');
+    $c->stash->{problem} = $problem;
+
+    if ( $problem->state eq 'unconfirmed' && $auth_token->created < DateTime->now->subtract( months => 1 ) ) {
+        $c->stash->{template} = 'errors/generic.html';
+        $c->stash->{message} = _("I'm afraid we couldn't validate that token, as the report was made too long ago.");
+        return;
+    }
+
+    # check that this email or domain are not the cause of abuse. If so hide it.
+    if ( $problem->is_from_abuser ) {
+        $problem->update(
+            { state => 'hidden', lastupdate => \'ms_current_timestamp()' } );
+        $c->stash->{template} = 'tokens/abuse.html';
+        return;
+    }
+
+    # We have a problem - confirm it if needed!
+    my $old_state = $problem->state;
+    $problem->update(
+        {
+            state      => 'confirmed',
+            confirmed  => \'ms_current_timestamp()',
+            lastupdate => \'ms_current_timestamp()',
+        }
+    ) if $problem->state eq 'unconfirmed';
+
+    # Subscribe problem reporter to email updates
+    $c->stash->{report} = $c->stash->{problem};
+    $c->forward( '/report/new/create_reporter_alert' );
+
+    # log the problem creation user in to the site
+    if ( ref($data) && ( $data->{name} || $data->{password} ) ) {
+        $problem->user->name( $data->{name} ) if $data->{name};
+        $problem->user->phone( $data->{phone} ) if $data->{phone};
+        $problem->user->password( $data->{password}, 1 ) if $data->{password};
+        $problem->user->title( $data->{title} ) if $data->{title};
+        $problem->user->update;
+    }
+    
+    #$c->authenticate( { email => $problem->user->email }, 'no_password' );
+    #$c->set_session_cookie_expire(0);
+
+    #if ( FixMyStreet::DB::Result::Problem->visible_states()->{$old_state} ) {
+        my $report_uri = $c->cobrand->base_url_for_report( $problem ) . $problem->url;
+        $c->res->redirect($report_uri);
+    #}
+
+    return 1;
+}
+
 =head2 redirect_to_partial_problem
 
     /P/...

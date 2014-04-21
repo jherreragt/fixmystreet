@@ -457,9 +457,8 @@ sub initialize_report : Private {
         if ( $c->user ) {
             my $user = $c->user->obj;
             $report->user($user);
-            $report->name( $user->name );
+            $report->name($user->name);
         }
-
     }
 
     if ( $c->req->param('first_name') && $c->req->param('last_name') ) {
@@ -467,6 +466,17 @@ sub initialize_report : Private {
         $c->stash->{last_name} = $c->req->param('last_name');
 
         $c->req->param( 'name', sprintf( '%s %s', $c->req->param('first_name'), $c->req->param('last_name') ) );
+    }   
+
+    # Loads additional user info
+    if ( $c->user and $c->session->{user_pmb}) {
+        my $user_pmb = undef;
+        $user_pmb = $c->session->{user_pmb};
+
+        $c->log->debug('$user_pmb->id = '.$user_pmb->id);
+        $c->log->debug('$user_pmb->ci = '.$user_pmb->ci);
+
+        $c->stash->{user_pmb} = $user_pmb;
     }
 
     # Capture whether the map was used
@@ -974,6 +984,12 @@ sub check_for_errors : Private {
         delete $field_errors{name};
     }
 
+    # if using social login then we don't care about name and email errors
+    if ( $c->req->param('facebook_login') or $c->req->param('twitter_login') ) {
+        delete $field_errors{name};
+        delete $field_errors{email};
+    }
+
     # add the photo error if there is one.
     if ( my $photo_error = delete $c->stash->{photo_error} ) {
         $field_errors{photo} = $photo_error;
@@ -1000,15 +1016,15 @@ sub save_user_and_report : Private {
     my ( $self, $c ) = @_;
     my $report      = $c->stash->{report};
 
-    # Save or update the user if appropriate
     if ( $c->cobrand->never_confirm_reports ) {
+        # Save or update the user if appropriate
         if ( $report->user->in_storage() ) {
             $report->user->update();
         } else {
-            $report->user->insert();
+			$report->user->insert();
         }
         $report->confirm();
-    } elsif ( !$report->user->in_storage ) {
+    } elsif ( !$report->user->in_storage) {
         # User does not exist.
         # Store changes in token for when token is validated.
         $c->stash->{token_data} = {
@@ -1021,9 +1037,9 @@ sub save_user_and_report : Private {
         $report->user->phone( undef );
         $report->user->password( '', 1 );
         $report->user->title( undef );
-        $report->user->insert();
-        $c->log->info($report->user->id . ' created for this report');
-    }
+		$report->user->insert();
+		$c->log->info($report->user->id . ' created for this report');
+	}
     elsif ( $c->user && $report->user->id == $c->user->id ) {
         # Logged in and matches, so instantly confirm (except Zurich, with no confirmation)
         $report->user->update();
@@ -1147,25 +1163,47 @@ sub redirect_or_confirm_creation : Private {
         $c->res->redirect($report_uri);
         $c->detach;
     }
-
+    
     # otherwise create a confirm token and email it to them.
     my $data = $c->stash->{token_data} || {};
-    my $token = $c->model("DB::Token")->create( {
-        scope => 'problem',
-        data => {
-            %$data,
-            id => $report->id
-        }
-    } );
-    $c->stash->{token_url} = $c->uri_for_email( '/P', $token->token );
-    $c->send_email( 'problem-confirm.txt', {
-        to => [ $report->name ? [ $report->user->email, $report->name ] : $report->user->email ],
-    } );
+	my $is_social_user = $c->req->param('facebook_login') or $c->req->param('twitter_login');
 
-    # tell user that they've been sent an email
-    $c->stash->{template}   = 'email_sent.html';
-    $c->stash->{email_type} = 'problem';
-    $c->log->info($report->user->id . ' created ' . $report->id . ', email sent, ' . ($data->{password} ? 'password set' : 'password not set'));
+	if ( $is_social_user ) {
+		my $token = $c->model("DB::Token")->create( {
+			scope => 'problem/social',
+			data => {
+				%$data,
+				id => $report->id
+			}
+		} );
+
+		my $token_url = '/PS/'.$token->token;
+		$c->stash->{return_url} = $token_url;
+
+		if ( $c->req->param('facebook_login') ) {
+			$c->detach('/auth/facebook_login');
+		} elsif ( $c->req->param('twitter_login') ) {
+			$c->detach('/auth/twitter_login');
+		}
+    } else {
+		my $token = $c->model("DB::Token")->create( {
+			scope => 'problem',
+			data => {
+				%$data,
+				id => $report->id
+			}
+		} );
+		
+		$c->stash->{token_url} = $c->uri_for_email( '/P', $token->token );
+		$c->send_email( 'problem-confirm.txt', {
+			to => [ $report->name ? [ $report->user->email, $report->name ] : $report->user->email ],
+		} );
+
+		# tell user that they've been sent an email
+		$c->stash->{template}   = 'email_sent.html';
+		$c->stash->{email_type} = 'problem';
+		$c->log->info($report->user->id . ' created ' . $report->id . ', email sent, ' . ($data->{password} ? 'password set' : 'password not set'));
+	}
 }
 
 sub create_reporter_alert : Private {

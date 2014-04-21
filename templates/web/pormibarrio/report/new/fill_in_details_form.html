@@ -115,6 +115,9 @@
                     <label for="form_email">[% loc('Your email') %]</label>
                     <input disabled type="text" value="[% c.user.email | html %]">
 
+                    <label for="form_ci">[% loc('Your document') %]</label>
+                    <input disabled type="text" value="[% user_pmb.ci | html %]">
+
                     [% INCLUDE 'report/new/extra_name.html' %]
 
                     <label for="form_name">[% loc('Name') %]</label>
@@ -197,6 +200,9 @@
                             <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %]</label>
                         </div>
 
+                        <label for="form_name">[% loc('Document') %]</label>
+                        <input type="text" class="form-focus-trigger" value="[% report.name | html %]" name="ci" id="form_ci" placeholder="[% loc('Your document') %]">
+
                         <div class="general-sidebar-notes form-focus-hidden">
                             <p class="dark">[% loc('We never show your email address or phone number.') %]</p>
                             <p>[% loc('Providing a password is optional, but doing so will allow you to more easily report problems, leave updates and manage your reports.') %]</p>
@@ -212,6 +218,12 @@
                             <input class="green-btn" type="submit" id="submit_register" name="submit_register" value="[% loc('Submit') %]">
                         </div>
                     </div>
+
+					<div>
+						<!-- TODO: move STYLES to CSS files -->
+						<input type="image" src="/i/FB-f-Logo__blue_50.png" name="facebook_login" id="facebook_login" value="facebook_login" style="margin: 10px;" /><input 
+							type="image" src="/i/Twitter_logo_blue_50px_50px.png" name="twitter_login" id="twitter_login" value="twitter_login" style="margin: 10px;" />
+					</div>
                 </div>
 
             [% END %]
