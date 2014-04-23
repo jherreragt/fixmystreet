@@ -81,9 +81,6 @@ sub report_new : Path : Args(0) {
     my ( $self, $c ) = @_;
 
 	$c->stash->{is_social_user} = $c->req->param('facebook_login') || $c->req->param('twitter_login');
-	$c->log->debug('============= '.$c->req->param('facebook_login'));
-	$c->log->debug('============= '.$c->req->param('twitter_login'));
-	$c->log->debug($c->req->param);
 
     # create the report - loading a partial if available
     $c->forward('initialize_report');
@@ -480,10 +477,6 @@ sub initialize_report : Private {
     if ( $c->user and $c->session->{user_pmb}) {
         my $user_pmb = undef;
         $user_pmb = $c->session->{user_pmb};
-
-        $c->log->debug('================== $user_pmb->id = '.$user_pmb->{id});
-        $c->log->debug('================== $user_pmb->ci = '.$user_pmb->{ci});
-
         $c->stash->{user_pmb} = $user_pmb;
     }
 
@@ -994,7 +987,6 @@ sub check_for_errors : Private {
 
     # if using social login then we don't care about name and email errors
     if ( $c->stash->{is_social_user} ) {
-		$c->log->debug('======================= ELIMINO NAME Y EMAIL');
         delete $field_errors{name};
         delete $field_errors{email};
     }
@@ -1003,8 +995,6 @@ sub check_for_errors : Private {
     if ( my $photo_error = delete $c->stash->{photo_error} ) {
         $field_errors{photo} = $photo_error;
     }
-
-	$c->log->debug($_.' == '.%field_errors->{$_}) for keys %field_errors;
 
     # all good if no errors
     return 1 unless scalar keys %field_errors;

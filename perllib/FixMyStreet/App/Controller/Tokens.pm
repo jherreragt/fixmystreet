@@ -126,11 +126,6 @@ sub confirm_problem_with_social_login : Path('/PS') {
     $user_id = $c->user->id if $c->user;
     $user_id = $c->session->{user_pmb}->{id} unless $user_id;
 
-    $c->log->debug('============> User id: '.$user_id);
-    #$c->log->debug('============> User id (session): '.$user_pmb->{id});
-    $c->log->debug($_.' ===> '.$data->{$_}) for keys $data;
-    $c->log->debug($_.' +++> '.$c->session->{user_pmb}->{$_}) for keys $c->session->{user_pmb};
-
 	my $user = $c->model("DB::User")->find({ id => $user_id });
 
     $data->{user_id} = $user_id;
