@@ -722,7 +722,7 @@ sub process_user : Private {
 
     # Extract all the params to a hash to make them easier to work with
     my %params = map { $_ => scalar $c->req->param($_) }
-      ( 'email', 'name', 'phone', 'password_register', 'fms_extra_title' );
+      ( 'form_email', 'name', 'phone', 'password_register', 'fms_extra_title' );
 
     my $user_title = Utils::trim_text( $params{fms_extra_title} );
 
@@ -1061,7 +1061,7 @@ sub save_user_and_report : Private {
                 send_fail_reason => $report->send_fail_reason,
                 send_fail_timestamp => $report->send_fail_timestamp,
                 send_method_used => $report->send_method_used,
-                non_public => $report->non_public,
+                #non_public => $report->non_public,
                 external_source => $report->external_source,
                 external_source_id => $report->external_source_id,
                 interest_count => $report->interest_count,

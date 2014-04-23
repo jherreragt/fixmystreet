@@ -217,16 +217,16 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		};
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
-	} else {	
+	} else {		
+		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+		$c->set_session_cookie_expire(0);
+
 		$c->session->{user_pmb} = {
 			id => $user_pmb->id->id,
 			ci => $user_pmb->ci,
 			facebook_id => $user_pmb->facebook_id,
 			twitter_id => $user_pmb->twitter_id
 		};
-		
-		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
-		$c->set_session_cookie_expire(0);
 
 		# send the user to their page
 		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
@@ -301,16 +301,16 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		};
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
-	} else {
+	} else {	
+		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+		$c->set_session_cookie_expire(0);
+
 		$c->session->{user_pmb} = {
 			id => $user_pmb->id->id,
 			ci => $user_pmb->ci,
 			facebook_id => $user_pmb->facebook_id,
 			twitter_id => $user_pmb->twitter_id
 		};
-		
-		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
-		$c->set_session_cookie_expire(0);
 
 		# send the user to their page
 		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
@@ -448,16 +448,16 @@ sub token : Path('/M') : Args(1) {
 		$user_pmb->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
 		$user_pmb->ci( $data->{ci} );
 		$user_pmb->update;
-		
+			
+		$c->authenticate( { email => $data->{email} }, 'no_password' );
+		$c->set_session_cookie_expire(0);
+
 		$c->session->{user_pmb} = {
 			id => $user_pmb->id->id,
 			ci => $user_pmb->ci,
 			facebook_id => $user_pmb->facebook_id,
 			twitter_id => $user_pmb->twitter_id
 		};
-		
-		$c->authenticate( { email => $data->{email} }, 'no_password' );
-		$c->set_session_cookie_expire(0);
 
 		$token_obj->delete;
 
