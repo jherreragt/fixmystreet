@@ -165,7 +165,7 @@ sub facebook_login : Private {
 	
 	###save this token in session
 	my $return_url = $c->stash->{return_url} or $c->req->param('r');
-	$c->log->debug('========== facebook_login token_url: '.$return_url);
+	#$c->log->debug('========== facebook_login token_url: '.$return_url);
 	
 	$c->session->{oauth} =  {
 		r => $return_url
@@ -207,6 +207,10 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $email = $info->{'email'};
 	my $uid = $info->{'id'};
 
+	$c->log->debug("============= Name: $name");
+	$c->log->debug("============= Email: $email");
+	$c->log->debug("============= UID: $uid");
+
 	my $user_pmb = $c->model('DB::UsersPmb')->find( { facebook_id => $uid } );
 	
 	if (!$user_pmb) {
@@ -219,7 +223,13 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {	
-        $c->session->{user_pmb} = $user_pmb;
+		$c->session->{user_pmb} = {
+			id => $user_pmb->id->id,
+			ci => $user_pmb->ci,
+			facebook_id => $user_pmb->facebook_id,
+			twitter_id => $user_pmb->twitter_id
+		};
+		
 		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
 
 		# send the user to their page
@@ -245,10 +255,12 @@ sub twitter_login : Private {
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
     my $url = $twitter->get_authorization_url(callback => 'http://ituland.no-ip.org:9000/auth/Twitter');
 
+	my $return_url = $c->stash->{return_url} or $c->req->param('r');
+
 	$c->session->{oauth} = {
 		token => $twitter->request_token,
 		token_secret => $twitter->request_token_secret,
-		r => $c->req->param('r')
+		r => $return_url
 	};
 
 	$c->res->redirect($url);
@@ -276,6 +288,7 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	#$c->log->debug('=== OAuth RESPONSE ================');
 	#$c->log->debug($oauth->{token});
 	#$c->log->debug($oauth->{token_secret});
+	#$c->log->debug($oauth->{r});
 	
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
 	$twitter->request_token($oauth->{token});
@@ -297,7 +310,13 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {
-        $c->session->{user_pmb} = $user_pmb;
+		$c->session->{user_pmb} = {
+			id => $user_pmb->id->id,
+			ci => $user_pmb->ci,
+			facebook_id => $user_pmb->facebook_id,
+			twitter_id => $user_pmb->twitter_id
+		};
+		
 		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
 
 		# send the user to their page
@@ -320,6 +339,11 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my $email = $social_info->{email};
 	my $facebook_id = $social_info->{facebook_id};
 	my $twitter_id = $social_info->{twitter_id};
+	
+	$c->log->debug("============= Name: $name");
+	$c->log->debug("============= Email: $email");
+	$c->log->debug("============= FUID: $facebook_id");
+	$c->log->debug("============= TUID: $twitter_id");
 	
 	$name = $c->req->param('fullname') if $c->req->param('fullname');
 	$email = $c->req->param('email') if $c->req->param('email');
@@ -426,6 +450,8 @@ sub token : Path('/M') : Args(1) {
 		$user->update;
 		$c->authenticate( { email => $user->email }, 'no_password' );
 
+		$token_obj->delete;
+
 		# send the user to their page
 		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
     
@@ -444,8 +470,8 @@ sub token : Path('/M') : Args(1) {
 			
 		my $data = $token_obj->data;
 		
-		$c->log->debug($_) for keys $data;
-		$c->log->debug($_) for values $data;
+		#$c->log->debug($_) for keys $data;
+		#$c->log->debug($_) for values $data;
 		
 		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
 		$user->name( $data->{name} );
@@ -457,8 +483,17 @@ sub token : Path('/M') : Args(1) {
 		$user_pmb->ci( $data->{ci} );
 		$user_pmb->update;
 		
-		$c->session->{user_pmb} = $user_pmb;	
+		$c->session->{user_pmb} = {
+			id => $user_pmb->id->id,
+			ci => $user_pmb->ci,
+			facebook_id => $user_pmb->facebook_id,
+			twitter_id => $user_pmb->twitter_id
+		};
+		
+		$c->log->debug('============> User id (session): '.$c->session->{user_pmb}->{id});
 		$c->authenticate( { email => $data->{email} }, 'no_password' );
+
+		$token_obj->delete;
 
 		## send the user to their page
 		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
@@ -482,8 +517,8 @@ sub redirect_on_signin : Private {
         $redirect = 'admin' if $c->user->from_body;
     }
     
-    $c->log->debug("===> Redirect $redirect");
-    $c->log->debug('===> Redirect url '.$c->uri_for( "/$redirect" ));
+    #$c->log->debug("===> Redirect $redirect");
+    #$c->log->debug('===> Redirect url '.$c->uri_for( "/$redirect" ));
     
     $c->res->redirect( $c->uri_for( "/$redirect" ) );
 }

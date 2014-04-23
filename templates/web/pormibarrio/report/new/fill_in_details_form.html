@@ -147,16 +147,25 @@
                 </div>
             [% ELSE %]
 
-                <label for="form_email">[% loc('Your email') %]</label>
-                [% IF field_errors.email %]
-                    <p class='form-error'>[% field_errors.email %]</p>
-                [% END %]
-                <input type="email" value="[% report.user.email | html %]" name="email" id="form_email" placeholder="[% loc('Please enter your email address') %]" required>
+				<h3>[% loc("Now to submit your report&hellip;") %]</h3>
 
-                <div id="form_sign_in">
-                    <h3>[% loc("Now to submit your report&hellip;") %]</h3>
-                    <h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
-
+				<div id="form_sign_in_email" class="form-box">
+					<label for="form_email">[% loc('Your email') %]</label>
+					[% IF field_errors.email %]
+						<p class='form-error'>[% field_errors.email %]</p>
+					[% END %]
+					<input type="email" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]">
+					
+					<div><strong>[% loc('Or use a social network account') %]</strong></div>
+					<div>
+						<button name="facebook_login" id="facebook_login" value="facebook_login"><img src="/i/FB-f-Logo__blue_50.png"/></button>&nbsp;<button 
+							name="twitter_login" id="twitter_login" value="twitter_login"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
+					</div>
+                </div>
+                
+				<h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
+				
+                <div id="form_sign_in">                  
                     <div id="form_sign_in_yes" class="form-box">
 
                         <h5>[% loc('<strong>Yes</strong> I have a password') %]</h5>
@@ -218,12 +227,6 @@
                             <input class="green-btn" type="submit" id="submit_register" name="submit_register" value="[% loc('Submit') %]">
                         </div>
                     </div>
-
-					<div>
-						<!-- TODO: move STYLES to CSS files -->
-						<input type="image" src="/i/FB-f-Logo__blue_50.png" name="facebook_login" id="facebook_login" value="facebook_login" style="margin: 10px;" /><input 
-							type="image" src="/i/Twitter_logo_blue_50px_50px.png" name="twitter_login" id="twitter_login" value="twitter_login" style="margin: 10px;" />
-					</div>
                 </div>
 
             [% END %]
