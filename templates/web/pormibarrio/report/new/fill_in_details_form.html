@@ -115,8 +115,8 @@
                     <label for="form_email">[% loc('Your email') %]</label>
                     <input disabled type="text" value="[% c.user.email | html %]">
 
-                    <label for="form_ci">[% loc('Your document') %]</label>
-                    <input disabled type="text" value="[% user_pmb.ci | html %]">
+                    <label for="form_identity_document">[% loc('Your identity document') %]</label>
+                    <input disabled type="text" value="[% c.user.identity_document | html %]">
 
                     [% INCLUDE 'report/new/extra_name.html' %]
 
@@ -158,8 +158,8 @@
 					
 					<div><strong>[% loc('Or use a social network account') %]</strong></div>
 					<div>
-						<button name="facebook_login" id="facebook_login" value="facebook_login"><img src="/i/FB-f-Logo__blue_50.png"/></button>&nbsp;<button 
-							name="twitter_login" id="twitter_login" value="twitter_login"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
+						<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>&nbsp;<button 
+							name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
 					</div>
                 </div>
                 
@@ -200,7 +200,6 @@
                         [% IF field_errors.name %]
                             <p class='form-error'>[% field_errors.name %]</p>
                         [% END %]
-
                         <input type="text" class="form-focus-trigger validName" value="[% report.name | html %]" name="name" id="form_name" placeholder="[% loc('Your name') %]">
 
                         [%# if there is nothing in the name field then set check box as default on form %]
@@ -209,8 +208,11 @@
                             <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %]</label>
                         </div>
 
-                        <label for="form_name">[% loc('Document') %]</label>
-                        <input type="text" class="form-focus-trigger" value="[% report.name | html %]" name="ci" id="form_ci" placeholder="[% loc('Your document') %]">
+                        <label for="form_name">[% loc('Identity document') %]</label>
+						[% IF field_errors.identity_document %]
+                            <p class='form-error'>[% field_errors.identity_document %]</p>
+                        [% END %]
+                        <input type="text" class="form-focus-trigger" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]">
 
                         <div class="general-sidebar-notes form-focus-hidden">
                             <p class="dark">[% loc('We never show your email address or phone number.') %]</p>

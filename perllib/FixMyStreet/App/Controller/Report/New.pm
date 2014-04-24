@@ -80,7 +80,7 @@ use constant COUNCIL_ID_BROMLEY => 2482;
 sub report_new : Path : Args(0) {
     my ( $self, $c ) = @_;
 
-	$c->stash->{is_social_user} = $c->req->param('facebook_login') || $c->req->param('twitter_login');
+	$c->stash->{is_social_user} = $c->req->param('facebook_sign_in') || $c->req->param('twitter_sign_in');
 
     # create the report - loading a partial if available
     $c->forward('initialize_report');
@@ -473,13 +473,6 @@ sub initialize_report : Private {
         $c->req->param( 'name', sprintf( '%s %s', $c->req->param('first_name'), $c->req->param('last_name') ) );
     }
 
-    # Loads additional user info
-    if ( $c->user and $c->session->{user_pmb}) {
-        my $user_pmb = undef;
-        $user_pmb = $c->session->{user_pmb};
-        $c->stash->{user_pmb} = $user_pmb;
-    }
-
     # Capture whether the map was used
     $report->used_map( $c->req->param('skipped') ? 0 : 1 );
 
@@ -722,7 +715,7 @@ sub process_user : Private {
 
     # Extract all the params to a hash to make them easier to work with
     my %params = map { $_ => scalar $c->req->param($_) }
-      ( 'form_email', 'name', 'phone', 'password_register', 'fms_extra_title' );
+      ( 'form_email', 'name', 'phone', 'password_register', 'fms_extra_title', 'identity_document' );
 
     my $user_title = Utils::trim_text( $params{fms_extra_title} );
 
@@ -739,6 +732,7 @@ sub process_user : Private {
         my $user = $c->user->obj;
         $user->name( Utils::trim_text( $params{name} ) ) if $params{name};
         $user->phone( Utils::trim_text( $params{phone} ) );
+        $user->identity_document( Utils::trim_text( $params{identity_document} ) );
         $user->title( $user_title ) if $user_title;
         $report->user( $user );
         $report->name( $user->name );
@@ -770,6 +764,7 @@ sub process_user : Private {
     # set the user's name, phone, and password
     $report->user->name( Utils::trim_text( $params{name} ) ) if $params{name};
     $report->user->phone( Utils::trim_text( $params{phone} ) );
+    $report->user->identity_document( Utils::trim_text( $params{identity_document} ) );
     $report->user->password( Utils::trim_text( $params{password_register} ) )
         if $params{password_register};
     $report->user->title( $user_title ) if $user_title;
@@ -1089,10 +1084,10 @@ sub save_user_and_report : Private {
             my $token_url = '/PS/'.$token->token;
             $c->stash->{return_url} = $token_url;
 
-            if ( $c->req->param('facebook_login') ) {
-                $c->detach('/auth/facebook_login');
-            } elsif ( $c->req->param('twitter_login') ) {
-                $c->detach('/auth/twitter_login');
+            if ( $c->req->param('facebook_sign_in') ) {
+                $c->detach('/auth/facebook_sign_in');
+            } elsif ( $c->req->param('twitter_sign_in') ) {
+                $c->detach('/auth/twitter_sign_in');
             }
 
             return 1;

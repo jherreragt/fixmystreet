@@ -40,8 +40,8 @@ sub general : Path : Args(0) {
     return unless $req->method eq 'POST';
 
     # decide which action to take
-    $c->detach('facebook_login') if $req->param('facebook_login');
-    $c->detach('twitter_login') if $req->param('twitter_login');
+    $c->detach('facebook_sign_in') if $req->param('facebook_sign_in');
+    $c->detach('twitter_sign_in') if $req->param('twitter_sign_in');
 
     $c->detach('email_sign_in') if $req->param('email_sign_in')
         || $c->req->param('name') || $c->req->param('password_register');
@@ -138,13 +138,13 @@ sub email_sign_in : Private {
     $c->stash->{template} = 'auth/token.html';
 }
 
-=head2 facebook_login
+=head2 facebook_sign_in
 
 Starts the Facebook authentication sequence.
 
 =cut
 
-sub facebook_login : Private {
+sub facebook_sign_in : Private {
 	my( $self, $c ) = @_;
 	
 	my $params = $c->req->parameters;
@@ -191,10 +191,10 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
 	);
 	
-	###you need to pass the verifier code to get access_token	
+	# you need to pass the verifier code to get access_token	
 	my $access_token = $fb->get_access_token( code => $params->{code} );
 	
-	###save this token in session
+	# save this token in session
 	$c->session->{oauth} =  {
 		token => $access_token,
 		r => $c->session->{oauth}{r}
@@ -206,9 +206,9 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $email = $info->{'email'};
 	my $uid = $info->{'id'};
 
-	my $user_pmb = $c->model('DB::UsersPmb')->find( { facebook_id => $uid } );
+	my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
 	
-	if (!$user_pmb) {
+	if (!$user) {
 		$c->session->{social_info} = {
 			email => $email,
 			name => $name,
@@ -218,28 +218,21 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {		
-		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-
-		$c->session->{user_pmb} = {
-			id => $user_pmb->id->id,
-			ci => $user_pmb->ci,
-			facebook_id => $user_pmb->facebook_id,
-			twitter_id => $user_pmb->twitter_id
-		};
 
 		# send the user to their page
 		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
 	}
 }
 
-=head2 twitter_login
+=head2 twitter_sign_in
 
 Starts the Twitter authentication sequence.
 
 =cut
 
-sub twitter_login : Private {
+sub twitter_sign_in : Private {
 	my( $self, $c ) = @_;
 	
 	# TODO: move Tweeter App ID/Secret to general.yaml!
@@ -290,9 +283,9 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		$twitter->request_access_token(verifier => $verifier);
    
 	# TODO: use a transaction!
-	my $user_pmb = $c->model('DB::UsersPmb')->find( { twitter_id => $uid } );
+	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
-	if (!$user_pmb) {
+	if (!$user) {
 		$c->session->{social_info} = {
 			email => undef,
 			name => $name,
@@ -302,15 +295,8 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
 	} else {	
-		$c->authenticate( { email => $user_pmb->id->email }, 'no_password' );
+		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-
-		$c->session->{user_pmb} = {
-			id => $user_pmb->id->id,
-			ci => $user_pmb->ci,
-			facebook_id => $user_pmb->facebook_id,
-			twitter_id => $user_pmb->twitter_id
-		};
 
 		# send the user to their page
 		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
@@ -327,7 +313,6 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my ( $self, $c ) = @_;
 	
 	my $social_info = $c->session->{social_info};
-	
 	my $name = $social_info->{name};
 	my $email = $social_info->{email};
 	my $facebook_id = $social_info->{facebook_id};
@@ -335,11 +320,11 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	
 	$name = $c->req->param('fullname') if $c->req->param('fullname');
 	$email = $c->req->param('email') if $c->req->param('email');
-	my $ci = $c->req->param('ci') if $c->req->param('ci');
+	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
 
 	$c->stash->{fullname} = $name;
 	$c->stash->{email} = $email;
-	$c->stash->{ci} = $ci;
+	$c->stash->{identity_document} = $identity_document;
 
     # check that the email is valid - otherwise flag an error
     my $raw_email = lc( $email || '' );
@@ -358,7 +343,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
         return;
     }
 
-	if ($name and $good_email and $ci and ($facebook_id or $twitter_id)) {
+	if ($name and $good_email and $identity_document and ($facebook_id or $twitter_id)) {
 		my $user = $c->model('DB::User')->find_or_create({ email => $good_email });
 		
 		if ( $user ) {
@@ -368,7 +353,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				twitter_id => $twitter_id,
 				name => $name,
 				email => $good_email,
-				ci => $ci
+				identity_document => $identity_document
 			};
 			
 			my $token_social_sign_up = $c->model("DB::Token")->create( {
@@ -441,23 +426,13 @@ sub token : Path('/M') : Args(1) {
 		
 		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
 		$user->name( $data->{name} );
+		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
+		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
+		$user->identity_document( $data->{identity_document} );
 		$user->update;
-		
-		my $user_pmb = $c->model('DB::UsersPmb')->find_or_create( { id => $data->{id} } );
-		$user_pmb->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
-		$user_pmb->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
-		$user_pmb->ci( $data->{ci} );
-		$user_pmb->update;
 			
 		$c->authenticate( { email => $data->{email} }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-
-		$c->session->{user_pmb} = {
-			id => $user_pmb->id->id,
-			ci => $user_pmb->ci,
-			facebook_id => $user_pmb->facebook_id,
-			twitter_id => $user_pmb->twitter_id
-		};
 
 		$token_obj->delete;
 
