@@ -105,6 +105,53 @@ sub confirm_problem : Path('/P') {
     return 1;
 }
 
+=head2 confirm_problem_after_social_login
+
+    /P/([0-9A-Za-z]{16,18}).*$
+
+Confirm a problem after the user authenticated using a social network.
+
+=cut
+
+sub confirm_problem_with_social_login : Path('/PS') {
+    my ( $self, $c, $token_code ) = @_;
+
+    my $auth_token =
+      $c->forward( 'load_auth_token', [ $token_code, 'problem/social' ] );
+
+    # Load the problem
+    my $data = $auth_token->data;
+
+    my $user_id = undef;
+    $user_id = $c->user->id if $c->user;
+    $user_id = $c->session->{user_pmb}->{id} unless $user_id;
+
+	my $user = $c->model("DB::User")->find({ id => $user_id });
+
+    $data->{user_id} = $user_id;
+    $data->{state} = 'confirmed';
+    $data->{confirmed} = \'ms_current_timestamp()';
+    $data->{name} = $user->name;
+
+    delete($data->{service}) unless $data->{service};
+    delete($data->{send_questionnaire}) unless $data->{send_questionnaire};
+    delete($data->{flagged}) unless $data->{flagged};
+    delete($data->{send_fail_count}) unless $data->{send_fail_count};
+
+    my $problem = $c->model("DB::Problem")->create($data);
+
+    $c->stash->{problem} = $problem;
+
+    # Subscribe problem reporter to email updates
+    $c->stash->{report} = $c->stash->{problem};
+    $c->forward( '/report/new/create_reporter_alert' );
+
+	my $report_uri = $c->cobrand->base_url_for_report( $problem ) . $problem->url;
+	$c->res->redirect($report_uri);
+
+    return 1;
+}
+
 =head2 redirect_to_partial_problem
 
     /P/...

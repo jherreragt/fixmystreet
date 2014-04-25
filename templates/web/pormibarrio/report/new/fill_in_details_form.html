@@ -115,6 +115,9 @@
                     <label for="form_email">[% loc('Your email') %]</label>
                     <input disabled type="text" value="[% c.user.email | html %]">
 
+                    <label for="form_identity_document">[% loc('Your identity document') %]</label>
+                    <input disabled type="text" value="[% c.user.identity_document | html %]">
+
                     [% INCLUDE 'report/new/extra_name.html' %]
 
                     <label for="form_name">[% loc('Name') %]</label>
@@ -144,16 +147,25 @@
                 </div>
             [% ELSE %]
 
-                <label for="form_email">[% loc('Your email') %]</label>
-                [% IF field_errors.email %]
-                    <p class='form-error'>[% field_errors.email %]</p>
-                [% END %]
-                <input type="email" value="[% report.user.email | html %]" name="email" id="form_email" placeholder="[% loc('Please enter your email address') %]" required>
+				<h3>[% loc("Now to submit your report&hellip;") %]</h3>
 
-                <div id="form_sign_in">
-                    <h3>[% loc("Now to submit your report&hellip;") %]</h3>
-                    <h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
-
+				<div id="form_sign_in_email" class="form-box">
+					<label for="form_email">[% loc('Your email') %]</label>
+					[% IF field_errors.email %]
+						<p class='form-error'>[% field_errors.email %]</p>
+					[% END %]
+					<input type="email" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]">
+					
+					<div><strong>[% loc('Or use a social network account') %]</strong></div>
+					<div>
+						<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>&nbsp;<button 
+							name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
+					</div>
+                </div>
+                
+				<h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
+				
+                <div id="form_sign_in">                  
                     <div id="form_sign_in_yes" class="form-box">
 
                         <h5>[% loc('<strong>Yes</strong> I have a password') %]</h5>
@@ -188,7 +200,6 @@
                         [% IF field_errors.name %]
                             <p class='form-error'>[% field_errors.name %]</p>
                         [% END %]
-
                         <input type="text" class="form-focus-trigger validName" value="[% report.name | html %]" name="name" id="form_name" placeholder="[% loc('Your name') %]">
 
                         [%# if there is nothing in the name field then set check box as default on form %]
@@ -196,6 +207,12 @@
                             <input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
                             <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %]</label>
                         </div>
+
+                        <label for="form_name">[% loc('Identity document') %]</label>
+						[% IF field_errors.identity_document %]
+                            <p class='form-error'>[% field_errors.identity_document %]</p>
+                        [% END %]
+                        <input type="text" class="form-focus-trigger" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]">
 
                         <div class="general-sidebar-notes form-focus-hidden">
                             <p class="dark">[% loc('We never show your email address or phone number.') %]</p>

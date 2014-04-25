@@ -49,9 +49,27 @@
 
 [%# IF c.cobrand.moniker == 'fixmystreet' %]
     <div id="report-share" class="hidden-js" align="center">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-text="I just reported &lsquo;[% problem.title_safe | html %]&rsquo;" data-via="fixmystreet" data-related="mysociety" data-count="none" data-dnt="true">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-        <iframe src="//www.facebook.com/plugins/like.php?href=[% c.req.uri | uri %]&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
+		<!-- TODO !!!! -->
+        <a href="https://twitter.com/share" class="twitter-share-button" data-text="[% loc('I just reported') %]&lsquo;[% problem.title_safe | html %]&rsquo;" data-hashtags="PorMiBarrio" data-related="mysociety" data-count="none" data-dnt="true"></a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		<script>
+		function facebook_share() {
+			FB.ui(
+			  {
+				method: 'feed',
+				// nombre del link (mi reporte?)
+				name: "[% loc('I just reported') %]&lsquo;[% problem.title_safe | html %]&rsquo;",
+				// url a publicar
+				link: document.URL, //'https://ituland.no-ip.org:9000/report/99',
+				// imagen al menos 200px x 200px a incluir en la publicación (logo?)
+				picture: 'http://ituland.no-ip.org:9000/i/pin-yellow-very-big.png'
+				// descripción larga
+				//description: 'description.'
+			  });
+			}
+		</script>
+        <!--<iframe src="//www.facebook.com/plugins/like.php?href=[% c.req.uri | uri %]&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>-->
+        <img src="/i/FB-f-Logo__blue_50.png" width="16px" height="16px" onclick="facebook_share()" />
     </div>
 [%# END %]
 

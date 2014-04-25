@@ -80,6 +80,8 @@ use constant COUNCIL_ID_BROMLEY => 2482;
 sub report_new : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+	$c->stash->{is_social_user} = $c->req->param('facebook_sign_in') || $c->req->param('twitter_sign_in');
+
     # create the report - loading a partial if available
     $c->forward('initialize_report');
 
@@ -95,10 +97,13 @@ sub report_new : Path : Args(0) {
 
     # deal with the user and report and check both are happy
     return unless $c->forward('check_form_submitted');
+    
     $c->forward('process_user');
     $c->forward('process_report');
     $c->forward('/photo/process_photo');
-    return unless $c->forward('check_for_errors');
+    
+	return unless $c->forward('check_for_errors');
+    
     $c->forward('save_user_and_report');
     $c->forward('redirect_or_confirm_creation');
 }
@@ -457,9 +462,8 @@ sub initialize_report : Private {
         if ( $c->user ) {
             my $user = $c->user->obj;
             $report->user($user);
-            $report->name( $user->name );
+            $report->name($user->name);
         }
-
     }
 
     if ( $c->req->param('first_name') && $c->req->param('last_name') ) {
@@ -483,7 +487,7 @@ Work out what the location of the report should be - either by using lat,lng or
 a tile click or what's come in from a partial. Returns false if no location
 could be found.
 
-=cut 
+=cut
 
 sub determine_location : Private {
     my ( $self, $c ) = @_;
@@ -505,7 +509,7 @@ sub determine_location : Private {
 Detect that the map tiles have been clicked on by looking for the tile
 parameters.
 
-=cut 
+=cut
 
 sub determine_location_from_tile_click : Private {
     my ( $self, $c ) = @_;
@@ -556,7 +560,7 @@ sub determine_location_from_tile_click : Private {
 Use latitude and longitude stored in the report - this is probably result of a
 partial report being loaded.
 
-=cut 
+=cut
 
 sub determine_location_from_report : Private {
     my ( $self, $c ) = @_;
@@ -631,11 +635,11 @@ sub setup_categories_and_bodies : Private {
         if ($first_area->{id} == COUNCIL_ID_BARNET) {
             @local_categories =  sort keys %{ Utils::barnet_categories() }
         } else {
-            @local_categories =  sort keys %{ Utils::london_categories() }            
+            @local_categories =  sort keys %{ Utils::london_categories() }
         }
         @category_options = (
             _('-- Pick a category --'),
-            @local_categories 
+            @local_categories
         );
 
     } else {
@@ -711,7 +715,7 @@ sub process_user : Private {
 
     # Extract all the params to a hash to make them easier to work with
     my %params = map { $_ => scalar $c->req->param($_) }
-      ( 'email', 'name', 'phone', 'password_register', 'fms_extra_title' );
+      ( 'form_email', 'name', 'phone', 'password_register', 'fms_extra_title', 'identity_document' );
 
     my $user_title = Utils::trim_text( $params{fms_extra_title} );
 
@@ -728,6 +732,7 @@ sub process_user : Private {
         my $user = $c->user->obj;
         $user->name( Utils::trim_text( $params{name} ) ) if $params{name};
         $user->phone( Utils::trim_text( $params{phone} ) );
+        $user->identity_document( Utils::trim_text( $params{identity_document} ) );
         $user->title( $user_title ) if $user_title;
         $report->user( $user );
         $report->name( $user->name );
@@ -735,7 +740,7 @@ sub process_user : Private {
     }
 
     # cleanup the email address
-    my $email = $params{email} ? lc $params{email} : '';
+    my $email = $params{form_email} ? lc $params{form_email} : '';
     $email =~ s{\s+}{}g;
 
     $report->user( $c->model('DB::User')->find_or_new( { email => $email } ) )
@@ -759,6 +764,7 @@ sub process_user : Private {
     # set the user's name, phone, and password
     $report->user->name( Utils::trim_text( $params{name} ) ) if $params{name};
     $report->user->phone( Utils::trim_text( $params{phone} ) );
+    $report->user->identity_document( Utils::trim_text( $params{identity_document} ) );
     $report->user->password( Utils::trim_text( $params{password_register} ) )
         if $params{password_register};
     $report->user->title( $user_title ) if $user_title;
@@ -848,9 +854,9 @@ sub process_report : Private {
             $c->stash->{field_errors}->{category} = _('Please choose a category');
         }
         $report->bodies_str( $first_body->id );
-        
+
     } elsif ( $first_area->{id} != COUNCIL_ID_BROMLEY && $first_area->{type} eq 'LBO') {
-        
+
         unless ( Utils::london_categories()->{ $report->category } ) {
             $c->stash->{field_errors}->{category} = _('Please choose a category');
         }
@@ -974,6 +980,12 @@ sub check_for_errors : Private {
         delete $field_errors{name};
     }
 
+    # if using social login then we don't care about name and email errors
+    if ( $c->stash->{is_social_user} ) {
+        delete $field_errors{name};
+        delete $field_errors{email};
+    }
+
     # add the photo error if there is one.
     if ( my $photo_error = delete $c->stash->{photo_error} ) {
         $field_errors{photo} = $photo_error;
@@ -1000,29 +1012,101 @@ sub save_user_and_report : Private {
     my ( $self, $c ) = @_;
     my $report      = $c->stash->{report};
 
-    # Save or update the user if appropriate
     if ( $c->cobrand->never_confirm_reports ) {
+        # Save or update the user if appropriate
         if ( $report->user->in_storage() ) {
             $report->user->update();
         } else {
             $report->user->insert();
         }
         $report->confirm();
-    } elsif ( !$report->user->in_storage ) {
-        # User does not exist.
-        # Store changes in token for when token is validated.
-        $c->stash->{token_data} = {
-            name => $report->user->name,
-            phone => $report->user->phone,
-            password => $report->user->password,
-            title   => $report->user->title,
-        };
-        $report->user->name( undef );
-        $report->user->phone( undef );
-        $report->user->password( '', 1 );
-        $report->user->title( undef );
-        $report->user->insert();
-        $c->log->info($report->user->id . ' created for this report');
+    } elsif ( !$report->user->in_storage) {
+        if ( $c->stash->{is_social_user} ) {
+            my $token_data = {
+                postcode => $report->postcode,
+                latitude => $report->latitude,
+                longitude => $report->longitude,
+                bodies_str => $report->bodies_str,
+                areas => $report->areas,
+                category => $report->category,
+                title => $report->title,
+                detail => $report->detail,
+                #photo => $report->photo,
+                used_map => $report->used_map,
+                #user_id => $report->user_id,
+                #name => $report->name,
+                anonymous => $report->anonymous,
+                external_id => $report->external_id,
+                external_body => $report->external_body,
+                external_team => $report->external_team,
+                #created => $report->created,
+                #confirmed => $report->confirmed,
+                #state => $report->state,
+                lang => $report->lang,
+                service => $report->service,
+                cobrand => $report->cobrand,
+                cobrand_data => $report->cobrand_data,
+                #lastupdate => $report->lastupdate,
+                whensent => $report->whensent,
+                send_questionnaire => $report->send_questionnaire,
+                extra => $report->extra,
+                flagged => $report->flagged,
+                geocode => $report->geocode,
+                send_fail_count => $report->send_fail_count,
+                send_fail_reason => $report->send_fail_reason,
+                send_fail_timestamp => $report->send_fail_timestamp,
+                send_method_used => $report->send_method_used,
+                #non_public => $report->non_public,
+                external_source => $report->external_source,
+                external_source_id => $report->external_source_id,
+                interest_count => $report->interest_count,
+                subcategory => $report->subcategory
+            };
+
+            # If there was a photo add that too
+            if ( my $fileid = $c->stash->{upload_fileid} ) {
+                $token_data->{photo} = $fileid;
+            }
+
+            # Set a default if possible
+            $token_data->{category} = 'Other' unless $report->category;
+
+            # Set unknown to DB unknown
+            $token_data->{bodies_str} = undef if $report->bodies_str eq '-1';
+
+            my $token = $c->model("DB::Token")->create( {
+                scope => 'problem/social',
+                data => {
+                    %$token_data
+                }
+            } );
+
+            my $token_url = '/PS/'.$token->token;
+            $c->stash->{return_url} = $token_url;
+
+            if ( $c->req->param('facebook_sign_in') ) {
+                $c->detach('/auth/facebook_sign_in');
+            } elsif ( $c->req->param('twitter_sign_in') ) {
+                $c->detach('/auth/twitter_sign_in');
+            }
+
+            return 1;
+        } else {
+            # User does not exist.
+            # Store changes in token for when token is validated.
+            $c->stash->{token_data} = {
+                name => $report->user->name,
+                phone => $report->user->phone,
+                password => $report->user->password,
+                title   => $report->user->title,
+            };
+            $report->user->name( undef );
+            $report->user->phone( undef );
+            $report->user->password( '', 1 );
+            $report->user->title( undef );
+            $report->user->insert();
+            $c->log->info($report->user->id . ' created for this report');
+        }
     }
     elsif ( $c->user && $report->user->id == $c->user->id ) {
         # Logged in and matches, so instantly confirm (except Zurich, with no confirmation)
@@ -1061,7 +1145,7 @@ sub save_user_and_report : Private {
         $report->external_source_id( $c->req->param('external_source_id') );
         $report->external_source( $c->config->{MESSAGE_MANAGER_URL} ) ;
     }
-    
+
     # save the report;
     $report->in_storage ? $report->update : $report->insert();
 
@@ -1150,6 +1234,7 @@ sub redirect_or_confirm_creation : Private {
 
     # otherwise create a confirm token and email it to them.
     my $data = $c->stash->{token_data} || {};
+
     my $token = $c->model("DB::Token")->create( {
         scope => 'problem',
         data => {
@@ -1157,6 +1242,7 @@ sub redirect_or_confirm_creation : Private {
             id => $report->id
         }
     } );
+
     $c->stash->{token_url} = $c->uri_for_email( '/P', $token->token );
     $c->send_email( 'problem-confirm.txt', {
         to => [ $report->name ? [ $report->user->email, $report->name ] : $report->user->email ],
