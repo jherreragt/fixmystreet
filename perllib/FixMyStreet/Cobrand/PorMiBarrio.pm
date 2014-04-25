@@ -4,7 +4,6 @@ use base 'FixMyStreet::Cobrand::Default';
 use strict;
 use warnings;
 use mySociety::MaPit;
-use mySociety::VotingArea;
 
 sub process_extras {
 	my $self = shift;
@@ -12,8 +11,8 @@ sub process_extras {
     my $body = shift;
     my $extra = shift;
 
-    $extra->{category} = 'Nueva Cat';
-    $extra->{document} = '987654';
+    push @$extra, { name => 'document', value => '1234' };
+    push @$extra, { name => 'category', value => 'NuevaLatLong' };
 }
 
 1;

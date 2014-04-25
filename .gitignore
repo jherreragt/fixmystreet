@@ -22,6 +22,7 @@ FixMyBarangay.po
 /web/css/core.css
 /web/css/main.css
 /web/cobrands/*/*.css
+!/web/cobrands/pormibarrio/*
 /web/cobrands/seesomething
 /web/photo
 /local

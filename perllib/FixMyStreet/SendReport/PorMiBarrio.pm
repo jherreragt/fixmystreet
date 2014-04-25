@@ -66,11 +66,12 @@ sub send {
         unless ( $user ) {
             next; 
         }
-        my $extra = $row->extra;
-        push @$extra, { name => 'document', value => $user->document };
-        push @$extra, { name => 'category', value => $row->category };
+        #my $extra = $row->extra;
+        #push @$extra, { name => 'document', value => $user->document };
+        #push @$extra, { name => 'category', value => $row->category };
         #$extra_processed = open311_extra( $row );
-        $row->extra( $extra );
+        #$row->extra( $extra );
+        print $row->title;
 
         my $open311 = Open311->new( %open311_params );
 
