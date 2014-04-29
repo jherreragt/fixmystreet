@@ -149,11 +149,20 @@ sub facebook_sign_in : Private {
 	
 	my $params = $c->req->parameters;
     
+    #my $facebook_app_id = '1479349985610467';
+    my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
+
+    #my $facebook_app_secret = '6abe6b58ff5d090080d6ab989a8b41de';
+    my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
+    
+    #my $facebook_callback_url = 'http://ituland.no-ip.org:9000/auth/Facebook';
+    my $facebook_callback_url = $c->uri_for('/auth/Facebook');
+    
     # TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
-		application_id => '1479349985610467',  ##get this from your facebook developers platform
-		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		application_id => $facebook_app_id,  ##get this from your facebook developers platform
+		application_secret => $facebook_app_secret, ##get this from your facebook developers platform
+		callback => $facebook_callback_url,  ##Callback URL, facebook will redirect users after authintication
 	);
 	
 	##there is no verifier code passed so let's create authorization URL and redirect to it
@@ -184,11 +193,20 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	
 	my $params = $c->req->parameters;
 
-	# TODO: move Facebook App ID/Secret to general.yaml!
+    #my $facebook_app_id = '1479349985610467';
+    my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
+
+    #my $facebook_app_secret = '6abe6b58ff5d090080d6ab989a8b41de';
+    my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
+    
+    #my $facebook_callback_url = 'http://ituland.no-ip.org:9000/auth/Facebook';
+    my $facebook_callback_url = $c->uri_for('/auth/Facebook');
+    
+    # TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
-		application_id => '1479349985610467',  ##get this from your facebook developers platform
-		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		application_id => $facebook_app_id,  ##get this from your facebook developers platform
+		application_secret => $facebook_app_secret, ##get this from your facebook developers platform
+		callback => $facebook_callback_url,  ##Callback URL, facebook will redirect users after authintication
 	);
 	
 	# you need to pass the verifier code to get access_token	
@@ -235,14 +253,23 @@ Starts the Twitter authentication sequence.
 sub twitter_sign_in : Private {
 	my( $self, $c ) = @_;
 	
-	# TODO: move Tweeter App ID/Secret to general.yaml!
+	#my $twitter_key = 'ywz9X5JbAvN3zQDn10TQvzoJm';
+    my $twitter_key = mySociety::Config::get('TWITTER_KEY', undef);
+
+    #my $twitter_secret = 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i';
+    my $twitter_secret = mySociety::Config::get('TWITTER_SECRET', undef);
+    
+    #my $twitter_callback_url = 'http://ituland.no-ip.org:9000/auth/Twitter';
+    my $twitter_callback_url = $c->uri_for('/auth/Twitter');
+	
+	# TODO: move Twitter App ID/Secret to general.yaml!
 	my %consumer_tokens = (
-		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
-		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
+		consumer_key    => $twitter_key,
+		consumer_secret => $twitter_secret,
 	);
 	
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
-    my $url = $twitter->get_authorization_url(callback => 'http://ituland.no-ip.org:9000/auth/Twitter');
+    my $url = $twitter->get_authorization_url(callback => $twitter_callback_url);
 
 	my $return_url = $c->stash->{return_url} or $c->req->param('r');
 
@@ -267,10 +294,16 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my $request_token = $c->req->param('oauth_token');
     my $verifier      = $c->req->param('oauth_verifier');
 
-    # TODO: move Tweeter App ID/Secret to general.yaml!
+	#my $twitter_key = 'ywz9X5JbAvN3zQDn10TQvzoJm';
+    my $twitter_key = mySociety::Config::get('TWITTER_KEY', undef);
+
+    #my $twitter_secret = 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i';
+    my $twitter_secret = mySociety::Config::get('TWITTER_SECRET', undef);
+
+    # TODO: move Twitter App ID/Secret to general.yaml!
     my %consumer_tokens = (
-		consumer_key    => 'ywz9X5JbAvN3zQDn10TQvzoJm',
-		consumer_secret => 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i',
+		consumer_key    => $twitter_key,
+		consumer_secret => $twitter_secret,
 	);
 	
 	my $oauth = $c->session->{oauth};
