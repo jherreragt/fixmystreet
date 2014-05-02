@@ -167,15 +167,11 @@ sub facebook_sign_in : Private {
 		display => 'page' ## how to display authorization page, other options popup "to display as popup window" and wab "for mobile apps"
 	);
 	
-	$c->session->{social_info} = undef;
-	
 	my %oauth;
 	$oauth{'return_url'} = $c->req->param('r');
 	$oauth{'detach_to'} = $c->stash->{detach_to};
 	$oauth{'detach_args'} = $c->stash->{detach_args};
-	
-	$c->log->debug('========================= '.$_.' = '.$oauth{$_}) for keys %oauth;
-	
+		
 	###save this token in session
 	$c->session->{oauth} = \%oauth;
 	
@@ -214,8 +210,6 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		detach_args => $c->session->{oauth}{detach_args},
 	};
 	
-	$c->log->debug('========================= '.$_.' = '.$c->session->{oauth}{$_}) for keys $c->session->{oauth};
-	
 	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 		
 	my $name = $info->{'name'};
@@ -225,21 +219,16 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
 	
 	if (!$user) {
-		$c->session->{social_info} = {
-			email => $email,
-			name => $name,
-			facebook_id => $uid,
-			twitter_id => undef
-		};
-		
-		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
+		$c->stash->{fullname} = $name;
+		$c->stash->{email} = $email;
+		$c->stash->{facebook_id} = $uid;
+		$c->stash->{template} = 'auth/social_signup.html';
 	} else {
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
 
 		# send the user to their page
 		if ( $c->session->{oauth}{detach_to} ) {
-			$c->log->debug('============================ detaching to'.$c->session->{oauth}{detach_to});
 			$c->detach( $c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args} );
 		} else {
 			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
@@ -267,8 +256,6 @@ sub twitter_sign_in : Private {
 	
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
     my $url = $twitter->get_authorization_url(callback => $twitter_callback_url);
-
-	$c->session->{social_info} = undef;
 
 	my %oauth;
 	$oauth{'return_url'} = $c->req->param('r');
@@ -315,14 +302,9 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
 	if (!$user) {
-		$c->session->{social_info} = {
-			email => undef,
-			name => $name,
-			facebook_id => undef,
-			twitter_id => $uid
-		};
-
-		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
+		$c->stash->{fullname} = $name;
+		$c->stash->{twitter_id} = $uid;
+		$c->stash->{template} = 'auth/social_signup.html';
 	} else {	
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
@@ -346,33 +328,16 @@ TODO: user to-be information is received in the session. i'm sure there is a bet
 sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my ( $self, $c ) = @_;
 
-	my $name = undef;
-	my $email = undef;
-	my $identity_document = undef;
-	my $facebook_id = undef;
-	my $twitter_id = undef;
+	my $name = $c->req->param('fullname') if $c->req->param('fullname');
+	my $email = $c->req->param('email') if $c->req->param('email');
+	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
+	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
+	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
 	
-	if ( $c->session->{social_info} ) {
-		my $social_info = $c->session->{social_info};
-		
-		$name = $c->stash->{fullname} = $social_info->{name};
-		$email = $c->stash->{email} = $social_info->{email};
-		$facebook_id = $c->stash->{facebook_id} = $social_info->{facebook_id};
-		$twitter_id = $c->stash->{twitter_id} = $social_info->{twitter_id};
-		
-		$c->session->{social_info} = undef;
-	} else {
-		$name = $c->req->param('fullname') if $c->req->param('fullname');
-		$email = $c->req->param('email') if $c->req->param('email');
-		$identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
-		$facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
-		$twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
-		
-		$c->stash->{fullname} = $name;
-		$c->stash->{identity_document} = $identity_document;
-		$c->stash->{facebook_id} = $facebook_id;
-		$c->stash->{twitter_id} = $twitter_id;
-	}
+	$c->stash->{fullname} = $name;
+	$c->stash->{identity_document} = $identity_document;
+	$c->stash->{facebook_id} = $facebook_id;
+	$c->stash->{twitter_id} = $twitter_id;
 
     # check that the email is valid - otherwise flag an error
     my $raw_email = lc( $email || '' );
