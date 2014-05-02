@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use mySociety::MaPit;
 use mySociety::VotingArea;
+use Params::Util qw<_HASH _HASH0 _HASHLIKE>;
 
 sub process_extras {
 	my $self = shift;
@@ -12,8 +13,10 @@ sub process_extras {
     my $body = shift;
     my $extra = shift;
 
-    $extra->{category} = 'Nueva Cat';
-    $extra->{document} = '987654';
+	if ( _HASH0( $extra ) ) {
+		$extra->{category} = 'Nueva Cat';
+		$extra->{document} = '987654';
+	}
 }
 
 1;

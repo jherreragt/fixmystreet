@@ -20,6 +20,8 @@ Creates an update to a report
 sub report_update : Path : Args(0) {
     my ( $self, $c ) = @_;
 
+	$c->stash->{is_social_user} = $c->req->param('facebook_sign_in') || $c->req->param('twitter_sign_in');
+
     $c->forward( '/report/load_problem_or_display_error', [ $c->req->param('id') ] );
     $c->forward('process_update');
     $c->forward('process_user');
@@ -27,8 +29,8 @@ sub report_update : Path : Args(0) {
     $c->forward('check_for_errors')
       or $c->go( '/report/display', [ $c->req->param('id') ] );
 
-    $c->forward('save_update');
-    $c->forward('redirect_or_confirm_creation');
+    my $ok = $c->forward('save_update');
+    $c->forward('redirect_or_confirm_creation') if $ok;
 }
 
 sub confirm : Private {
@@ -119,10 +121,10 @@ sub process_user : Private {
 
     # Extract all the params to a hash to make them easier to work with
     my %params = map { $_ => scalar $c->req->param($_) }
-      ( 'rznvy', 'name', 'password_register', 'fms_extra_title' );
+      ( 'form_rznvy', 'name', 'password_register', 'fms_extra_title' );
 
     # cleanup the email address
-    my $email = $params{rznvy} ? lc $params{rznvy} : '';
+    my $email = $params{form_rznvy} ? lc $params{form_rznvy} : '';
     $email =~ s{\s+}{}g;
 
     $update->user( $c->model('DB::User')->find_or_new( { email => $email } ) )
@@ -219,7 +221,6 @@ sub process_update : Private {
         }
     }
 
-
     my @extra; # Next function fills this, but we don't need it here.
     # This is just so that the error checkign for these extra fields runs.
     # TODO Use extra here as it is used on reports.
@@ -238,8 +239,6 @@ sub process_update : Private {
         $extra->{last_name} = $c->stash->{ last_name };
         $update->extra( $extra );
     }
-
-    $c->log->debug( 'name is ' . $c->req->param('name') );
 
     $c->stash->{update}        = $update;
     $c->stash->{add_alert}     = $c->req->param('add_alert');
@@ -283,6 +282,12 @@ sub check_for_errors : Private {
         %{ $c->stash->{update}->check_for_errors },
     );
 
+    # if using social login then we don't care about name and email errors
+    if ( $c->stash->{is_social_user} ) {
+        delete $field_errors{name};
+        delete $field_errors{email};
+    }
+
     if ( my $photo_error  = delete $c->stash->{photo_error} ) {
         $field_errors{photo} = $photo_error;
     }
@@ -313,15 +318,53 @@ sub save_update : Private {
     my $update = $c->stash->{update};
 
     if ( !$update->user->in_storage ) {
-        # User does not exist.
-        # Store changes in token for when token is validated.
-        $c->stash->{token_data} = {
-            name => $update->user->name,
-            password => $update->user->password,
-        };
-        $update->user->name( undef );
-        $update->user->password( '', 1 );
-        $update->user->insert;
+		if ( $c->stash->{is_social_user} ) {
+			my $token_data = {
+				text         => $update->text,
+				name         => $update->name,
+				problem_id   => $update->problem->id,
+				state        => $update->state,
+				mark_fixed   => $update->mark_fixed,
+				mark_open    => $update->mark_open,
+				cobrand      => $update->cobrand,
+				cobrand_data => $update->cobrand_data,
+				lang         => $update->lang,
+				anonymous    => $update->anonymous
+			};
+
+			# If there was a photo add that too
+			if ( my $fileid = $c->stash->{upload_fileid} ) {
+				$token_data->{photo} = $fileid;
+			}
+
+            my $token = $c->model("DB::Token")->create( {
+                scope => 'comment/social',
+                data => {
+                    %$token_data
+                }
+            } );
+           
+            $c->stash->{detach_to} = '/tokens/confirm_update_with_social_login';
+            $c->stash->{detach_args} = [$token->token];  
+
+            if ( $c->req->param('facebook_sign_in') ) {
+                $c->detach('/auth/facebook_sign_in');
+            } elsif ( $c->req->param('twitter_sign_in') ) {
+                $c->detach('/auth/twitter_sign_in');
+            }
+
+            return 0;
+        } else {
+			# User does not exist.
+			# Store changes in token for when token is validated.
+			$c->stash->{token_data} = {
+				name => $update->user->name,
+				password => $update->user->password,
+			};
+			$update->user->name( undef );
+			$update->user->password( '', 1 );
+			$update->user->insert;
+        }
     }
     elsif ( $c->user && $c->user->id == $update->user->id ) {
         # Logged in and same user, so can confirm update straight away

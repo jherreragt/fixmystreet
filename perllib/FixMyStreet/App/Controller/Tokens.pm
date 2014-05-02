@@ -92,6 +92,7 @@ sub confirm_problem : Path('/P') {
         $problem->user->phone( $data->{phone} ) if $data->{phone};
         $problem->user->password( $data->{password}, 1 ) if $data->{password};
         $problem->user->title( $data->{title} ) if $data->{title};
+        $problem->user->identity_document( $data->{identity_document} ) if $data->{identity_document};
         $problem->user->update;
     }
     $c->authenticate( { email => $problem->user->email }, 'no_password' );
@@ -105,7 +106,7 @@ sub confirm_problem : Path('/P') {
     return 1;
 }
 
-=head2 confirm_problem_after_social_login
+=head2 confirm_problem_with_social_login
 
     /P/([0-9A-Za-z]{16,18}).*$
 
@@ -122,16 +123,10 @@ sub confirm_problem_with_social_login : Path('/PS') {
     # Load the problem
     my $data = $auth_token->data;
 
-    my $user_id = undef;
-    $user_id = $c->user->id if $c->user;
-    $user_id = $c->session->{user_pmb}->{id} unless $user_id;
-
-	my $user = $c->model("DB::User")->find({ id => $user_id });
-
-    $data->{user_id} = $user_id;
+    $data->{user_id} = $c->user->id;
     $data->{state} = 'confirmed';
     $data->{confirmed} = \'ms_current_timestamp()';
-    $data->{name} = $user->name;
+    $data->{name} = $c->user->name;
 
     delete($data->{service}) unless $data->{service};
     delete($data->{send_questionnaire}) unless $data->{send_questionnaire};
@@ -146,8 +141,7 @@ sub confirm_problem_with_social_login : Path('/PS') {
     $c->stash->{report} = $c->stash->{problem};
     $c->forward( '/report/new/create_reporter_alert' );
 
-	my $report_uri = $c->cobrand->base_url_for_report( $problem ) . $problem->url;
-	$c->res->redirect($report_uri);
+	$c->stash->{template} = 'tokens/confirm_problem.html';
 
     return 1;
 }
@@ -248,6 +242,54 @@ sub confirm_update : Path('/C') {
     } else {
         $c->forward('/report/update/confirm');
     }
+
+    return 1;
+}
+
+=head2 confirm_update_with_social_login
+
+    /C/([0-9A-Za-z]{16,18}).*$
+
+Confirm an update - url appears in emails sent to users after they create the
+update but are not logged in.
+
+=cut
+
+sub confirm_update_with_social_login : Path('/CS') {
+    my ( $self, $c, $token_code ) = @_;
+
+    my $auth_token =
+      $c->forward( 'load_auth_token', [ $token_code, 'comment/social' ] );
+
+    # Load the problem
+    my $data = $auth_token->data;
+    $data->{user_id} = $c->user->id;
+    #$data->{anonymous} = 0;
+    $data->{name} = $c->user->name;
+    
+    my $comment_id = $data->{id};
+    $c->stash->{add_alert} = $data->{add_alert};
+
+	my $comment = $c->model("DB::Comment")->create($data);
+
+    #my $comment = $c->model('DB::Comment')->find( { id => $comment_id } )
+    #  || $c->detach('token_error');
+    $c->stash->{update} = $comment;
+
+    # check that this email or domain are not the cause of abuse. If so hide it.
+    if ( $comment->is_from_abuser ) {
+        $c->stash->{template} = 'tokens/abuse.html';
+        return;
+    }
+
+    if ( $comment->confirmed ) {
+        my $report_uri = $c->cobrand->base_url_for_report( $comment->problem ) . $comment->problem->url;
+        $c->res->redirect($report_uri);
+    } else {
+        $c->forward('/report/update/confirm');
+    }
+
+	$c->stash->{template} = 'tokens/confirm_update.html';
 
     return 1;
 }

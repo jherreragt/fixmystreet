@@ -61,6 +61,8 @@ sub sign_in : Private {
     my ( $self, $c, $email ) = @_;
 
     $email        ||= $c->req->param('email')            || '';
+    $email        ||= $c->req->param('form_email')       || '';
+    
     my $password    = $c->req->param('password_sign_in') || '';
     my $remember_me = $c->req->param('remember_me')      || 0;
 
@@ -71,7 +73,6 @@ sub sign_in : Private {
         && $password
         && $c->authenticate( { email => $email, password => $password } ) )
     {
-
         # unless user asked to be remembered limit the session to browser
         $c->set_session_cookie_expire(0)
           unless $remember_me;
@@ -149,16 +150,10 @@ sub facebook_sign_in : Private {
 	
 	my $params = $c->req->parameters;
     
-    #my $facebook_app_id = '1479349985610467';
     my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
-
-    #my $facebook_app_secret = '6abe6b58ff5d090080d6ab989a8b41de';
     my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
-    
-    #my $facebook_callback_url = 'http://ituland.no-ip.org:9000/auth/Facebook';
     my $facebook_callback_url = $c->uri_for('/auth/Facebook');
     
-    # TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => $facebook_app_id,  ##get this from your facebook developers platform
 		application_secret => $facebook_app_secret, ##get this from your facebook developers platform
@@ -172,12 +167,17 @@ sub facebook_sign_in : Private {
 		display => 'page' ## how to display authorization page, other options popup "to display as popup window" and wab "for mobile apps"
 	);
 	
-	###save this token in session
-	my $return_url = $c->stash->{return_url} or $c->req->param('r');
+	$c->session->{social_info} = undef;
 	
-	$c->session->{oauth} =  {
-		r => $return_url
-	};
+	my %oauth;
+	$oauth{'return_url'} = $c->req->param('r');
+	$oauth{'detach_to'} = $c->stash->{detach_to};
+	$oauth{'detach_args'} = $c->stash->{detach_args};
+	
+	$c->log->debug('========================= '.$_.' = '.$oauth{$_}) for keys %oauth;
+	
+	###save this token in session
+	$c->session->{oauth} = \%oauth;
 	
 	$c->res->redirect($url);
 }
@@ -193,16 +193,10 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	
 	my $params = $c->req->parameters;
 
-    #my $facebook_app_id = '1479349985610467';
     my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
-
-    #my $facebook_app_secret = '6abe6b58ff5d090080d6ab989a8b41de';
     my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
-    
-    #my $facebook_callback_url = 'http://ituland.no-ip.org:9000/auth/Facebook';
     my $facebook_callback_url = $c->uri_for('/auth/Facebook');
     
-    # TODO: move Facebook App ID/Secret to general.yaml!
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => $facebook_app_id,  ##get this from your facebook developers platform
 		application_secret => $facebook_app_secret, ##get this from your facebook developers platform
@@ -215,8 +209,12 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	# save this token in session
 	$c->session->{oauth} =  {
 		token => $access_token,
-		r => $c->session->{oauth}{r}
+		return_url => $c->session->{oauth}{return_url},
+		detach_to => $c->session->{oauth}{detach_to},
+		detach_args => $c->session->{oauth}{detach_args},
 	};
+	
+	$c->log->debug('========================= '.$_.' = '.$c->session->{oauth}{$_}) for keys $c->session->{oauth};
 	
 	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 		
@@ -233,14 +231,19 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 			facebook_id => $uid,
 			twitter_id => undef
 		};
-
+		
 		$c->res->redirect( $c->uri_for( '/auth/social_signup' ) );
-	} else {		
+	} else {
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
 
 		# send the user to their page
-		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
+		if ( $c->session->{oauth}{detach_to} ) {
+			$c->log->debug('============================ detaching to'.$c->session->{oauth}{detach_to});
+			$c->detach( $c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args} );
+		} else {
+			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+		}
 	}
 }
 
@@ -253,16 +256,10 @@ Starts the Twitter authentication sequence.
 sub twitter_sign_in : Private {
 	my( $self, $c ) = @_;
 	
-	#my $twitter_key = 'ywz9X5JbAvN3zQDn10TQvzoJm';
     my $twitter_key = mySociety::Config::get('TWITTER_KEY', undef);
-
-    #my $twitter_secret = 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i';
     my $twitter_secret = mySociety::Config::get('TWITTER_SECRET', undef);
-    
-    #my $twitter_callback_url = 'http://ituland.no-ip.org:9000/auth/Twitter';
     my $twitter_callback_url = $c->uri_for('/auth/Twitter');
 	
-	# TODO: move Twitter App ID/Secret to general.yaml!
 	my %consumer_tokens = (
 		consumer_key    => $twitter_key,
 		consumer_secret => $twitter_secret,
@@ -271,13 +268,17 @@ sub twitter_sign_in : Private {
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
     my $url = $twitter->get_authorization_url(callback => $twitter_callback_url);
 
-	my $return_url = $c->stash->{return_url} or $c->req->param('r');
+	$c->session->{social_info} = undef;
 
-	$c->session->{oauth} = {
-		token => $twitter->request_token,
-		token_secret => $twitter->request_token_secret,
-		r => $return_url
-	};
+	my %oauth;
+	$oauth{'return_url'} = $c->req->param('r');
+	$oauth{'detach_to'} = $c->stash->{detach_to};
+	$oauth{'detach_args'} = $c->stash->{detach_args};
+	$oauth{'token'} = $twitter->request_token;
+	$oauth{'token_secret'} = $twitter->request_token_secret;
+	
+	###save this token in session
+	$c->session->{oauth} = \%oauth;
 
 	$c->res->redirect($url);
 }
@@ -294,13 +295,9 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my $request_token = $c->req->param('oauth_token');
     my $verifier      = $c->req->param('oauth_verifier');
 
-	#my $twitter_key = 'ywz9X5JbAvN3zQDn10TQvzoJm';
     my $twitter_key = mySociety::Config::get('TWITTER_KEY', undef);
-
-    #my $twitter_secret = 'XP9cLG53fJsR2dGecvh9E4X5xFjqhYmOZRoFy1OJQJZGVYTy9i';
     my $twitter_secret = mySociety::Config::get('TWITTER_SECRET', undef);
 
-    # TODO: move Twitter App ID/Secret to general.yaml!
     my %consumer_tokens = (
 		consumer_key    => $twitter_key,
 		consumer_secret => $twitter_secret,
@@ -315,7 +312,6 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my($access_token, $access_token_secret, $uid, $name) =
 		$twitter->request_access_token(verifier => $verifier);
    
-	# TODO: use a transaction!
 	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
 	if (!$user) {
@@ -332,32 +328,51 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		$c->set_session_cookie_expire(0);
 
 		# send the user to their page
-		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{r} ] );
+		if ( $c->session->{oauth}{detach_to} ) {
+			$c->detach( $c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args} );
+		} else {
+			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+		}
 	}
 }
 
 =head2 social_signup
 
 Asks the user to confirm data returned from facebook/twitter and signs up the user.
+TODO: user to-be information is received in the session. i'm sure there is a better way to do this :(
 
 =cut
 
 sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my ( $self, $c ) = @_;
-	
-	my $social_info = $c->session->{social_info};
-	my $name = $social_info->{name};
-	my $email = $social_info->{email};
-	my $facebook_id = $social_info->{facebook_id};
-	my $twitter_id = $social_info->{twitter_id};
-	
-	$name = $c->req->param('fullname') if $c->req->param('fullname');
-	$email = $c->req->param('email') if $c->req->param('email');
-	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
 
-	$c->stash->{fullname} = $name;
-	$c->stash->{email} = $email;
-	$c->stash->{identity_document} = $identity_document;
+	my $name = undef;
+	my $email = undef;
+	my $identity_document = undef;
+	my $facebook_id = undef;
+	my $twitter_id = undef;
+	
+	if ( $c->session->{social_info} ) {
+		my $social_info = $c->session->{social_info};
+		
+		$name = $c->stash->{fullname} = $social_info->{name};
+		$email = $c->stash->{email} = $social_info->{email};
+		$facebook_id = $c->stash->{facebook_id} = $social_info->{facebook_id};
+		$twitter_id = $c->stash->{twitter_id} = $social_info->{twitter_id};
+		
+		$c->session->{social_info} = undef;
+	} else {
+		$name = $c->req->param('fullname') if $c->req->param('fullname');
+		$email = $c->req->param('email') if $c->req->param('email');
+		$identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
+		$facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
+		$twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
+		
+		$c->stash->{fullname} = $name;
+		$c->stash->{identity_document} = $identity_document;
+		$c->stash->{facebook_id} = $facebook_id;
+		$c->stash->{twitter_id} = $twitter_id;
+	}
 
     # check that the email is valid - otherwise flag an error
     my $raw_email = lc( $email || '' );
@@ -376,6 +391,8 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
         return;
     }
 
+	$c->stash->{email} = $email;
+
 	if ($name and $good_email and $identity_document and ($facebook_id or $twitter_id)) {
 		my $user = $c->model('DB::User')->find_or_create({ email => $good_email });
 		
@@ -393,12 +410,12 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				scope => 'email_sign_in/social',
 				data => {
 					%$token_data,
-					r => $c->session->{oauth}{r}
+					return_url => $c->session->{oauth}{return_url},
+					detach_to => $c->session->{oauth}{detach_to},
+					detach_args => $c->session->{oauth}{detach_args},
 				}
 			} );
-
-			$c->session->{social_info} = undef;
-			
+		
 			$c->stash->{token} = $token_social_sign_up->token;
 			$c->send_email( 'login.txt', { to => $good_email } );
 			$c->stash->{template} = 'auth/token.html';
@@ -416,6 +433,9 @@ Handle the 'email_sign_in' tokens. Find the account for the email address
 sub token : Path('/M') : Args(1) {
     my ( $self, $c, $url_token ) = @_;
 
+	# Sign out in case we are another user
+	$c->logout();
+
     # retrieve the token
     my $token_obj = $url_token
       ? $c->model('DB::Token')->find( {
@@ -424,9 +444,6 @@ sub token : Path('/M') : Args(1) {
       : undef;
 
 	if ( $token_obj ) {
-		# Sign out in case we are another user
-		$c->logout();
-
 		# find or create the user related to the token.
 		my $data = $token_obj->data;
 		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
@@ -470,8 +487,11 @@ sub token : Path('/M') : Args(1) {
 		$token_obj->delete;
 
 		## send the user to their page
-		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
-		
+		if ( $data->{detach_to} ) {
+			$c->detach( $data->{detach_to}, $data->{detach_args} );
+		} else {
+			$c->detach( 'redirect_on_signin', [ $data->{return_url} ] );
+		}
 	}
 }
 

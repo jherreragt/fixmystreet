@@ -101,7 +101,7 @@ sub report_new : Path : Args(0) {
     $c->forward('process_user');
     $c->forward('process_report');
     $c->forward('/photo/process_photo');
-    
+       
 	return unless $c->forward('check_for_errors');
     
     $c->forward('save_user_and_report');
@@ -756,7 +756,7 @@ sub process_user : Private {
         $report->user( $user );
         $report->name( $user->name );
         $c->stash->{check_name} = 1;
-        $c->stash->{field_errors}->{name} = _('You have successfully signed in; please check and confirm your details are accurate:');
+        $c->stash->{field_errors}->{general} = _('You have successfully signed in; please check and confirm your details are accurate:');
         $c->log->info($user->id . ' logged in during problem creation');
         return 1;
     }
@@ -1080,9 +1080,9 @@ sub save_user_and_report : Private {
                     %$token_data
                 }
             } );
-
-            my $token_url = '/PS/'.$token->token;
-            $c->stash->{return_url} = $token_url;
+            
+            $c->stash->{detach_to} = '/tokens/confirm_problem_with_social_login';
+            $c->stash->{detach_args} = [$token->token];           
 
             if ( $c->req->param('facebook_sign_in') ) {
                 $c->detach('/auth/facebook_sign_in');
@@ -1096,12 +1096,14 @@ sub save_user_and_report : Private {
             # Store changes in token for when token is validated.
             $c->stash->{token_data} = {
                 name => $report->user->name,
+                identity_document => $report->user->identity_document,
                 phone => $report->user->phone,
                 password => $report->user->password,
                 title   => $report->user->title,
             };
             $report->user->name( undef );
             $report->user->phone( undef );
+            $report->user->identity_document( undef );
             $report->user->password( '', 1 );
             $report->user->title( undef );
             $report->user->insert();

@@ -114,9 +114,16 @@
 
                     <label for="form_email">[% loc('Your email') %]</label>
                     <input disabled type="text" value="[% c.user.email | html %]">
-
-                    <label for="form_identity_document">[% loc('Your identity document') %]</label>
-                    <input disabled type="text" value="[% c.user.identity_document | html %]">
+                   
+                    [% IF field_errors.general %]
+                        <p class='form-error'>[% field_errors.general %]</p>
+                    [% END %]
+                   
+					<label for="form_identity_document">[% loc('Identity document') %]</label>
+					[% IF field_errors.identity_document %]
+						<p class='form-error'>[% field_errors.identity_document %]</p>
+					[% END %]
+					<input type="text" value="[% c.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]" required>
 
                     [% INCLUDE 'report/new/extra_name.html' %]
 
@@ -147,25 +154,16 @@
                 </div>
             [% ELSE %]
 
-				<h3>[% loc("Now to submit your report&hellip;") %]</h3>
+                <label for="form_email">[% loc('Your email') %]</label>
+                [% IF field_errors.email %]
+                    <p class='form-error'>[% field_errors.email %]</p>
+                [% END %]
+                <input type="email" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]">
 
-				<div id="form_sign_in_email" class="form-box">
-					<label for="form_email">[% loc('Your email') %]</label>
-					[% IF field_errors.email %]
-						<p class='form-error'>[% field_errors.email %]</p>
-					[% END %]
-					<input type="email" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]">
-					
-					<div><strong>[% loc('Or use a social network account') %]</strong></div>
-					<div>
-						<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>&nbsp;<button 
-							name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
-					</div>
-                </div>
-                
-				<h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
-				
-                <div id="form_sign_in">                  
+                <div id="form_sign_in">
+                    <h3>[% loc("Now to submit your report&hellip;") %]</h3>
+                    <h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
+
                     <div id="form_sign_in_yes" class="form-box">
 
                         <h5>[% loc('<strong>Yes</strong> I have a password') %]</h5>
@@ -200,6 +198,7 @@
                         [% IF field_errors.name %]
                             <p class='form-error'>[% field_errors.name %]</p>
                         [% END %]
+
                         <input type="text" class="form-focus-trigger validName" value="[% report.name | html %]" name="name" id="form_name" placeholder="[% loc('Your name') %]">
 
                         [%# if there is nothing in the name field then set check box as default on form %]
@@ -208,7 +207,7 @@
                             <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %]</label>
                         </div>
 
-                        <label for="form_name">[% loc('Identity document') %]</label>
+                        <label for="form_identity_document">[% loc('Identity document') %]</label>
 						[% IF field_errors.identity_document %]
                             <p class='form-error'>[% field_errors.identity_document %]</p>
                         [% END %]
@@ -229,6 +228,20 @@
                             <input class="green-btn" type="submit" id="submit_register" name="submit_register" value="[% loc('Submit') %]">
                         </div>
                     </div>
+
+					<div id="form_sign_social" class="form-box">			
+						[% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
+						<h5>[% loc('<strong>Or</strong> Use a social network account') %]</h5>
+						<div>
+							[% IF c.config.FACEBOOK_APP_ID %]
+							<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>
+							[% END %]
+							[% IF c.config.TWITTER_KEY %]
+							<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
+							[% END %]
+						</div>
+						[% END %]
+	                </div>
                 </div>
 
             [% END %]
