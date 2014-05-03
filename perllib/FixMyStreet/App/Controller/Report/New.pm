@@ -984,6 +984,7 @@ sub check_for_errors : Private {
     if ( $c->stash->{is_social_user} ) {
         delete $field_errors{name};
         delete $field_errors{email};
+        delete $field_errors{identity_document};
     }
 
     # add the photo error if there is one.

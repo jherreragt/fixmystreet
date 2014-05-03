@@ -778,6 +778,22 @@ sub report_check_for_errors {
     );
 }
 
+=head2 user_check_for_errors
+
+Perform validation for new users. Takes Catalyst context object as an argument
+
+=cut
+
+sub user_check_for_errors {
+    my $self = shift;
+    my $c = shift;
+
+    return (
+        %{ $c->stash->{field_errors} },
+        %{ $c->stash->{user}->check_for_errors },
+    );
+}
+
 sub report_sent_confirmation_email { 0; }
 
 =head2 never_confirm_reports

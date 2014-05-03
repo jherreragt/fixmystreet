@@ -218,10 +218,14 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 
 	my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
 	
-	if (!$user) {
-		$c->stash->{fullname} = $name;
-		$c->stash->{email} = $email;
-		$c->stash->{facebook_id} = $uid;
+	if (!$user) {		
+		my $new_user = $c->model('DB::User')->new({ 
+			name => $name,
+			email => $email,
+			facebook_id => $uid,
+		});
+		
+		$c->stash->{user} = $new_user;		
 		$c->stash->{template} = 'auth/social_signup.html';
 	} else {
 		$c->authenticate( { email => $user->email }, 'no_password' );
@@ -302,8 +306,12 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
 	if (!$user) {
-		$c->stash->{fullname} = $name;
-		$c->stash->{twitter_id} = $uid;
+		my $new_user = $c->model('DB::User')->new({ 
+			name => $name,
+			twitter_id => $uid,
+		});
+		
+		$c->stash->{user} = $new_user;
 		$c->stash->{template} = 'auth/social_signup.html';
 	} else {	
 		$c->authenticate( { email => $user->email }, 'no_password' );
@@ -328,47 +336,35 @@ TODO: user to-be information is received in the session. i'm sure there is a bet
 sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my ( $self, $c ) = @_;
 
-	my $name = $c->req->param('fullname') if $c->req->param('fullname');
+	my $name = $c->req->param('name') if $c->req->param('name');
 	my $email = $c->req->param('email') if $c->req->param('email');
 	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
 	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
 	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
 	
-	$c->stash->{fullname} = $name;
-	$c->stash->{identity_document} = $identity_document;
-	$c->stash->{facebook_id} = $facebook_id;
-	$c->stash->{twitter_id} = $twitter_id;
+	my $new_user = $c->model('DB::User')->new({ 
+		name => $name,
+		email => $email,
+		identity_document => $identity_document,
+		facebook_id => $facebook_id,
+		twitter_id => $twitter_id,
+	});
 
-    # check that the email is valid - otherwise flag an error
-    my $raw_email = lc( $email || '' );
+	$c->stash->{user} = $new_user;
+	$c->stash->{field_errors} ||= {};	
+	my %field_errors = $c->cobrand->user_check_for_errors( $c );
 
-    my $email_checker = Email::Valid->new(
-        -mxcheck  => 1,
-        -tldcheck => 1,
-        -fqdn     => 1,
-    );
-
-    my $good_email = $email_checker->address($raw_email);
-    if ( !$good_email ) {
-        $c->stash->{email} = $raw_email;
-        $c->stash->{email_error} =
-          $raw_email ? $email_checker->details : 'missing';
-        return;
-    }
-
-	$c->stash->{email} = $email;
-
-	if ($name and $good_email and $identity_document and ($facebook_id or $twitter_id)) {
-		my $user = $c->model('DB::User')->find_or_create({ email => $good_email });
+	if (!scalar keys %field_errors) {
+		my $user = $c->model('DB::User')->find_or_create({ email => $new_user->email });
 		
 		if ( $user ) {
 			my $token_data = {
 				id => $user->id, 
-				facebook_id => $facebook_id,
-				twitter_id => $twitter_id,
-				name => $name,
-				email => $good_email,
-				identity_document => $identity_document
+				facebook_id => $new_user->facebook_id,
+				twitter_id => $new_user->twitter_id,
+				name => $new_user->name,
+				email => $new_user->email,
+				identity_document => $new_user->identity_document
 			};
 			
 			my $token_social_sign_up = $c->model("DB::Token")->create( {
@@ -382,9 +378,11 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 			} );
 		
 			$c->stash->{token} = $token_social_sign_up->token;
-			$c->send_email( 'login.txt', { to => $good_email } );
+			$c->send_email( 'login.txt', { to => $new_user->email } );
 			$c->stash->{template} = 'auth/token.html';
 		}
+	} else {
+		$c->stash->{field_errors} = \%field_errors;
 	}
 }
 
