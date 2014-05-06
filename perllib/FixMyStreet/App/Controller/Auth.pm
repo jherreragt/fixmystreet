@@ -153,7 +153,8 @@ sub facebook_sign_in : Private {
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => '1479349985610467',  ##get this from your facebook developers platform
 		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		#callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		callback => 'http://pormibarrio.datauy.org:3000/auth/Facebook',
 	);
 	
 	##there is no verifier code passed so let's create authorization URL and redirect to it
@@ -188,7 +189,8 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => '1479349985610467',  ##get this from your facebook developers platform
 		application_secret => '6abe6b58ff5d090080d6ab989a8b41de', ##get this from your facebook developers platform
-		callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		#callback => 'http://ituland.no-ip.org:9000/auth/Facebook',  ##Callback URL, facebook will redirect users after authintication
+		callback => 'http://pormibarrio.datauy.org:3000/auth/Facebook',
 	);
 	
 	# you need to pass the verifier code to get access_token	
@@ -242,7 +244,8 @@ sub twitter_sign_in : Private {
 	);
 	
 	my $twitter = Net::Twitter::Lite::WithAPIv1_1->new(ssl => 1, %consumer_tokens);
-    my $url = $twitter->get_authorization_url(callback => 'http://ituland.no-ip.org:9000/auth/Twitter');
+	#my $url = $twitter->get_authorization_url(callback => 'http://ituland.no-ip.org:9000/auth/Twitter');
+	my $url = $twitter->get_authorization_url(callback => 'http://pormibarrio.datauy.org:3000/auth/Twitter');
 
 	my $return_url = $c->stash->{return_url} or $c->req->param('r');
 

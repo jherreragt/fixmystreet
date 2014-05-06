@@ -10,6 +10,7 @@ use mySociety::Config;
 use DateTime::Format::W3CDTF;
 use Open311;
 use Readonly;
+use Data::Dumper;
 
 Readonly::Scalar my $COUNCIL_ID_OXFORDSHIRE => 2237;
 
@@ -129,7 +130,16 @@ sub send {
             $revert = 1;
         }
 
+        if ($row->cobrand eq 'pormibarrio') {
+            # FixMyBarangay endpoints expect external_id as an attribute, as do Oxfordshire
+            $row->extra( [ { 'name' => 'external_id', 'value' => $row->id  } ]  );
+            $revert = 1;
+            print "PORMIBARRIO \n";
+        }
+
         my $resp = $open311->send_service_request( $row, $h, $contact->email );
+
+        print 'HI DAVE!:'.Dumper($resp)."\n";
 
         # make sure we don't save user changes from above
         $row->discard_changes() if $revert;

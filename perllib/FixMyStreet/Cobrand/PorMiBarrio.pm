@@ -3,7 +3,7 @@ use base 'FixMyStreet::Cobrand::Default';
 
 use strict;
 use warnings;
-use mySociety::MaPit;
+#use mySociety::MaPit;
 
 sub process_extras {
 	my $self = shift;
@@ -12,7 +12,7 @@ sub process_extras {
     my $extra = shift;
 
     push @$extra, { name => 'document', value => '1234' };
-    push @$extra, { name => 'category', value => 'NuevaLatLong' };
+    push @$extra, { name => 'external_id', value => '999' };
 }
 
 1;
