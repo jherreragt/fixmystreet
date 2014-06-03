@@ -3,7 +3,7 @@ use base 'FixMyStreet::Cobrand::Default';
 
 use strict;
 use warnings;
-use Params::Util qw<_HASH _HASH0 _HASHLIKE>;
+#use Params::Util qw<_HASH _HASH0 _HASHLIKE>;
 
 sub process_extras {
 	my $self = shift;
@@ -11,40 +11,9 @@ sub process_extras {
     my $body = shift;
     my $extra = shift;
 
-	if ( _HASH0( $extra ) ) {
-		$extra->{category} = 'Nueva Cat';
-		$extra->{document} = '987654';
-	}
-}
-
-=head2 report_check_for_errors
-
-Perform validation for new reports. Takes Catalyst context object as an argument
-
-=cut
-
-sub report_check_for_errors {
-    my $self = shift;
-    my $c = shift;
-
-	my $identity_document = $c->stash->{report}->user->identity_document;
-
-    my %errors = ();
-
-    if ( !$identity_document ) {
-        $errors{identity_document} = _('Please enter your ID');
+    if ($c->user_exists){
+    	push @$extra, { name => 'document', value => $c->user->identity_document };
     }
-    
-    if ( !$self->validate_identity_document( $c, $identity_document ) ) {
-		$errors{identity_document} = _('Please enter a valid ID');
-	}
-
-    return (
-        %{ $c->stash->{field_errors} },
-        %{ $c->stash->{report}->user->check_for_errors },
-        %{ $c->stash->{report}->check_for_errors },
-        %errors,
-    );
 }
 
 =head2 user_check_for_errors
@@ -76,12 +45,6 @@ sub user_check_for_errors {
     );
 }
 
-=head2 validate_identity_document
-
-Perform identity document validation according to Uruguayan ID standards
-
-=cut
-
 sub validate_identity_document {
 	my $self = shift;
 	my $c = shift;
@@ -109,6 +72,36 @@ sub validate_identity_document {
 	}
 	
 	return 0;
+}
+
+=head2 report_check_for_errors
+
+Perform validation for new reports. Takes Catalyst context object as an argument
+
+=cut
+
+sub report_check_for_errors {
+    my $self = shift;
+    my $c = shift;
+
+	my $identity_document = $c->stash->{report}->user->identity_document;
+
+    my %errors = ();
+
+    if ( !$identity_document ) {
+        $errors{identity_document} = _('Please enter your ID');
+    }
+    
+    if ( !$self->validate_identity_document( $c, $identity_document ) ) {
+		$errors{identity_document} = _('Please enter a valid ID');
+	}
+
+    return (
+        %{ $c->stash->{field_errors} },
+        %{ $c->stash->{report}->user->check_for_errors },
+        %{ $c->stash->{report}->check_for_errors },
+        %errors,
+    );
 }
 
 1;

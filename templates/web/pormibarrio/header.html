@@ -41,6 +41,8 @@
 
         [% INCLUDE 'tracking_code.html' %]
 
+        <script type="text/javascript" src="[% version('/js/pormibarrio.js') %]"></script>
+
     </head>
     [% TRY %][% PROCESS 'set_body_class.html' %][% CATCH file %][% END %]
     <body class="[% bodyclass | html IF bodyclass %]">

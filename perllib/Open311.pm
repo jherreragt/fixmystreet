@@ -136,7 +136,10 @@ sub _populate_service_request_params {
     } else {
         $params->{address_string} = $problem->postcode;
     }
-
+    #Agregado PMB
+    if ( $problem->{address_string} ){
+        $params->{address_string} = $problem->{address_string};
+    }
     if ( $problem->user->phone ) {
         $params->{ phone } = $problem->user->phone;
     }
