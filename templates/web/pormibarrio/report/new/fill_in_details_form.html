@@ -55,7 +55,18 @@
                 <p class='form-error'>[% field_errors.bodies %]</p>
             [% END %]
 
+            <div id="address-pick"></div>
 
+            <label for="form_address">[% loc('Address') %]</label>
+            [% IF field_errors.address %]
+                <p class='form-error'>[% field_errors.address %]</p>
+            [% END %]
+            <input type="text" value="[% report.address | html %]" name="address" id="form_address" placeholder="[% loc('Search an address') %]" required>
+
+            [% IF field_errors.address_comp %]
+                <p class='form-error'>[% field_errors.address_comp %]</p>
+            [% END %]
+            <input type="text" value="[% report.address_comp | html %]" name="address_comp" id="form_address_comp" placeholder="[% loc('Number or corner') %]" required>
 
             <label for="form_title">[% loc('Subject') %]</label>
             [% IF field_errors.title %]
