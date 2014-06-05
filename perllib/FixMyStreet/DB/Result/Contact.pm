@@ -46,6 +46,8 @@ __PACKAGE__->add_columns(
   { data_type => "text", default_value => "", is_nullable => 1 },
   "send_method",
   { data_type => "text", is_nullable => 1 },
+  "group_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("contacts_body_id_category_idx", ["body_id", "category"]);
@@ -54,6 +56,17 @@ __PACKAGE__->belongs_to(
   "FixMyStreet::DB::Result::Body",
   { id => "body_id" },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+__PACKAGE__->belongs_to(
+  "group",
+  "FixMyStreet::DB::Result::ContactsGroup",
+  { group_id => "group_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
 );
 
 

@@ -13,6 +13,7 @@ has verbose => ( is => 'ro', default => 0 );
 has _current_body => ( is => 'rw' );
 has _current_open311 => ( is => 'rw' );
 has _current_service => ( is => 'rw' );
+has _group_id => ( is => 'rw' );
 
 my $bodies = FixMyStreet::App->model('DB::Body');
 
@@ -86,6 +87,8 @@ sub process_services {
 sub process_service {
     my $self = shift;
 
+	$self->_create_group;
+
     my $category = $self->_current_body->areas->{2218} ?
                     $self->_current_service->{description} :
                     $self->_current_service->{service_name};
@@ -125,6 +128,39 @@ sub process_service {
     }
 }
 
+sub _create_group {
+	my ( $self ) = @_;
+	
+	my $group_name;
+	
+	if ( ref($self->_current_service->{group}) eq '' ) {
+		$group_name = $self->_current_service->{group};
+	}
+	
+	if ( defined($group_name) ) {
+		print 'Discovered group '.$group_name.'. Status:';
+		
+		my $group = FixMyStreet::App->model( 'DB::ContactsGroup')->find(
+			{ group_name => $group_name });
+
+		if ( $group ) {		
+			print ' [FOUND ID: '.$group->group_id.']';
+			$self->_group_id($group->group_id);
+		} else {			
+			print ' [NOT FOUND]';
+			
+			$group = FixMyStreet::App->model( 'DB::ContactsGroup')->create(
+				{ group_name => $group_name });
+				
+			print ' [CREATED ID: '.$group->group_id.']';
+			$self->_group_id($group->group_id);
+		}
+		print "\n";
+	} else {
+		$self->_group_id(undef);
+	}
+}
+
 sub _handle_existing_contact {
     my ( $self, $contact ) = @_;
 
@@ -143,6 +179,7 @@ sub _handle_existing_contact {
                     editor => $0,
                     whenedited => \'ms_current_timestamp()',
                     note => 'automatically undeleted by script',
+                    group_id => $self->_group_id,
                 }
             );
         };
@@ -180,6 +217,7 @@ sub _create_contact {
                 editor => $0,
                 whenedited => \'ms_current_timestamp()',
                 note => 'created automatically by script',
+                group_id => $self->_group_id,
             }
         );
     };
