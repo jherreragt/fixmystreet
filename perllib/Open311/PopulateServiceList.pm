@@ -168,7 +168,18 @@ sub _handle_existing_contact {
 
     print $self->_current_body->id . " already has a contact for service code " . $self->_current_service->{service_code} . "\n" if $self->verbose >= 2;
 
-    if ( $contact->deleted || $service_name ne $contact->category || $self->_current_service->{service_code} ne $contact->email ) {
+	my $group_changed = 0;
+	if ( defined($contact->group_id) != defined($self->_group_id) ) {
+		$group_changed = 1;
+	} elsif ( defined($contact->group_id) && defined($self->_group_id) ) {
+		if ( $contact->group_id != $self->_group_id ) {
+			$group_changed = 1;
+		}
+	}
+
+    if ( $contact->deleted || $service_name ne $contact->category || $self->_current_service->{service_code} ne $contact->email || $group_changed ) {
+		print "=============== ".$self->_group_id."\n";
+		
         eval {
             $contact->update(
                 {

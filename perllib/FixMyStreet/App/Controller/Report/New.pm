@@ -8,11 +8,13 @@ use Encode;
 use List::MoreUtils qw(uniq);
 use POSIX 'strcoll';
 use HTML::Entities;
+use HTML::Entities qw( %char2entity %entity2char );
 use mySociety::MaPit;
 use Path::Class;
 use Utils;
 use mySociety::EmailUtil;
 use JSON;
+use utf8;
 
 =head1 NAME
 
@@ -97,13 +99,13 @@ sub report_new : Path : Args(0) {
 
     # deal with the user and report and check both are happy
     return unless $c->forward('check_form_submitted');
-    
+
     $c->forward('process_user');
     $c->forward('process_report');
     $c->forward('/photo/process_photo');
-       
+
 	return unless $c->forward('check_for_errors');
-    
+
     $c->forward('save_user_and_report');
     $c->forward('redirect_or_confirm_creation');
 }
@@ -188,7 +190,14 @@ sub report_form_ajax : Path('ajax') : Args(0) {
     $c->forward('setup_categories_and_bodies');
 
     # render templates to get the html
-    my $category = $c->render_fragment( 'report/new/category.html');
+    my $category;
+
+    if ( $c->stash->{category_groups_json} ) {
+		$category = $c->render_fragment( 'report/new/category_groups.html');
+	} else {
+		$category = $c->render_fragment( 'report/new/category.html');
+	}
+
     my $councils_text = $c->render_fragment( 'report/new/councils_text.html');
     my $extra_name_info = $c->stash->{extra_name_info}
         ? $c->render_fragment('report/new/extra_name.html')
@@ -602,6 +611,25 @@ sub setup_categories_and_bodies : Private {
       ->search( { body_id => [ keys %bodies ] } )
       ->all;
 
+    my @contacts_group                #
+      = $c                            #
+      ->model('DB::ContactsGroup')    #
+      ->search()
+      ->all;
+
+	my %groups_seen;
+	my %groups_items;
+	my %groups;
+	my %category_in_group;
+
+	foreach (@contacts_group) {
+		$groups{$_->group_id} = $_->group_name unless $groups{$_->group_id};
+		$groups_items{$_->group_id} = [];
+	}
+
+	my @array_groups_seen;
+	push (@array_groups_seen, [ '', '-- Pick a group --' ]);
+
     # variables to populate
     my %bodies_to_list = ();       # Bodies with categories assigned
     my @category_options = ();       # categories to show
@@ -643,13 +671,11 @@ sub setup_categories_and_bodies : Private {
         );
 
     } else {
-
         # keysort does not appear to obey locale so use strcoll (see i18n.t)
         @contacts = sort { strcoll( $a->category, $b->category ) } @contacts;
 
         my %seen;
         foreach my $contact (@contacts) {
-
             $bodies_to_list{ $contact->body_id } = 1;
 
             unless ( $seen{$contact->category} ) {
@@ -660,7 +686,19 @@ sub setup_categories_and_bodies : Private {
 
                 $non_public_categories{ $contact->category } = 1 if $contact->non_public;
             }
+
             $seen{$contact->category} = 1;
+
+            if ( $contact->group_id ) {
+				unless ( $groups_seen{$contact->group_id} ) {
+					$groups_seen{$contact->group_id} = $groups{$contact->group_id};
+					push (@array_groups_seen, [ $contact->group_id, $groups{$contact->group_id} ]);
+				}
+
+				$category_in_group{$contact->category} = $contact->group_id unless $category_in_group{$contact->category};
+
+				push (@{$groups_items{$contact->group_id}}, $contact->category);
+			}
         }
 
         if (@category_options) {
@@ -678,6 +716,31 @@ sub setup_categories_and_bodies : Private {
     $c->stash->{category_extras}  = \%category_extras;
     $c->stash->{non_public_categories}  = \%non_public_categories;
     $c->stash->{category_extras_json}  = encode_json \%category_extras;
+
+	$c->stash->{category_groups_json} = undef;
+	$c->stash->{category_currently_loaded} = undef;
+	$c->stash->{category_groups} = undef;
+	$c->stash->{category_groups_seen} = undef;
+
+    if ( scalar @array_groups_seen > 0 ) {
+		$c->stash->{category_groups_seen}  = \@array_groups_seen;
+
+		if ( scalar keys %groups_items > 0 ) {
+			$c->stash->{category_groups_json}  = JSON->new->utf8->encode(\%groups_items);
+			#$c->log->info("=================== ".$c->stash->{category_groups_json});
+
+			if ( $c->req->param('category') ) {
+				if ( $category_in_group{$c->req->param('category')} ) {
+					my $group_id = $category_in_group{$c->req->param('category')};
+					my @arr_items = @{$groups_items{$group_id}};
+
+					$c->stash->{category_currently_loaded} = $groups_items{$group_id};
+					$c->stash->{category_group} = $group_id;
+				}
+			}
+		}
+	}
+
     $c->stash->{extra_name_info} = $first_area->{id} == COUNCIL_ID_BROMLEY ? 1 : 0;
 
     my @missing_details_bodies = grep { !$bodies_to_list{$_->id} } values %bodies;
@@ -980,6 +1043,10 @@ sub check_for_errors : Private {
         delete $field_errors{name};
     }
 
+    if ( $c->req->param('submit_sign_in') ) {
+		delete $field_errors{identity_document};
+	}
+
     # if using social login then we don't care about name and email errors
     if ( $c->stash->{is_social_user} ) {
         delete $field_errors{name};
@@ -1081,9 +1148,9 @@ sub save_user_and_report : Private {
                     %$token_data
                 }
             } );
-            
+
             $c->stash->{detach_to} = '/tokens/confirm_problem_with_social_login';
-            $c->stash->{detach_args} = [$token->token];           
+            $c->stash->{detach_args} = [$token->token];
 
             if ( $c->req->param('facebook_sign_in') ) {
                 $c->detach('/auth/facebook_sign_in');

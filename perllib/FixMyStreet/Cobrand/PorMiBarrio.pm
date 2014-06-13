@@ -30,13 +30,13 @@ sub user_check_for_errors {
 
     my %errors = ();
 
-    if ( !$identity_document ) {
+    if ( $identity_document ) {
+		if ( !$self->validate_identity_document( $c, $identity_document ) ) {
+			$errors{identity_document} = _('Please enter a valid ID');
+		}
+	} else {
         $errors{identity_document} = _('Please enter your ID');
     }
-    
-    if ( !$self->validate_identity_document( $c, $identity_document ) ) {
-		$errors{identity_document} = _('Please enter a valid ID');
-	}
 
     return (
         %{ $c->stash->{field_errors} },
@@ -50,25 +50,27 @@ sub validate_identity_document {
 	my $c = shift;
 	my $identity_document = shift;
 	
-	$identity_document = Utils::trim_text( $identity_document );
-	$identity_document =~ s/\.//g;
-	
-	my @parts = split /-/, $identity_document;
-	
-	if (scalar @parts eq 2) {
-		#1234567-X -> X = [(1x8) + (2x1) + (3x2) + (4x3) + (5x4) + (6x7) + (7x6)] mod 10 -> X = [ 8 +2 +6 +12 +20 +42 +42] mod 10 = 132 mod 10 = 2
+	if ( $identity_document ) {	
+		$identity_document = Utils::trim_text( $identity_document );
+		$identity_document =~ s/\.//g;
+		
+		my @parts = split /-/, $identity_document;
+		
+		if (scalar @parts eq 2) {
+			#1234567-X -> X = [(1x8) + (2x1) + (3x2) + (4x3) + (5x4) + (6x7) + (7x6)] mod 10 -> X = [ 8 +2 +6 +12 +20 +42 +42] mod 10 = 132 mod 10 = 2
 
-		my @magic = (8, 1, 2, 3, 4, 7, 6);
-		my @identity_document_array = split("", $identity_document);
-		my $result = 0;
+			my @magic = (8, 1, 2, 3, 4, 7, 6);
+			my @identity_document_array = split("", $identity_document);
+			my $result = 0;
 
-		print(scalar $c);
-		for ( my $pos = 0; $pos < scalar @magic && $pos < scalar @identity_document_array; $pos++ ) {
-				$result += $magic[$pos] * $identity_document_array[$pos];
+			print(scalar $c);
+			for ( my $pos = 0; $pos < scalar @magic && $pos < scalar @identity_document_array; $pos++ ) {
+					$result += $magic[$pos] * $identity_document_array[$pos];
+			}
+
+			my $verification = $result % 10;
+			return $verification eq $parts[1];
 		}
-
-		my $verification = $result % 10;
-		return $verification eq $parts[1];
 	}
 	
 	return 0;
@@ -88,14 +90,14 @@ sub report_check_for_errors {
 
     my %errors = ();
 
-    if ( !$identity_document ) {
+    if ( $identity_document ) {
+		if ( !$self->validate_identity_document( $c, $identity_document ) ) {
+			$errors{identity_document} = _('Please enter a valid ID');
+		}
+	} else {
         $errors{identity_document} = _('Please enter your ID');
     }
     
-    if ( !$self->validate_identity_document( $c, $identity_document ) ) {
-		$errors{identity_document} = _('Please enter a valid ID');
-	}
-
     return (
         %{ $c->stash->{field_errors} },
         %{ $c->stash->{report}->user->check_for_errors },

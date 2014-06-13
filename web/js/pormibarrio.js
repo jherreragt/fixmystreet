@@ -43,3 +43,20 @@ $(function(){
       }
   });
 });
+
+function form_category_group_onchange() {
+	var group_id = $('#form_category_groups').val();
+	
+	if (group_id == '') {
+		$('#form_category').prop( "disabled", true );
+        $('#form_category').empty();
+	} else {
+		$('#form_category').prop( "disabled", false );
+		$('#form_category').empty();
+
+		$('#form_category').get(0).options[0] = new Option("-- Pick a category --", "-1");
+		for ( i = 0; i < category_groups[group_id].length; i++) {
+			$('#form_category').get(0).options[i+1] = new Option(category_groups[group_id][i], category_groups[group_id][i]);
+		}
+	}
+}

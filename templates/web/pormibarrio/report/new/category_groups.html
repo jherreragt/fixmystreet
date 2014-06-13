@@ -1,0 +1,32 @@
+[% FILTER collapse %]
+<script>
+	[% IF category_groups_json %]
+		var category_groups = [% category_groups_json | html %];
+	[% ELSE %]
+		var category_groups = {};
+	[% END %]
+</script>
+
+[% puto %]
+
+<label for='form_category_groups' id='form_category_label_groups'>[% loc('Category group') %]</label>
+<select name='category_groups' id='form_category_groups' onchange='form_category_group_onchange()'>
+	[% FOREACH group IN category_groups_seen %]
+		[% group_name = group.1 %]
+		[% group_name_lc = group_name | lower %]
+		<option value='[% group.0 | html %]' [% ' selected' IF category_group == group.0 %]>[% IF loop.first %][% group_name %][% ELSE %][% group_name | html %][% END %]</option>
+	[% END %]
+</select>
+
+[% IF category;
+	category = category | lower;
+   END; %]
+<label for='form_category' id="form_category_label">[% loc('Category') %]</label>
+<select name='category' id='form_category' [% ' disabled' IF not category %]>
+	[% FOREACH cat_op IN category_currently_loaded %]
+		[% cat_op_lc = cat_op | lower %]
+		<option value='[% cat_op | html %]' [% ' selected' IF report.category == cat_op || category == cat_op_lc %]>[% IF loop.first %][% cat_op %][% ELSE %][% cat_op | html %][% END %]</option>
+	[% END %]
+</select>
+
+[% END -%]
