@@ -178,8 +178,6 @@ sub _handle_existing_contact {
 	}
 
     if ( $contact->deleted || $service_name ne $contact->category || $self->_current_service->{service_code} ne $contact->email || $group_changed ) {
-		print "=============== ".$self->_group_id."\n";
-		
         eval {
             $contact->update(
                 {

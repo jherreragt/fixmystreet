@@ -727,7 +727,6 @@ sub setup_categories_and_bodies : Private {
 
 		if ( scalar keys %groups_items > 0 ) {
 			$c->stash->{category_groups_json}  = JSON->new->utf8->encode(\%groups_items);
-			#$c->log->info("=================== ".$c->stash->{category_groups_json});
 
 			if ( $c->req->param('category') ) {
 				if ( $category_in_group{$c->req->param('category')} ) {

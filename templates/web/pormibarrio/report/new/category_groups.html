@@ -1,7 +1,7 @@
 [% FILTER collapse %]
 <script>
 	[% IF category_groups_json %]
-		var category_groups = [% category_groups_json | html %];
+		var category_groups = [% category_groups_json %];
 	[% ELSE %]
 		var category_groups = {};
 	[% END %]
