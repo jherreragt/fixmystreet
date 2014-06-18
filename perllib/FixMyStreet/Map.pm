@@ -122,11 +122,18 @@ sub map_pins {
     my ( $around_map, $around_map_list, $nearby, $dist ) =
       FixMyStreet::Map::map_features_bounds( $c, $min_lon, $min_lat, $max_lon, $max_lat, $interval );
 
+	my %categories;
+	my @categories_array = $c->model('DB::Contact')->all;
+	foreach (@categories_array) {
+		$categories{$_->category} = $_->group_id;
+	}
+
     # create a list of all the pins
     my @pins = map {
         # Here we might have a DB::Problem or a DB::Nearby, we always want the problem.
-        my $p = (ref $_ eq 'FixMyStreet::App::Model::DB::Nearby') ? $_->problem : $_;
-        my $colour = $c->cobrand->pin_colour( $p, 'around' );
+        my $p = (ref $_ eq 'FixMyStreet::App::Model::DB::Nearby') ? $_->problem : $_;    
+        
+        my $colour = $c->cobrand->pin_colour( $p, 'around', $c, \%categories);
         [ $p->latitude, $p->longitude,
           $colour,
           $p->id, $p->title_safe

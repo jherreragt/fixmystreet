@@ -106,4 +106,27 @@ sub report_check_for_errors {
     );
 }
 
+=head 2 pin_colour
+
+Returns the colour of pin to be used for a particular report
+(so perhaps different depending upon the age of the report).
+
+=cut
+sub pin_colour {
+    my ( $self, $p, $context, $c, $categories ) = @_;
+    #return 'green' if time() - $p->confirmed->epoch < 7 * 24 * 60 * 60;
+    
+    if ( $context eq 'around' || $context eq 'reports' ) {
+		my $category_name = $p->category;
+		
+		if ( $categories && $categories->{$category_name}) {
+			return 'group-'.$categories->{$category_name};
+		} else {
+			return 'yellow';
+		}
+	} else {
+		return $p->is_fixed ? 'green' : 'red';
+	}
+}
+
 1;

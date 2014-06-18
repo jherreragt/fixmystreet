@@ -181,13 +181,20 @@ sub display_location : Private {
     $c->stash->{around_map} = $around_map;
     $c->stash->{distance}   = $distance;
 
+	my %categories;
+	my @categories_array = $c->model('DB::Contact')->all;
+	foreach (@categories_array) {
+		$categories{$_->category} = $_->group_id;
+	}
+
     # create a list of all the pins
     my @pins;
     unless ($c->req->param('no_pins') || $c->cobrand->moniker eq 'emptyhomes') {
         @pins = map {
             # Here we might have a DB::Problem or a DB::Nearby, we always want the problem.
             my $p = (ref $_ eq 'FixMyStreet::App::Model::DB::Nearby') ? $_->problem : $_;
-            my $colour = $c->cobrand->pin_colour( $p, 'around' );
+            
+            my $colour = $c->cobrand->pin_colour( $p, 'around', $c, \%categories );
             {
                 latitude  => $p->latitude,
                 longitude => $p->longitude,
@@ -278,6 +285,8 @@ sub ajax : Path('/ajax') {
             current_near => $around_map_list_html,
         }
     );
+
+	$c->log->info($body);
 
     $c->res->body($body);
 }
