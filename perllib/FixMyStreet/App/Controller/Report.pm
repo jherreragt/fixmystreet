@@ -190,6 +190,15 @@ sub generate_map_tags : Private {
 
     my $problem = $c->stash->{problem};
 
+	my $colour = $c->cobrand->moniker eq 'zurich'? $c->cobrand->pin_colour($problem) : 'yellow';
+
+	my $group_id;
+	my @category_array = $c->model('DB::Contact')->search({ category => $problem->category })->all;
+	if ( scalar @category_array => 1 ) {
+		$group_id = $category_array[0]->group_id;
+		$colour = "group-".$group_id;
+	}
+
     $c->stash->{page} = 'report';
     FixMyStreet::Map::display_map(
         $c,
@@ -199,7 +208,7 @@ sub generate_map_tags : Private {
         ? [ {
             latitude  => $problem->latitude,
             longitude => $problem->longitude,
-            colour    => $c->cobrand->moniker eq 'zurich'? $c->cobrand->pin_colour($problem) : 'yellow',
+            colour    => $colour,
             type      => 'big',
           } ]
         : [],
