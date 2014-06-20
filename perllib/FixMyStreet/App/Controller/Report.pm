@@ -196,7 +196,10 @@ sub generate_map_tags : Private {
 	my @category_array = $c->model('DB::Contact')->search({ category => $problem->category })->all;
 	if ( scalar @category_array => 1 ) {
 		$group_id = $category_array[0]->group_id;
-		$colour = "group-".$group_id;
+
+		if ( $group_id ) {
+			$colour = "group-".$group_id;
+		}
 	}
 
     $c->stash->{page} = 'report';

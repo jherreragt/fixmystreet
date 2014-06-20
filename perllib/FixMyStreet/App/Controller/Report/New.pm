@@ -611,6 +611,7 @@ sub setup_categories_and_bodies : Private {
       ->search( { body_id => [ keys %bodies ] } )
       ->all;
 
+
     my @contacts_group                #
       = $c                            #
       ->model('DB::ContactsGroup')    #
@@ -619,12 +620,14 @@ sub setup_categories_and_bodies : Private {
 
 	my %groups_seen;
 	my %groups_items;
+	my %groups_items_encoded;
 	my %groups;
 	my %category_in_group;
 
 	foreach (@contacts_group) {
 		$groups{$_->group_id} = $_->group_name unless $groups{$_->group_id};
 		$groups_items{$_->group_id} = [];
+		$groups_items_encoded{$_->group_id} = [];
 	}
 
 	my @array_groups_seen;
@@ -698,6 +701,7 @@ sub setup_categories_and_bodies : Private {
 				$category_in_group{$contact->category} = $contact->group_id unless $category_in_group{$contact->category};
 
 				push (@{$groups_items{$contact->group_id}}, $contact->category);
+		                push (@{$groups_items_encoded{$contact->group_id}}, encode_entities($contact->category, "ñóéáúí"));
 			}
         }
 
@@ -726,7 +730,9 @@ sub setup_categories_and_bodies : Private {
 		$c->stash->{category_groups_seen}  = \@array_groups_seen;
 
 		if ( scalar keys %groups_items > 0 ) {
-			$c->stash->{category_groups_json}  = JSON->new->utf8->encode(\%groups_items);
+			$c->stash->{category_groups_json}  = JSON->new->utf8->encode(\%groups_items_encoded);
+
+			$c->log->info($c->stash->{category_groups_json});
 
 			if ( $c->req->param('category') ) {
 				if ( $category_in_group{$c->req->param('category')} ) {

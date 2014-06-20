@@ -54,9 +54,13 @@ function form_category_group_onchange() {
 		$('#form_category').prop( "disabled", false );
 		$('#form_category').empty();
 
-		$('#form_category').get(0).options[0] = new Option("-- Pick a category --", "-1");
-		for ( i = 0; i < category_groups[group_id].length; i++) {
-			$('#form_category').get(0).options[i+1] = new Option(category_groups[group_id][i], category_groups[group_id][i]);
+		var options = '';
+		options += '<option value="-1">-- Pick a category --</option>';
+
+		for (var i = 0; i < category_groups[group_id].length; i++) {
+			options += '<option value="' + category_groups[group_id][i] + '">' + category_groups[group_id][i] + '</option>';
 		}
+		$("#form_category").html(options);
+
 	}
 }
