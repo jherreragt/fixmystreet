@@ -41,9 +41,24 @@
 
         [% INCLUDE 'tracking_code.html' %]
 
+        <title>Por mi Barrio</title>
+
         <script type="text/javascript" src="[% version('/js/pormibarrio.js') %]"></script>
 
+        <!--CSS-->
+        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/bootstrap.min.css') %]">
+        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/main.css') %]">
+
+        <!--FONTS-->
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
     </head>
+
     [% TRY %][% PROCESS 'set_body_class.html' %][% CATCH file %][% END %]
     <body class="[% bodyclass | html IF bodyclass %]">
 
@@ -68,29 +83,26 @@
 	   }(document, 'script', 'facebook-jssdk'));
 	</script>
 
-    <div class="wrapper">
-        <div class="table-cell">
-            <header id="site-header" role="banner">
-                <div class="container">
-                    <a href="/" id="site-logo">[% c.cobrand.site_title | html %]</a>
-                    <a href="#main-nav" id="nav-link">Main Navigation</a>
-                </div>
-            </header>
+    
+    <header id="site-header" role="banner"></header>
 
-            <div id="user-meta">
-                [% IF c.user_exists %]
-                <p>
-                    [% tprintf(loc('Hi %s'), c.user.name || c.user.email) %] 
-                    <a href="/auth/sign_out">[% loc('sign out') %]</a>
-                </p>
-                [% ELSE %]
-                    <!-- <a href="/auth">[% loc('Sign in') %]</a> -->
-                [% END %]
-            </div>
+    [% pre_container_extra %]
 
-            [% pre_container_extra %]
-
-            <div class="container">
-                <div class="content[% " $mainclass" | html IF mainclass %]" role="main">
+    <div class="container">
+        <!--FIRST LEVEL NAVIGATION-->
+        <nav class="first-navigation">
+            <ul>
+                <li class="home"><a href="javascript:;"><span></span></a></li>
+                <li class="reportar"><a href="javascript:;">Reportar</a></li>
+                <li class="reportes"><a href="javascript:;">Reportes</a></li>
+                <li class="help"><a href="javascript:;">Ayuda</a></li>
+            </ul>
+            <ul class="help-info">
+                <li class="doc-info"><a href="javascript:;">Doc info</a></li>
+                <li class="data"><a href="javascript:;">DATA</a></li>
+                <li class="my-society"><a href="javascript:;">My Society</a></li>
+            </ul>
+        </nav>
+        <div class="content[% " $mainclass" | html IF mainclass %]" role="main">
 
         <!-- [% INCLUDE 'debug_header.html' %] -->

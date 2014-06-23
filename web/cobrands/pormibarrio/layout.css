@@ -18,7 +18,7 @@ h1{margin-top:0}
 .wrapper{display:table;caption-side:top;width:100%}
 .table-cell{display:table-cell}
 .ie6 .wrapper,.ie7 .wrapper{padding-top:4em}
-.nav-wrapper{display:table-caption}
+.nav-wrapper{display:none}
 .nav-wrapper-2{width:100%;min-height:4em;position:absolute;border-top:4px solid #f90;border-left:0;border-right:0;z-index:2}
 .ie6 .nav-wrapper,.ie7 .nav-wrapper{position:absolute;top:0;left:0;width:100%}
 .ie6 .nav-wrapper .nav-wrapper-2,.ie7 .nav-wrapper .nav-wrapper-2{position:static}
@@ -79,9 +79,11 @@ h1{margin-top:0}
 .ie7 #main-nav ul#mysoc-menu li a#mysoc-logo{background-position:-260px -43px}
 .content{
 	width:27em;
-	margin:3em 0.5em -1em;
+	/*margin:3em 0.5em -1em;*/
+	max-height: 39em;
 	padding:1em 1em 3em;
 	color:#222;
+	overflow: auto;
 	/*background:#fff;
 	-webkit-box-shadow:0px 0px 6px 1px #000;
 	-moz-box-shadow:0px 0px 6px 1px #000;
@@ -89,7 +91,11 @@ h1{margin-top:0}
 }
 .ie6 .content,.ie7 .content,.ie8 .content{border:1px solid #666;margin:0 0.5em}
 body.mappage .container{width:auto}
-body.mappage .content{float:left;padding:1em 1em 10em}
+body.mappage .content{
+	float:left;
+	padding:1em 1em 10em;
+	background-color:#C0C0C0;
+}
 body.mappage #main-nav ul#main-menu li a,
 body.mappage #main-nav ul#main-menu li span{padding:1.4em 0.75em 1.35em 0.75em}
 body.mappage #main-nav ul#main-menu li a.report-a-problem-btn{padding:0.5em;margin:0.9em 0.25em 0.85em 0.25em}
@@ -184,7 +190,7 @@ body.frontpage #site-logo{
 	top:3em;
 	width:300px;
 	height:60px;
-	background:url("/cobrands/fixmystreet/images/sprite.png") -2px -108px no-repeat;
+	background:url("/cobrands/pormibarrio/images/PMB.png") -2px -108px no-repeat;
 }
 body.frontpage #user-meta{z-index:10}body.frontpage #user-meta p{top:-4em;left:auto;right:0;color:#f90;background:none;-webkit-box-shadow:rgba(0,0,0,0) 0 0 0;-moz-box-shadow:rgba(0,0,0,0) 0 0 0;box-shadow:rgba(0,0,0,0) 0 0 0}
 body.frontpage #user-meta p a{background:#fff;color:#1a1a1a}body.frontpage #user-meta p a:hover{background:#ddd}.ie6 body.frontpage #site-logo,.ie7 body.frontpage #site-logo,.ie8 body.frontpage #site-logo{position:relative;width:60em;margin:0 auto}
@@ -218,4 +224,9 @@ body.frontpage #user-meta p a{background:#fff;color:#1a1a1a}body.frontpage #user
 	background: none repeat scroll 0 0 #808080;
     border: 1px solid;
     cursor: pointer
+}
+
+/*ALAMBRE*/
+.nav-wrapper {
+	display: none;
 }

@@ -1,4 +1,4 @@
-<menu id="problems-nav" class="tab-nav">
+<!--<menu id="problems-nav" class="tab-nav">
     <ul>
         <li><a href="#current">[% loc('Problems on the map') %]</a></li>
         <li><a href="#current_near">[% loc( 'Problems nearby' ) %]</a></li>
@@ -11,4 +11,20 @@
 
 <ul id="current_near" class="issue-list-a tab">
     [% INCLUDE "around/around_map_list_items.html" %]
-</ul>
+</ul>-->
+<!--LISTADO DE REPORTES-->
+<div class="reportes sub report-list">
+	<!--Intro reports-->
+    <div class="ir">
+        <h2>Reportes</h2>
+        <p>Donec quis turpis et elit vehicula dignissim ut quis lectus. Aenean gravida nisi vitae enim dignissim imperdiet. 
+        Duis varius justo purus, et lobortis turpis sagittis sed.</p>
+    </div>
+    <!--/end intro reports-->
+    <div class="rl scrolled">
+    <!--REPORTS LIST-->
+    	[% INCLUDE "around/around_map_list_items.html" %]
+    </div>
+    <!--/end reports list-->
+</div>
+<!--end listado de reportes-->
