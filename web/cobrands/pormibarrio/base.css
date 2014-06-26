@@ -4,7 +4,7 @@ audio:not([controls]){display:none}
 [hidden]{display:none}
 html{font-size:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
 body{margin:0;font-size:1em;line-height:1.5}
-body,button,input,select,textarea{font-family:sans-serif;color:#222;background-color:#fff}
+/*body,button,input,select,textarea{font-family:sans-serif;color:#222;background-color:#fff}*/
 ::-moz-selection{background:#ffeeaa;color:#000;text-shadow:none}
 ::selection{background:#ffeeaa;color:#000;text-shadow:none}
 a:focus{outline:thin dotted}
@@ -62,10 +62,10 @@ img{max-width:100% !important}
 p,h2,h3{orphans:3;widows:3}
 h2,h3{page-break-after:avoid}
 }
-body{font-family:MuseoSans,Helmet,Freesans,sans-serif;margin:0;font-size:1em;line-height:1.5;color:#222;background-color:#fff}
-p{font-size:1em;font-weight:normal;margin:0 0 1em 0}
+/*body{font-family:MuseoSans,Helmet,Freesans,sans-serif;margin:0;font-size:1em;line-height:1.5;color:#222;background-color:#fff}*/
+/*p{font-size:1em;font-weight:normal;margin:0 0 1em 0}*/
 small,.small-print{font-family:Helmet,Freesans,sans-serif;font-style:italic;font-size:0.8125em;line-height:1.2307em}
-h1{font-family:"Museo300-display",MuseoSans,Helmet,Freesans,sans-serif;font-size:2em;line-height:1em;font-weight:normal;margin-top:0.5em;margin-bottom:0.5em}
+/*h1{font-family:"Museo300-display",MuseoSans,Helmet,Freesans,sans-serif;font-size:2em;line-height:1em;font-weight:normal;margin-top:0.5em;margin-bottom:0.5em}
 h1#reports_heading span{display:none}
 h1#reports_heading a{display:block;font-size:50%}
 h2{font-family:"Museo300-display",MuseoSans,Helmet,Freesans,sans-serif;font-size:1.5em;line-height:1.3333em;font-weight:normal;margin-top:1.333333333em;margin-bottom:0.666666666em}
@@ -73,7 +73,7 @@ h3{font-size:1.25em;line-height:1.20em;margin-top:1.2em;margin-bottom:0.8em;font
 h4{font-size:1em;font-weight:normal;margin-bottom:1em}
 ul,ol{font-size:1em;margin-bottom:2em;margin-left:2em;padding:0}
 li{margin-bottom:0.5em}
-ul li{list-style:square}
+ul li{list-style:square}*/
 ol li{list-style:decimal}
 ol.big-numbers{padding:0;margin:0;counter-reset:li}
 ol.big-numbers>li{position:relative;list-style:none;padding:0 0 0 2.5em;margin-bottom:2em}
@@ -109,7 +109,8 @@ textarea{border:0.125em solid #888888;-webkit-border-radius:0.25em;-moz-border-r
 input[type=text],input[type=password],input[type=email]{border:0.125em solid #888888;-webkit-border-radius:0.25em;-moz-border-radius:0.25em;-ms-border-radius:0.25em;-o-border-radius:0.25em;border-radius:0.25em;display:block;font-size:1em;line-height:1em}
 label{display:block;margin-top:1.25em;margin-bottom:0.25em;font-weight:bold}
 label.inline{display:inline;padding:0 2em 0 1em;font-weight:normal}
-.form-box{margin:0 -2em 0.25em -2em;background:#eeeeee;padding:1em 2em 1em 2em}
+/*.form-box{margin:0 -2em 0.25em -2em;background:#eeeeee;padding:1em 2em 1em 2em}*/
+.form-box{margin:0 -2em 0.25em -2em;padding:1em 2em 1em 2em}
 .form-box>input[type=text]{margin-bottom:1em}
 .form-box .title{font-size:1.25em;margin:0.5em 0}
 .form-box h5{margin:0 0 1em;font-size:1.125em;font-weight:normal}

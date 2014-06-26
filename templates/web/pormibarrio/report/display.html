@@ -12,16 +12,15 @@
 
 [% map_html %]
 
-  [% IF c.cobrand.moniker == 'zurich' %]
-    <p id='sub_map_links'>
-        <a class="hidden-nojs" id="map_layer_toggle" href="">Stadtplan</a>
-    </p>
-  [% END %]
-
 </div>
 
 [% INCLUDE 'report/banner.html' %]
 
+<div class="c-report">
+	<div class="container-report">
+		<!--REPORT-->
+		<div class="report">
+			
 [% INCLUDE 'report/_main.html' %]
 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
 
@@ -78,3 +77,9 @@
 [% INCLUDE 'report/updates.html' %]
 [% INCLUDE 'report/update-form.html' %]
 [% INCLUDE 'footer.html' %]
+
+		</div>
+		<!--end report-->
+	</div>
+	<!--end container report-->   
+</div>

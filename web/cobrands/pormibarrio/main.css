@@ -200,8 +200,8 @@ li.s-help a{
 /*THIRD LEVEL--------------------------------------------------------------*/
 div.sub{
 	position:absolute;
-	width:420px;
-	height:100%;
+	width:440px;
+	/*height:100%;*/
 	top:0;
 	left:81px;
 }
@@ -360,7 +360,7 @@ div.c-report{
 	height:100%;
 	z-index:10;
 	background:url(images/bg/bg-content-report.png) repeat-x left bottom;
-	display:none
+	display:block
 }
 
 div.container-report{
@@ -720,11 +720,11 @@ div.login div.ir{
 	margin-bottom:20px	
 }
 
-p.no-account{
+*.no-account{
 	margin-top:20px;
 	padding:15px 0;
 	border-top:#223241 solid 1px;
-	text-align:center	
+	/*text-align:center	*/
 }
 
 div.bloque-registro{
@@ -755,8 +755,17 @@ div.checkbox a:hover{
 	color:#65bdff!important;	
 }
 
-div.scrolled-report, div.scrolled, div.scrolled-reportar{
+/*div.scrolled-report, div.scrolled, div.scrolled-reportar{
 	max-height: 100%;
     min-height: 600px;
     overflow: auto;
+}*/
+
+div.scrolled, div.scrolled-report, div.scrolled-reportar {
+	overflow:auto;
+	height:800px;
+}
+
+div.scrolled-report{
+	padding-bottom:600px;
 }

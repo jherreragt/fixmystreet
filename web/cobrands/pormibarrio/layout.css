@@ -94,7 +94,7 @@ body.mappage .container{width:auto}
 body.mappage .content{
 	float:left;
 	padding:1em 1em 10em;
-	background-color:#C0C0C0;
+	/*background-color:#C0C0C0;*/
 }
 body.mappage #main-nav ul#main-menu li a,
 body.mappage #main-nav ul#main-menu li span{padding:1.4em 0.75em 1.35em 0.75em}
