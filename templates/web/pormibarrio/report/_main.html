@@ -23,7 +23,14 @@
 
 </div>
 -->
-<img alt="" src="images/image-report-ref.jpg" class="img-top">
+[% IF c.cobrand.allow_photo_display(problem) && problem.photo %]
+    [% IF problem.get_photo_params.url_full %]<a href="[% problem.get_photo_params.url_full %]" rel="fancy">[% END %]
+		<img alt="Photo of this report" [% IF problem.get_photo_params.height %]height="[% problem.get_photo_params.height %]" 
+			width="[% problem.get_photo_params.width %]"[% END %] src="[% problem.get_photo_params.url_full %]" class="img-top">
+    [%- IF problem.get_photo_params.url_full %]<!--<span>zoom</span>--></a>[% END %]
+[% ELSE %]
+	<img alt="" src="/i/image-report-ref.jpg" class="img-top">
+[% END %]
 <div class="info-report">
 	<!--Intro Report-->
 	<div class="intro-report">
