@@ -641,7 +641,7 @@ div.drag span{
 .btn-block{
 	width:100%;
 	text-align:center;
-	display:block	
+	display:block;	
 }
 
 .btn{
@@ -652,12 +652,12 @@ div.drag span{
 	font-weight:600;
 	text-transform:uppercase;
 	font-size:1.125em;
-	outline:none
+	outline:none;
 }
 
 .btn-reportar{
 	color:#fff;
-	background:#65788a	
+	background:#65788a;
 }
 
 .btn-reportar:hover{
@@ -666,11 +666,11 @@ div.drag span{
 
 .btn-disabled{
 	opacity:0.3;
-	cursor:default	
+	cursor:default;	
 }
 
 .btn-disabled:hover{
-	background:#65788a	
+	background:#65788a;
 }
 
 .btn-green{
@@ -681,7 +681,7 @@ div.drag span{
 .btn-green:hover{
 	background-color:#25c995;
 	text-decoration:none;
-	color:#fff	
+	color:#fff;
 }
 
 .btn-social{
@@ -690,7 +690,7 @@ div.drag span{
 	font-weight:400;
 	padding:8px 10px;
 	margin-bottom:10px;
-	color:#fff	
+	color:#fff;
 }
 
 .btn-facebook{
@@ -706,7 +706,7 @@ div.drag span{
 }
 
 .btn-twitter:hover{
-	background-color:#65bdff	
+	background-color:#65bdff;	
 }
 
 
@@ -768,4 +768,102 @@ div.scrolled, div.scrolled-report, div.scrolled-reportar {
 
 div.scrolled-report{
 	padding-bottom:600px;
+}
+
+/*PAGE INTRO--------------------------------------*/
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body.intro {
+  margin-bottom: 200px;
+  background:url(images/bg/bg-intro.jpg) no-repeat center top;
+  background-size:cover;
+}
+
+div.intro {
+	width: auto;
+}
+/*div.overlay-blue{
+	height:100%;
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+	background:url(../images/bg/bg-blue-overlay.png);
+	z-index:1	
+}*/
+
+div.c-intro{
+	z-index:2;
+	position:relative;
+	width:100%;
+	max-width:940px;
+	margin:0 auto;
+	text-align:center;
+	color:#fff;
+	padding-top:6rem;
+	/*padding-left:15px;
+	padding-right:15px*/
+}
+
+div.c-intro h2{
+	font-weight:300;
+	font-size:3.375em;
+	margin: 4rem 0 0 0; 	
+}
+
+div.c-intro p{
+	font-size:1.125em;
+	max-width:740px;
+	margin:0 auto;
+	line-height:1.44444em;
+	margin-top: 1.5rem;}
+
+div.steps{
+	margin-top: 6rem;
+}
+
+div.step{
+	width:33.3333%;
+	float:left;
+	min-width:276px;
+	text-align:center	
+}
+
+div.step h3{
+	font-size:1.125em;
+	font-weight:400;
+	line-height:1.44444em;
+	margin-top: 13px;}
+
+div.c-buttons-intro{
+	margin-top: 7rem;}
+
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 148px;
+  text-align:center;
+  z-index:2;
+  font-size:0.875em;
+  color:#fff;
+}
+
+a.know-more{
+	display:block;
+	margin:23px 0 4px 0;
+	color:#fff	
+}
+
+a.know-more:hover{
+	text-decoration:none;
+	opacity:0.9;
+}
+
+p.photo-credit{
+	opacity:0.2;
 }
