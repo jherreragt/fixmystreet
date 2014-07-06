@@ -35,8 +35,8 @@
 	<!--Intro Report-->
 	<div class="intro-report">
 		<h3>[% problem.title | html %]</h3>
-		<address>??</address>
+		<address>[% problem.meta_line(c) | html %]</address>
 		<p>[% add_links( problem.detail ) | html %]</p>
-		<span class="sign">[% problem.meta_line(c) | html %]</span>
+		<span class="sign"><!--[% problem.meta_line(c) | html %]--></span>
 	</div>
 </div>

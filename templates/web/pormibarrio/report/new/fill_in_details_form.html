@@ -51,7 +51,7 @@
                 [% END %]-->
 
                 [% INCLUDE 'errors.html' %]
-					<div id="address-pick"></div>
+					<!--<div id="address-pick"></div>-->
                     <div id="problem_form" class="form-group">
                         [% INCLUDE 'report/new/form_heading.html' %]
 
@@ -59,6 +59,7 @@
                             <p class='form-error'>[% field_errors.bodies %]</p>
                         [% END %]
 
+						<!--
                         <label for="form_address">[% loc('Address') %]</label>
                         [% IF field_errors.address %]
                             <p class='form-error'>[% field_errors.address %]</p>
@@ -69,7 +70,8 @@
                             <p class='form-error'>[% field_errors.address_comp %]</p>
                         [% END %]
                         <input type="text" value="[% report.address_comp | html %]" name="address_comp" id="form_address_comp" placeholder="[% loc('Number or corner') %]" required>
-
+                        -->
+                        
                         <label for="form_title">[% loc('Subject') %]</label>
                         [% IF field_errors.title %]
                             <p class='form-error'>[% field_errors.title %]</p>

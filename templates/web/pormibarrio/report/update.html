@@ -1,3 +1,4 @@
+<!--
 [% IF loop.first %]
 <section class="full-width">
     <h4 class="static-with-rule">[% loc('Updates') %]</h4>
@@ -25,4 +26,24 @@
 [% IF loop.last %]
     </ul>
 </section>
+[% END %]
+-->
+[% IF loop.first %]
+<div class="comment-reports">
+[% END %]
+     <div class="comment">
+		<div class="user-avatar"><img alt="" src="/i/user-imm.png"></div>
+		<div class="user-info">
+			<h4>[% update.name %]</h4>
+			<span class="time-report">[% INCLUDE meta_line %]</span>
+		</div>
+		<div class="user-comment">
+			<p>
+				[% add_links( update.text ) | html_para %]
+			</p>
+			[% INCLUDE 'report/photo.html' object=update %]
+		</div>
+	</div>
+[% IF loop.last %]
+</div>
 [% END %]

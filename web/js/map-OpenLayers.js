@@ -324,6 +324,10 @@ $(function(){
         click.activate();
     }
 
+	// Hides navigation controls
+	$('#sub_map_links').hide();
+	$('#fms_pan_zoom').hide();
+
     $(window).hashchange(function(){
         if (location.hash == '#report' && $('.rap-notes').is(':visible')) {
             $('.rap-notes-close').click();
@@ -344,7 +348,9 @@ $(function(){
         fixmystreet.drag.deactivate();
         $('#side-form').hide();
         $('#side').show();
-        $('#sub_map_links').show();
+        
+        //$('#sub_map_links').show();
+        
         //only on mobile
         $('#mob_sub_map_links').remove();
         $('.mobile-map-banner').html('<a href="/">' + translation_strings.home + '</a> ' + translation_strings.place_pin_on_map);
