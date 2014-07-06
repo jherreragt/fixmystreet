@@ -123,7 +123,7 @@ function fixmystreet_onload() {
     pin_layer_style_map.addUniqueValueRules('default', 'size', {
         'normal': {
             externalGraphic: "/i/pin-${colour}.png",
-            graphicWidth: 48,
+            graphicWidth: 64,
             graphicHeight: 64,
             graphicXOffset: -24,
             graphicYOffset: -64,
@@ -135,7 +135,7 @@ function fixmystreet_onload() {
         },
         'big': {
             externalGraphic: "/i/pin-${colour}-big.png",
-            graphicWidth: 78,
+            graphicWidth: 105,
             graphicHeight: 105,
             graphicXOffset: -39,
             graphicYOffset: -105,
