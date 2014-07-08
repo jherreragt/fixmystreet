@@ -5,6 +5,7 @@
 <!--[if IE 9]>   <html class="no-js ie9 oldie" lang="[% lang_code %]"><![endif]-->
 <!--[if gt IE 9]><!--><html class="no-js" lang="[% lang_code %]"><!--<![endif]-->
     <head>
+        <title>Por mi Barrio</title>
         <meta name="viewport" content="initial-scale=1.0">
 
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
@@ -23,6 +24,13 @@
 
 [% SET start = c.config.ADMIN_BASE_URL IF admin %]
 
+        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/base.css') %]">
+        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/layout.css') %]" media="(min-width:48em)">
+        [% extra_css %]
+        <!--[if (lt IE 9) & (!IEMobile)]>
+            <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/layout.css') %]">
+        <![endif]-->
+
         <script src="[% start %][% version('/js/modernizr.custom.js') %]" charset="utf-8"></script>
         <script src="[% start %][% version('/cobrands/fixmystreet/position_map.js') %]" charset="utf-8"></script>
         [% INCLUDE 'common_header_tags.html', js_override = '/cobrands/fixmystreet/fixmystreet.js', site_title = c.cobrand.site_title %]
@@ -34,21 +42,12 @@
 
         [% INCLUDE 'tracking_code.html' %]
 
-        <title>Por mi Barrio</title>
-
+        <script type="text/javascript" src="[% version('/js/jquery-slimscroll/jquery.slimscroll.js') %]"></script>
         <script type="text/javascript" src="[% version('/js/pormibarrio.js') %]"></script>
 
         <!--CSS-->
         <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/bootstrap.min.css') %]">
         <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/main.css') %]">
-
-        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/base.css') %]">
-        <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/layout.css') %]" media="(min-width:48em)">
-        [% extra_css %]
-        <!--[if (lt IE 9) & (!IEMobile)]>
-            <link rel="stylesheet" href="[% start %][% version('/cobrands/' _ c.cobrand.moniker _ '/layout.css') %]">
-        <![endif]-->
-
 
         <!--FONTS-->
         <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
@@ -89,7 +88,7 @@
 
     [% pre_container_extra %]
 
-    <div class="container">
+    <div class="container [% " $containerclass" | html IF containerclass %]">
         <!--FIRST LEVEL NAVIGATION-->
         <nav class="first-navigation">
             <ul>
@@ -104,7 +103,6 @@
                 <li class="my-society"><a href="javascript:;">My Society</a></li>
             </ul>
         </nav>
-        
         <div class="content[% " $mainclass" | html IF mainclass %]" role="main">
 
         <!-- [% INCLUDE 'debug_header.html' %] -->

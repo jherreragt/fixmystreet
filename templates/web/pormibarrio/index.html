@@ -11,7 +11,7 @@ if (geo_position_js.init()) {
         //Redirigimos si esta fuera de montevideo
         if (  -35 > latitude || latitude > -34.6695163)
             location.href = '/around?latitude=-34.906557;longitude=-56.199769';
-        if (  -56.168270 > longitude || longitude < -56.4350581 )
+        if (  -56.168270 < longitude || longitude < -56.4350581 )
             location.href = '/around?latitude=-34.906557;longitude=-56.199769';
         location.href = '/around?latitude=' + latitude + ';longitude=' + longitude;
     }, 
@@ -38,7 +38,7 @@ if (geo_position_js.init()) {
         timeout: 10000
     });
 }
-
+/*
 setTimeout(
     function(){
         var geoOverlay=document.createElement("DIV");
@@ -63,7 +63,7 @@ setTimeout(
         gotoMap.innerHTML = 'Al mapa';
         overlayDiv.appendChild(gotoMap);
     }
-    , 15000);
+    , 15000);*/
 
 </script>
 [% END %]
@@ -101,7 +101,7 @@ setTimeout(
             <div class="clearfix"></div>
             <div class="c-buttons-intro">
                 <a href="javascript:;" class="btn btn-reportar btn-intro">Como funciona</a>
-                <a href="javascript:;" class="btn btn-green btn-intro">Comenzar ahora</a>
+                <a href="/around?latitude=-34.906557;longitude=-56.199769" class="btn btn-green btn-intro">Comenzar ahora</a>
             </div>
         </div>
         <!--/main container-->

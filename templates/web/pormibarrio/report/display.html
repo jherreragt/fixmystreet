@@ -7,7 +7,8 @@
         title = problem_title
         rss = [ loc('Updates to this problem, FixMyStreet'), "/rss/$problem.id" ]
         robots = 'index, nofollow'
-        bodyclass = 'mappage';
+        bodyclass = 'mappage'
+        containerclass = 'problem-container';
 %]
 
 [% map_html %]
@@ -25,8 +26,11 @@
 [% INCLUDE 'report/_main.html' %]
 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
 
-[% INCLUDE 'report/updates.html' %]
-[% INCLUDE 'report/update-form.html' %]
+<div class="comment-reports">
+    <div class="comment comment-user">
+        [% INCLUDE 'report/update-form.html' %]
+    </div>
+    [% INCLUDE 'report/updates.html' %]
 
 <div class="shadow-wrap">
     <ul id="key-tools">
@@ -75,7 +79,7 @@
 			</fieldset>
 		</form>
 	</div>
-
+</div>
 </div>
 
 [% INCLUDE 'footer.html' %]

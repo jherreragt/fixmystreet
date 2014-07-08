@@ -1,6 +1,7 @@
 <!--REPORTAR E INICIAR SESION-->
 <div class="reportes new-report sub">
-	<fieldset style="margin:0;">
+    <div class="c-scroll-reportar">
+	<!--<fieldset style="margin:0;">-->
         <div class="scrolled-reportar">
             <div class="c-form-report">
                 <div class="ir">
@@ -52,26 +53,26 @@
 
                 [% INCLUDE 'errors.html' %]
 					<!--<div id="address-pick"></div>-->
-                    <div id="problem_form" class="form-group">
-                        [% INCLUDE 'report/new/form_heading.html' %]
+                <form role="form">
+                    [% INCLUDE 'report/new/form_heading.html' %]
 
-                        [% IF field_errors.bodies %]
-                            <p class='form-error'>[% field_errors.bodies %]</p>
-                        [% END %]
+                    [% IF field_errors.bodies %]
+                        <p class='form-error'>[% field_errors.bodies %]</p>
+                    [% END %]
 
-						<!--
-                        <label for="form_address">[% loc('Address') %]</label>
-                        [% IF field_errors.address %]
-                            <p class='form-error'>[% field_errors.address %]</p>
-                        [% END %]
-                        <input type="text" value="[% report.address | html %]" name="address" id="form_address" placeholder="[% loc('Search an address') %]" required>
+					<!--
+                    <label for="form_address">[% loc('Address') %]</label>
+                    [% IF field_errors.address %]
+                        <p class='form-error'>[% field_errors.address %]</p>
+                    [% END %]
+                    <input type="text" value="[% report.address | html %]" name="address" id="form_address" placeholder="[% loc('Search an address') %]" required>
 
-                        [% IF field_errors.address_comp %]
-                            <p class='form-error'>[% field_errors.address_comp %]</p>
-                        [% END %]
-                        <input type="text" value="[% report.address_comp | html %]" name="address_comp" id="form_address_comp" placeholder="[% loc('Number or corner') %]" required>
-                        -->
-                        
+                    [% IF field_errors.address_comp %]
+                        <p class='form-error'>[% field_errors.address_comp %]</p>
+                    [% END %]
+                    <input type="text" value="[% report.address_comp | html %]" name="address_comp" id="form_address_comp" placeholder="[% loc('Number or corner') %]" required>
+                    -->
+                    <div class="form-group">
                         <label for="form_title">[% loc('Subject') %]</label>
                         [% IF field_errors.title %]
                             <p class='form-error'>[% field_errors.title %]</p>
@@ -83,30 +84,34 @@
                             <p class='form-error'>[% field_errors.detail %]</p>
                         [% END %]
                         <textarea rows="7" cols="26" name="detail" id="form_detail" placeholder="[% loc('Please fill in details of the problem.') %]" required>[% report.detail | html %]</textarea>
+                    </div>
 
+                    <div class="form-group">
                         [% IF js %]
                             <div id="form_category_row">
                                 <label for="form_category">[% loc('Category') %]</label>
                                 <select name="category" id="form_category" required><option>[% loc('Loading...') %]</option></select>
                             </div>
                         [% ELSE %]
-				[% IF category_options.size %]
-					[% IF field_errors.category %]
-						<p class='form-error'>[% field_errors.category %]</p>
-					[% END %]
+                			[% IF category_options.size %]
+                				[% IF field_errors.category %]
+                					<p class='form-error'>[% field_errors.category %]</p>
+                				[% END %]
 
-					[% IF category_groups_json %]
-						[% PROCESS "report/new/category_groups.html" %]
-					[% ELSE %]
-						[% PROCESS "report/new/category.html" %]
-					[% END %]
-				[% END %]
+                				[% IF category_groups_json %]
+                					[% PROCESS "report/new/category_groups.html" %]
+                				[% ELSE %]
+                					[% PROCESS "report/new/category.html" %]
+                				[% END %]
+                			[% END %]
                         [% END %]
 
                         [%- IF category_extras %]
                             [% PROCESS "report/new/category_extras.html" %]
                         [%- END %]
+                    </div>
 
+                    <div class="form-group">
                         [% IF c.cobrand.allow_photo_upload %]
                             <label for="form_photo">[% loc('Photo') %]</label>
                             [% IF upload_fileid || report.photo %]
@@ -130,14 +135,15 @@
                             <p class="help-block">* El archivo no puede pesar más de 2MB (JPG, PNG, GIF) </p>
                         [% END %]
 
-                        
                     </div>
 
-                [% IF partial_token %]
-                    <input type="hidden" name="partial" value="[% partial_token.token %]">
-                [% END %]
-
-                <input type="hidden" name="submit_problem" value="1">
+                    <div class="form-group">
+                        [% IF partial_token %]
+                            <input type="hidden" name="partial" value="[% partial_token.token %]">
+                        [% END %]
+                        <input type="hidden" name="submit_problem" value="1">
+                    </div>
+                </form>
             </div>
             
             <div class="login">  
@@ -293,7 +299,22 @@
 				[% END %]
 			</div> <!-- login -->
         </div>
-    <!--</div>-->
-    </fieldset>
+    </div>
+    <!--</fieldset>-->
 </div>
 
+<script>
+$('div.scrolled-reportar').slimScroll({
+    position: 'right',
+    height: '100%',
+    railVisible: true,
+    alwaysVisible: true,
+    railOpacity:1,
+    distance:10,
+    railColor: '',
+    color: '#65788a',
+    size:'8px',
+    borderRadius:4,
+    opacity: 1
+});
+</script>
