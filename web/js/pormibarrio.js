@@ -5,7 +5,7 @@
 
 $(function(){
 	//Script para obtener las direcciones a partir del punto
-	$('svg').click(function(){
+	/*$('svg').click(function(){
 		var lat = $('[name="latitude"]').val();
 		var lon = $('[name="longitude"]').val();
 		//Hacemos el pedido
@@ -41,7 +41,7 @@ $(function(){
           	console.log(resp);
           });
       }
-  });
+  });*/
 });
 
 function form_category_group_onchange() {

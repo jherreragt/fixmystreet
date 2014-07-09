@@ -14,7 +14,10 @@ ul{
 body{
 	font-family: 'Source Sans Pro', sans-serif;
 	overflow:hidden;
-	font-size:16px
+	font-size:16px;
+	position: absolute;
+	height: 100%;
+	width: 100%;
 }
 
 a, button, div.it-r {
@@ -29,6 +32,13 @@ a, button, div.it-r {
   -webkit-box-sizing:border-box
 }
 
+.container{
+	height: 100%;
+}
+
+body.mappage div.problem-container {
+	width: 100%;
+}
 
 /*FIRST NAVIGATION------------------------------------*/
 nav.first-navigation{
@@ -201,7 +211,7 @@ li.s-help a{
 div.sub{
 	position:absolute;
 	width:440px;
-	/*height:100%;*/
+	height:100%;
 	top:0;
 	left:81px;
 }
@@ -371,19 +381,22 @@ div.container-report{
 }
 
 div.report{
-	width:580px;
-	position:absolute;
-	top:10%;
-	left:50%;
-	margin-left:-290px;
-	border-radius:5px;
-	overflow:hidden;
+	border-radius: 5px;
+    height: 100%;
+    left: 50%;
+    margin-left: -290px;
+    overflow: hidden;
+    padding-bottom: 50px;
+    position: absolute;
+    top: 10%;
+    width: 580px;
 }
 
 div.report .img-top{
-	max-width:100%;
+	width:100%;
 	height:auto;
-	margin-bottom:-4px
+	margin-bottom:-4px;
+	/*max-height: 300px;*/
 }
 
 div.info-report{
@@ -555,7 +568,12 @@ div.new-report .ir p{
 
 div.c-form-report, div.login{
 	padding:30px 40px;
-	background:rgba(19,30,41,0.9)
+	/*background:rgba(19,30,41,0.9)*/
+}
+
+div.c-scroll-reportar{
+	height:100%;
+	background:rgba(19,30,41,0.9);
 }
 
 div.c-form-report div.ir{
@@ -759,7 +777,7 @@ div.checkbox a:hover{
 	max-height: 100%;
     min-height: 600px;
     overflow: auto;
-}*/
+}
 
 div.scrolled, div.scrolled-report, div.scrolled-reportar {
 	overflow:auto;
@@ -768,7 +786,7 @@ div.scrolled, div.scrolled-report, div.scrolled-reportar {
 
 div.scrolled-report{
 	padding-bottom:600px;
-}
+}*/
 
 /*PAGE INTRO--------------------------------------*/
 
@@ -866,4 +884,58 @@ a.know-more:hover{
 
 p.photo-credit{
 	opacity:0.2;
+}
+
+/*MEDIAQUERIES------------------------------------------------------------*/
+@media (max-width: 967px) {
+	/*INTRO*/
+	div.c-intro{
+		padding-left:20px;
+		padding-right:20px;
+	}
+	
+	div.c-intro p{
+		width:auto		
+	}
+	
+	div.step{
+		float:none;
+		margin:0 auto 4rem;		
+	}
+	
+	div.c-buttons-intro{
+		margin-top:3rem;		
+	}
+
+}
+
+@media (max-width: 540px) {
+	/*INTRO*/
+	.btn-intro{
+		float:none;
+		margin:15px auto;
+		clear:both;
+		display:block;
+		width:60%		
+	}
+	
+	.footer{
+		position:relative;
+		height:auto;
+		margin-top:40px		
+	}
+	
+	body.intro{
+		margin-bottom:25px		
+	}
+	
+	
+}
+
+@media (max-width: 480px) {
+	/*INTRO*/
+	.btn-intro{
+		width:100%		
+	}
+	
 }
