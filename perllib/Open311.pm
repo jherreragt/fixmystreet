@@ -7,6 +7,7 @@ use LWP::Simple;
 use LWP::UserAgent;
 use DateTime::Format::W3CDTF;
 use HTTP::Request::Common qw(POST);
+use warnings;
 
 has jurisdiction => ( is => 'ro', isa => 'Str' );;
 has api_key => ( is => 'ro', isa => 'Str' );
@@ -111,11 +112,11 @@ sub _populate_service_request_params {
     my ( $firstname, $lastname ) = ( $problem->name =~ /(\w+)\.?\s+(.+)/ );
 
     my $params = {
-        email => $problem->user->email,
+        #email => $problem->user->email,
         description => $description,
         service_code => $service_code,
-        first_name => $firstname,
-        last_name => $lastname || '',
+        #first_name => $firstname,
+        #last_name => $lastname || '',
     };
 
     # if you click nearby reports > skip map then it's possible
@@ -124,8 +125,8 @@ sub _populate_service_request_params {
         || ( !$self->send_notpinpointed && !$problem->used_map
              && !$problem->postcode ) )
     {
-        $params->{lat} = $problem->latitude;
-        $params->{long} = $problem->longitude;
+        $params->{lat} = -34.900907;#$problem->latitude;
+        $params->{long} = -56.187381;#$problem->longitude;
     # this is a special case for sending to Bromley so they can
     # report accuracy levels correctly. We include easting and
     # northing as attributes elsewhere.
@@ -140,12 +141,15 @@ sub _populate_service_request_params {
     if ( $problem->{address_string} ){
         $params->{address_string} = $problem->{address_string};
     }
+    if ( $problem->user->identity_document ) {
+        $params->{ document } = '1887532';#$problem->user->identity_document;
+    }
     if ( $problem->user->phone ) {
-        $params->{ phone } = $problem->user->phone;
+        #$params->{ phone } = $problem->user->phone;
     }
 
     if ( $extra->{image_url} ) {
-        $params->{media_url} = $extra->{image_url};
+        #$params->{media_url} = $extra->{image_url};
     }
 
     if ( $self->use_service_as_deviceid && $problem->service ) {
@@ -163,7 +167,7 @@ sub _populate_service_request_params {
             }
             $attr_name =~ s/fms_extra_//;
             my $name = sprintf( 'attribute[%s]', $attr_name );
-            $params->{ $name } = $attr->{value};
+            #$params->{ $name } = $attr->{value};
         }
     }
 
@@ -228,8 +232,8 @@ sub get_service_request_updates {
     my $end_date = shift;
 
     my $params = {
-        api_key => $self->api_key,
-        jurisdiction => $self->jurisdiction,
+        #api_key => $self->api_key,
+        #jurisdiction => $self->jurisdiction,
     };
 
     if ( $start_date || $end_date ) {
@@ -248,8 +252,8 @@ sub get_service_request_updates {
     else {
         $requests = [ $service_requests->{request_update} ];
     }
-
-    return $requests;
+    return [321614];
+    #return $requests;
 }
 
 sub post_service_request_update {
@@ -369,7 +373,7 @@ sub _get {
 
     my $uri = URI->new( $self->endpoint );
 
-    $params->{ jurisdiction_id } = $self->jurisdiction;
+    #$params->{ jurisdiction_id } = $self->jurisdiction;
     $uri->path( $uri->path . $path );
     $uri->query_form( $params );
 
@@ -382,12 +386,16 @@ sub _get {
         $self->test_uri_used( $uri->as_string );
     } else {
         my $ua = LWP::UserAgent->new;
+        $ua->credentials("www.montevideo.gub.uy:80", "www.montevideo.gub.uy:80", "im9000013", "im9000013");
 
         my $req = HTTP::Request->new(
             GET => $uri->as_string
         );
 
+        print 'URI: '.$uri->as_string;
         my $res = $ua->request( $req );
+        use Data::Dumper;
+        print Dumper($res);
 
         if ( $res->is_success ) {
             $content = $res->decoded_content;
@@ -415,14 +423,21 @@ sub _post {
 
     my $req = POST $uri->as_string,
     [
-        jurisdiction_id => $self->jurisdiction,
-        api_key => $self->api_key,
+        #jurisdiction_id => $self->jurisdiction,
+        #api_key => $self->api_key,
         %{ $params }
     ];
-
+    print 'En _post';
+    use Data::Dumper;
+    print Dumper($params);
+    print $req->as_string;
     $self->debug_details( $self->debug_details . "\nrequest:" . $req->as_string );
 
-    my $ua = LWP::UserAgent->new();
+    my $ua = LWP::UserAgent->new;
+    print 'Llega a credentials '.$self->endpoint;
+    #Agregado
+    $ua->credentials("www.montevideo.gub.uy:80", "www.montevideo.gub.uy:80", "im9000013", "im9000013");
+
     my $res;
 
     if ( $self->test_mode ) {
@@ -430,13 +445,17 @@ sub _post {
         $self->test_req_used( $req );
     } else {
         $res = $ua->request( $req );
+        print Dumper($res->decoded_content);
     }
 
     if ( $res->is_success ) {
+        print "SUCCESS";
         $self->success(1);
         return $res->decoded_content;
     } else {
         $self->success(0);
+        print "ERROR";
+        #print $self->debug_details;
         $self->error( sprintf(
             "request failed: %s\nerror: %s\n%s\n",
             $res->status_line,

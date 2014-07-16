@@ -27,10 +27,17 @@
 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
 
 <div class="comment-reports">
-    <div class="comment comment-user">
-        [% INCLUDE 'report/update-form.html' %]
-    </div>
+    <h4>Comentarios</h4>
     [% INCLUDE 'report/updates.html' %]
+    <div class="comment comment-user">
+        <div class="user-avatar">
+            <!--avatar dinámico -->
+            <img alt="" src="images/user-1.png">
+        </div>
+        <div class="user-info">
+            [% INCLUDE 'report/update-form.html' %]
+        </div>
+    </div>
 
 <div class="shadow-wrap">
     <ul id="key-tools">

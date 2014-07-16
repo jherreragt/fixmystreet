@@ -16,7 +16,7 @@ Readonly::Scalar my $AREA_ID_OXFORDSHIRE => 2237;
 
 sub fetch {
     my $self = shift;
-
+    print 'Arranca FETCH';
     my $bodies = FixMyStreet::App->model('DB::Body')->search(
         {
             send_method     => 'Open311',
@@ -30,8 +30,8 @@ sub fetch {
 
         my $o = Open311->new(
             endpoint     => $body->endpoint,
-            api_key      => $body->api_key,
-            jurisdiction => $body->jurisdiction,
+            #api_key      => $body->api_key,
+            #jurisdiction => $body->jurisdiction,
         );
 
         # custom endpoint URLs because these councils have non-standard paths
@@ -73,6 +73,9 @@ sub update_comments {
     }
 
     my $requests = $open311->get_service_request_updates( @args );
+    use Data::Dumper;
+
+    print Dumper($requests);
 
     unless ( $open311->success ) {
         warn "Failed to fetch ServiceRequest Updates for " . join(",", keys %{$body_details->{areas}}) . ":\n" . $open311->error
@@ -95,6 +98,8 @@ sub update_comments {
         };
         $problem = FixMyStreet::App->model('DB::Problem')->search( $criteria );
 
+        print Dumper($problem);
+        
         if (my $p = $problem->first) {
             my $c = $p->comments->search( { external_id => $request->{update_id} } );
 

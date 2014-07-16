@@ -15,7 +15,7 @@ use Open311::GetServiceRequestUpdates;
 
 my $dt = DateTime->now();
 my $dt_24hrs_ago = $dt->clone;
-$dt_24hrs_ago->add( hours => -24 );
+$dt_24hrs_ago->add( hours => -24*100 );
 
 my $updates = Open311::GetServiceRequestUpdates->new(
     verbose => 1,

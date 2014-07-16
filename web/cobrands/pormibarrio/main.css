@@ -20,6 +20,10 @@ body{
 	width: 100%;
 }
 
+body.fullwidthpage{
+	width: 100%;
+	background: url("images/bg/bg-intro.jpg") no-repeat scroll center top / cover rgba(0, 0, 0, 0);
+}
 a, button, div.it-r {
 	-webkit-transition: all .3s ease;
 	-moz-transition: all .3s ease;
@@ -312,7 +316,7 @@ div.it-r ul li.icon-tags span{
 div.r-arbolado, div.r-category-group-1 {
 	background:url(images/r-arbolado.png) no-repeat left top;	
 }
-h3.arbolado{
+h3.arbolado {
 	color:#3b8686	
 }
 
@@ -333,7 +337,7 @@ h3.basura{
 }
 
 /*Desarrollo*/
-div.r-desarrollo{
+div.r-desarrollo, div.r-category-group-0 {
 	background:url(images/r-desarrollo.png) no-repeat left top;	
 }
 h3.desarrollo{
@@ -341,7 +345,7 @@ h3.desarrollo{
 }
 
 /*Barometrica*/
-div.r-barometrica{
+div.r-barometrica, div.r-category-group-3 {
 	background:url(images/r-barometrica.png) no-repeat left top;	
 }
 h3.barometrica{
@@ -349,7 +353,7 @@ h3.barometrica{
 }
 
 /*Vereda*/
-div.r-vereda{
+div.r-vereda, div.r-category-group-8 {
 	background:url(images/r-vereda.png) no-repeat left top;	
 }
 h3.vereda{
@@ -374,8 +378,7 @@ div.c-report{
 }
 
 div.container-report{
-	margin-left:490px;
-	/*margin-left:490px;*/
+	margin-left:346px;
 	height:100%;
 	position:relative;
 }
@@ -383,7 +386,7 @@ div.container-report{
 div.report{
 	border-radius: 5px;
     height: 100%;
-    left: 50%;
+    /*left: 50%;*/
     margin-left: -290px;
     overflow: hidden;
     padding-bottom: 50px;
@@ -492,6 +495,14 @@ div.comment{
 	border-bottom:#ebebeb solid 1px
 }
 
+div.comment-reports h4{
+	text-transform:uppercase;
+	color:#a40301;
+	font-weight:600;
+	font-size:0.875em;
+	padding: 20px 40px;	
+}
+
 div.user-avatar{
 	float:left;
 	width:60px;
@@ -506,16 +517,23 @@ div.user-avatar img{
 }
 
 div.user-info form textarea{
-	border:#ebebeb solid 1px;
-	background-color:#fbfbfb;
+	border:#d3d3d3 solid 1px;
+	background-color:#fafafa;
 	border-radius:5px;
-	width:auto;
 	padding:10px;
-	color:#7d7d7d;	
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size:14px;
-	width:397px;	
+	width:397px;
+	color:#464646;
+	width:84%;
+	height:45px;	
 }
+
+div.user-comment .btn-disabled{
+	background-color:#58bef7;	
+}
+
+div.user-info form textarea::-webkit-input-placeholder { color: #7d7d7d; font-style:italic}
 
 div.user-info h4{
 	font-size:1.375em;
@@ -659,36 +677,38 @@ div.drag span{
 .btn-block{
 	width:100%;
 	text-align:center;
-	display:block;	
+	display:block	
 }
 
 .btn{
 	border-radius:3px;
 	border:none;
-	padding:9px 10px;
+	padding:14px 10px;
 	line-height:1.5;
 	font-weight:600;
 	text-transform:uppercase;
 	font-size:1.125em;
-	outline:none;
+	outline:none
 }
 
 .btn-reportar{
 	color:#fff;
-	background:#65788a;
+	background:#65788a	
 }
 
 .btn-reportar:hover{
-	background-color:#768a9d;	
+	background-color:#768a9d;
+	color:#fff;
+	text-decoration:none		
 }
 
 .btn-disabled{
 	opacity:0.3;
-	cursor:default;	
+	cursor:default	
 }
 
 .btn-disabled:hover{
-	background:#65788a;
+	background:#65788a	
 }
 
 .btn-green{
@@ -699,7 +719,16 @@ div.drag span{
 .btn-green:hover{
 	background-color:#25c995;
 	text-decoration:none;
-	color:#fff;
+	color:#fff	
+}
+
+a.green{
+	color:#1fb384;	
+}
+
+a.green:hover{
+	color:#25c995;
+	text-decoration:none	
 }
 
 .btn-social{
@@ -708,7 +737,7 @@ div.drag span{
 	font-weight:400;
 	padding:8px 10px;
 	margin-bottom:10px;
-	color:#fff;
+	color:#fff	
 }
 
 .btn-facebook{
@@ -724,7 +753,59 @@ div.drag span{
 }
 
 .btn-twitter:hover{
-	background-color:#65bdff;	
+	background-color:#65bdff	
+}
+
+.btn-sky{
+	background-color:#58bef7;
+	color:#fff;	
+}
+
+.btn-sky:hover{
+	background-color:#87cdf5;
+}
+
+.btn.small{
+	padding:8px 10px;
+}
+
+.btn-intro{
+	padding-left:42px;
+	padding-right:42px;
+	margin:0 10px
+}
+
+.btn-detalle{
+	color:#fff;
+	font-size:0.875em;
+	float:right;
+	background-color:#fc4349;
+	border-radius:0;
+	padding:9px 15px;	
+}
+
+.btn-detalle:hover{
+	color:#fff;
+	background-color:#fb5f65;
+	text-decoration:none;
+}
+
+.btn-comentar{
+	padding:6px 15px;
+	font-size:0.9375em;
+	float:left;
+	margin-top:5px;
+}
+
+.btn-photo{
+	/*background:#fafafa url(images/bg/icon-add-photo.png) no-repeat center center;*/
+	border:#ebebeb solid 1px;
+	padding:0;
+	width:34px;
+	height:34px;
+	display:inline-block;
+	float:left;
+	margin:5px 0 0 10px;
 }
 
 
@@ -861,7 +942,7 @@ div.c-buttons-intro{
 	margin-top: 7rem;}
 
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0px;
   width: 100%;
   height: 148px;
