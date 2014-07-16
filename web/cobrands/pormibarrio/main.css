@@ -309,7 +309,7 @@ div.it-r ul li.icon-tags span{
 }
 
 /*Arbolado*/
-div.r-arbolado{
+div.r-arbolado, div.r-category-group-1 {
 	background:url(images/r-arbolado.png) no-repeat left top;	
 }
 h3.arbolado{

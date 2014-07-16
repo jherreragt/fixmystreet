@@ -614,6 +614,22 @@ sub body {
     return $body;
 }
 
+sub category_group {
+	my ( $problem, $c ) = @_;
+	
+	if ( $problem->category ) {
+		my $contact = $c->model('DB::Contact')->find({ category => $problem->category, deleted => 0 });
+		
+		if ( $contact ) {
+			if ( $contact->group_id ) {
+				return $contact->group_id;
+			}
+		}
+	}
+	
+	return 0;
+}
+
 # returns true if the external id is the council's ref, i.e., useful to publish it
 # (by way of an example, the barnet send method returns a useful reference when
 # it succeeds, so that is the ref we should show on the problem report page).
