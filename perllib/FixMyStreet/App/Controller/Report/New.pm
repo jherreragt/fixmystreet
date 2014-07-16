@@ -789,6 +789,9 @@ Load user from the database or prepare a new one.
 sub process_user : Private {
     my ( $self, $c ) = @_;
 
+	# Reset scroll to stash variable
+	$c->stash->{scroll_to} = '';
+
     my $report = $c->stash->{report};
 
     # Extract all the params to a hash to make them easier to work with
@@ -825,9 +828,10 @@ sub process_user : Private {
         unless $report->user;
 
     # The user is trying to sign in. We only care about email from the params.
-    if ( $c->req->param('submit_sign_in') || $c->req->param('password_sign_in') ) {
+	if ( $c->req->param('submit_sign_in') || $c->req->param('password_sign_in') ) {
         unless ( $c->forward( '/auth/sign_in' ) ) {
             $c->stash->{field_errors}->{password} = _('There was a problem with your email/password combination. If you cannot remember your password, or do not have one, please fill in the &lsquo;sign in by email&rsquo; section of the form.');
+            $c->stash->{scroll_to} = '#report-new-login';
             return 1;
         }
         my $user = $c->user->obj;
