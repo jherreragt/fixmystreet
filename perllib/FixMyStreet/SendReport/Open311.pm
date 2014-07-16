@@ -11,6 +11,7 @@ use DateTime::Format::W3CDTF;
 use Open311;
 use Readonly;
 use Data::Dumper;
+use warnings;
 
 Readonly::Scalar my $COUNCIL_ID_OXFORDSHIRE => 2237;
 
@@ -20,6 +21,7 @@ sub send {
 
     my $result = -1;
     print Dumper($h);
+    print 'Internal ID: '.$row->id."\n";
     foreach my $body ( @{ $self->bodies } ) {
         my $conf = $self->body_config->{ $body->id };
 
@@ -88,14 +90,40 @@ sub send {
         } );
 
         my %open311_params = (
-            jurisdiction            => $conf->jurisdiction,
+            #jurisdiction            => $conf->jurisdiction,
             endpoint                => $conf->endpoint,
-            api_key                 => $conf->api_key,
+            #api_key                 => $conf->api_key,
             always_send_latlong     => $always_send_latlong,
             send_notpinpointed      => $send_notpinpointed,
             use_service_as_deviceid => $use_service_as_deviceid,
             extended_description    => $extended_desc,
         );
+
+        if ($row->cobrand eq 'pormibarrio') {
+            #$row->extra( [ { 'name' => 'external_id', 'value' => $row->id  } ]  );
+
+            my $lat=$h->{latitude};
+            my $long=$h->{longitude};
+
+            #use LWP::Simple;
+            #my $url = 'http://nominatim.openstreetmap.org/reverse?format=xml&lat='.$lat.'&lon='.$long.'&zoom=18&addressdetails=1';
+            #my $resp = get($url);
+            #die "Couldn't get resource" unless defined $resp;
+            #use XML::Simple qw(:strict);
+            #my $parsed = XMLin( $resp, KeyAttr => 'addressparts', ForceArray => [], ContentKey => '-content' );
+            #my @number_arr = split(',', $parsed->{addressparts}->{house_number});
+            #use integer;
+            #my $key = (($#number_arr+1)/2);
+            #$key += (($#number_arr+1)%2);
+            #$key -= 1;
+            #my $number = $number_arr[$key];
+            #binmode(STDOUT, ":utf8");
+            #my $street = $parsed->{addressparts}->{road}.', '.$number.', '.$parsed->{addressparts}->{suburb}.', '.$parsed->{addressparts}->{postcode};
+            #$row->{address_string} = $street;#closest_address
+            #$revert = 1;
+            print "PORMIBARRIO \n";
+        }
+
         if (FixMyStreet->test_mode) {
             my $test_res = HTTP::Response->new();
             $test_res->code(200);
@@ -130,35 +158,9 @@ sub send {
             $revert = 1;
         }
 
-        if ($row->cobrand eq 'pormibarrio') {
-            # FixMyBarangay endpoints expect external_id as an attribute, as do Oxfordshire
-            $row->extra( [ { 'name' => 'external_id', 'value' => $row->id  } ]  );
-
-            my $lat=$h->{latitude};
-            my $long=$h->{longitude};
-
-            use LWP::Simple;
-            my $url = 'http://nominatim.openstreetmap.org/reverse?format=xml&lat='.$lat.'&lon='.$long.'&zoom=18&addressdetails=1';
-            my $resp = get($url);
-            die "Couldn't get resource" unless defined $resp;
-            use XML::Simple qw(:strict);
-            my $parsed = XMLin( $resp, KeyAttr => 'addressparts', ForceArray => [], ContentKey => '-content' );
-            my @number_arr = split(',', $parsed->{addressparts}->{house_number});
-            use integer;
-            my $key = (($#number_arr+1)/2);
-            $key += (($#number_arr+1)%2);
-            $key -= 1;
-            my $number = $number_arr[$key];
-            binmode(STDOUT, ":utf8");
-            my $street = $parsed->{addressparts}->{road}.', '.$number.', '.$parsed->{addressparts}->{suburb}.', '.$parsed->{addressparts}->{postcode};
-            $row->{address_string} = $street;#closest_address
-            $revert = 1;
-            print "PORMIBARRIO \n";
-        }
-
         my $resp = $open311->send_service_request( $row, $h, $contact->email );
-
-        print 'HI DAVE!:'.Dumper($resp)."\n";
+        print Dumper($resp);
+        print 'External ID:'.Dumper($resp)."\n";
 
         # make sure we don't save user changes from above
         $row->discard_changes() if $revert;

@@ -629,6 +629,9 @@ sub setup_categories_and_bodies : Private {
 		$groups_items{$_->group_id} = [];
 		$groups_items_encoded{$_->group_id} = [];
 	}
+	
+	$groups_items{-2} = [];
+	$groups_items_encoded{-2} = [];
 
 	my @array_groups_seen;
 	push (@array_groups_seen, [ '', '-- Pick a group --' ]);
@@ -701,7 +704,12 @@ sub setup_categories_and_bodies : Private {
 				$category_in_group{$contact->category} = $contact->group_id unless $category_in_group{$contact->category};
 
 				push (@{$groups_items{$contact->group_id}}, $contact->category);
-		                push (@{$groups_items_encoded{$contact->group_id}}, encode_entities($contact->category, "ñóéáúí"));
+		        push (@{$groups_items_encoded{$contact->group_id}}, encode_entities($contact->category, "ñóéáúí"));
+			} else {
+				push (@{$groups_items{-2}}, $contact->category);
+		        push (@{$groups_items_encoded{-2}}, encode_entities($contact->category, "ñóéáúí"));	
+		        
+		        $category_in_group{$contact->category} = -2 unless $category_in_group{$contact->category};
 			}
         }
 
@@ -711,6 +719,8 @@ sub setup_categories_and_bodies : Private {
             push @category_options, _('Other') if $seen{_('Other')};
         }
     }
+    
+    push (@array_groups_seen, [ -2, "Other" ]);
 
     # put results onto stash for display
     $c->stash->{bodies} = \%bodies;
@@ -732,7 +742,7 @@ sub setup_categories_and_bodies : Private {
 		if ( scalar keys %groups_items > 0 ) {
 			$c->stash->{category_groups_json}  = JSON->new->utf8->encode(\%groups_items_encoded);
 
-			$c->log->info($c->stash->{category_groups_json});
+			#$c->log->info($c->stash->{category_groups_json});
 
 			if ( $c->req->param('category') ) {
 				if ( $category_in_group{$c->req->param('category')} ) {

@@ -1,42 +1,51 @@
 [%# Assumes fixmystreet cobrand is using FMS map template - for bonus points preload all the right map elements. %]
 [% map_js = BLOCK %]
 <script>
-console.log('Empieza');
-if (geo_position_js.init()) {
-    console.log('Va a init');
-    geo_position_js.getCurrentPosition(function(pos) {
-        console.log('Get current');
-        var latitude = pos.coords.latitude;
-        var longitude = pos.coords.longitude;
-        //Redirigimos si esta fuera de montevideo
-        if (  -35 > latitude || latitude > -34.6695163)
+function locate(){
+    //Redirigimos en timeout
+    setTimeout(function(){location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=4'}, 10000);
+    //Comenzamos goeposition
+    if (geo_position_js.init()) {
+        console.log('Va a init');
+        geo_position_js.getCurrentPosition(function(pos) {
+            console.log('Get current');
+            var latitude = pos.coords.latitude;
+            var longitude = pos.coords.longitude;
+            //Redirigimos si esta fuera de montevideo
+            if ( latitude < -35 || latitude > -34.6695163){
+                location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=4';
+            }
+            else if (longitude > -56.168270 || longitude < -56.4350581){
+                location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=4';
+            }
+            else {
+                location.href = '/around?latitude=' + latitude + ';longitude=' + longitude + '&zoom=4';
+            }
+        }, 
+        function(err) {
             location.href = '/around?latitude=-34.906557;longitude=-56.199769';
-        if (  -56.168270 < longitude || longitude < -56.4350581 )
-            location.href = '/around?latitude=-34.906557;longitude=-56.199769';
-        location.href = '/around?latitude=' + latitude + ';longitude=' + longitude;
-    }, 
-    function(err) {
-        console.log('Entra a err');
-        if (err.code == 1) { // User said no
-            location.href = '/around?latitude=-34.906557;longitude=-56.199769';
-        } 
-        else { 
-            
-            /*if (err.code == 1) { // User said no
-                $link.html(translation_strings.geolocation_declined);
-            } else if (err.code == 2) { // No position
-                $link.html(translation_strings.geolocation_no_position);
-            } else if (err.code == 3) { // Too long
-                $link.html(translation_strings.geolocation_no_result);
-            } else { // Unknown
-                $link.html(translation_strings.geolocation_unknown);
+            /*console.log('Entra a err');
+            if (err.code == 1) { // User said no
+                location.href = '/around?latitude=-34.906557;longitude=-56.199769';
+            } 
+            else { 
+                
+                if (err.code == 1) { // User said no
+                    $link.html(translation_strings.geolocation_declined);
+                } else if (err.code == 2) { // No position
+                    $link.html(translation_strings.geolocation_no_position);
+                } else if (err.code == 3) { // Too long
+                    $link.html(translation_strings.geolocation_no_result);
+                } else { // Unknown
+                    $link.html(translation_strings.geolocation_unknown);
+                }
             }*/
-        }
-    }, 
-    {
-        enableHighAccuracy: true,
-        timeout: 10000
-    });
+        }, 
+        {
+            enableHighAccuracy: true,
+            timeout: 10000
+        });
+    }
 }
 /*
 setTimeout(
@@ -75,12 +84,16 @@ setTimeout(
     <div class="overlay-blue"></div>
         <!--MAIN CONTAINER-->
         <div class="container c-intro">
-            <h1><img src="images/logo-intro.png" alt="Por mi Barrio"></h1>
+            <h1><img src="/cobrands/pormibarrio/images/logo-intro.png" alt="Por mi Barrio"></h1>
             <h2 class="responsive" data-compression="10" data-min="14" data-max="40">Mejorando la ciudad, contigo.</h2>
             <p>Esta es una plataforma para hacer reclamos por roturas y problemas que veas en la ciudad junto a 
             vecinos y vecinas, manteniéndote al tanto del proceso de reparación. Lo llevamos adelante desde DATA 
             (una organización de la sociedad civil) usando la plataforma de servicios abiertos de la Intendencia 
             de Montevideo y con el apoyo del Defensor del Vecino.</p>
+            <div class="c-buttons-intro">
+                <a href="javascript:void(0);" class="btn btn-reportar btn-intro">Como funciona</a>
+                <a href="#" onclick="locate()" class="btn btn-green btn-intro">Comenzar ahora</a>
+            </div>
             <div class="steps">
                 <div class="step step-one">
                     <img src="/cobrands/pormibarrio/images/intro-step-01.png" alt=""/>
@@ -99,17 +112,13 @@ setTimeout(
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="c-buttons-intro">
-                <a href="javascript:;" class="btn btn-reportar btn-intro">Como funciona</a>
-                <a href="/around?latitude=-34.906557;longitude=-56.199769" class="btn btn-green btn-intro">Comenzar ahora</a>
-            </div>
         </div>
         <!--/main container-->
 
         <!--FOOTER-->
         <div class="footer"> 
-            <img src="images/data.png" alt="DATA"/>     
-            <a href="javascript:;" class="know-more">Conoce más sobre PorMiBarrio</a>
+            <img src="/cobrands/pormibarrio/images/data.png" alt="DATA"/>     
+            <a href="/faq" class="know-more">Conoce más sobre PorMiBarrio</a>
             <p class="photo-credit">Fotografía: Gonzalo Díaz Fornaro</p>
         </div>
         
@@ -125,4 +134,5 @@ setTimeout(
     [% IF error %]
         <p class="form-error">[% error %]</p>
     [% END %]
+    <script type="text/javascript" src="[% version('/js/pormibarrio-main.js') %]"></script>
 </body>

@@ -123,22 +123,22 @@ function fixmystreet_onload() {
     pin_layer_style_map.addUniqueValueRules('default', 'size', {
         'normal': {
             externalGraphic: "/i/pin-${colour}.png",
-            graphicWidth: 64,
-            graphicHeight: 64,
-            graphicXOffset: -24,
-            graphicYOffset: -64,
+            graphicWidth: 29,
+            graphicHeight: 29,
+            graphicXOffset: -15,
+            graphicYOffset: -29,
             backgroundGraphic: "/i/pin-shadow.png",
-            backgroundWidth: 60,
-            backgroundHeight: 30,
+            backgroundWidth: 29,
+            backgroundHeight: 15,
             backgroundXOffset: -7,
-            backgroundYOffset: -30
+            backgroundYOffset: -10
         },
         'big': {
             externalGraphic: "/i/pin-${colour}-big.png",
-            graphicWidth: 105,
-            graphicHeight: 105,
-            graphicXOffset: -39,
-            graphicYOffset: -105,
+            graphicWidth: 67,
+            graphicHeight: 69,
+            graphicXOffset: -33,
+            graphicYOffset: -69,
             backgroundGraphic: "/i/pin-shadow-big.png",
             backgroundWidth: 88,
             backgroundHeight: 40,
