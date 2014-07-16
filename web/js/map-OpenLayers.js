@@ -326,7 +326,7 @@ $(function(){
 
 	// Hides navigation controls
 	$('#sub_map_links').hide();
-	$('#fms_pan_zoom').hide();
+	//$('#fms_pan_zoom').hide();
 
     $(window).hashchange(function(){
         if (location.hash == '#report' && $('.rap-notes').is(':visible')) {
