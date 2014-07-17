@@ -73,13 +73,13 @@
                     <input type="text" value="[% report.address_comp | html %]" name="address_comp" id="form_address_comp" placeholder="[% loc('Number or corner') %]" required>
                     -->
                     <div class="form-group">
-                        <label for="form_title">[% loc('Subject') %]</label>
+                        <label for="form_title">[% loc('Subject') %] *</label>
                         [% IF field_errors.title %]
                             <p class='form-error'>[% field_errors.title %]</p>
                         [% END %]
                         <input type="text" value="[% report.title | html %]" name="title" id="form_title" placeholder="[% loc('Provide a title') %]" required>
 
-                        <label for="form_detail">[% loc('Details') %]</label>
+                        <label for="form_detail">[% loc('Details') %] *</label>
                         [% IF field_errors.detail %]
                             <p class='form-error'>[% field_errors.detail %]</p>
                         [% END %]
@@ -89,7 +89,7 @@
                     <div class="form-group">
                         [% IF js %]
                             <div id="form_category_row">
-                                <label for="form_category">[% loc('Category') %]</label>
+                                <label for="form_category">[% loc('Category') %] *</label>
                                 <select name="category" id="form_category" required><option>[% loc('Loading...') %]</option></select>
                             </div>
                         [% ELSE %]
@@ -149,14 +149,14 @@
             <div class="login">
 				[% IF c.user_exists %]
 					<div class="form-box">
-						<label for="form_email">[% loc('Your email') %]</label>
+						<label for="form_email">[% loc('Your email') %] *</label>
 						<input disabled type="text" value="[% c.user.email | html %]">
 
 						[% IF field_errors.general %]
 							<p class='form-error'>[% field_errors.general %]</p>
 						[% END %]
 
-						<label for="form_identity_document">[% loc('Identity document') %]</label>
+						<label for="form_identity_document">[% loc('Identity document') %] *</label>
 						[% IF field_errors.identity_document %]
 							<p class='form-error'>[% field_errors.identity_document %]</p>
 						[% END %]
@@ -164,7 +164,7 @@
 
 						[% INCLUDE 'report/new/extra_name.html' %]
 
-						<label for="form_name">[% loc('Name') %]</label>
+						<label for="form_name">[% loc('Name') %] *</label>
 						[% IF field_errors.name %]
 							<p class='form-error'>[% field_errors.name %]</p>
 						[% END %]
@@ -195,13 +195,14 @@
 							<h2>Accede a tu cuenta</h2>
 							<p>Conectate a tu cuenta para poder finalizar tu reporte y enviarlo a la Intendencia.</p>
 						</div>
-
-						<!--<label for="form_email">[% loc('Your email') %]</label>-->
-						[% IF field_errors.email %]
-							<p class='form-error'>[% field_errors.email %]</p>
-						[% END %]
-						<input type="email" class="form-control required" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]" required>
-
+						<div class="form-group">
+							<label for="form_email">[% loc('Your email') %] *</label>
+							[% IF field_errors.email %]
+								<p class='form-error'>[% field_errors.email %]</p>
+							[% END %]
+							<input type="email" class="form-control required" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="[% loc('Please enter your email address') %]" required>
+						</div>
+						
 						<div id="form_sign_in">
 							<div class="ir">
 								<p>[% loc("Now to submit your report&hellip;") %]</p>

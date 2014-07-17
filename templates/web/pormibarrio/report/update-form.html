@@ -80,7 +80,7 @@
 				[% IF field_errors.update %]
 					<div class='form-error'>[% field_errors.update %]</div>
 				[% END %]
-				<textarea rows="" name="update" id="form_update" placeholder="Escriba aquí su comentario" required>[% update.text | html %]</textarea>
+				<textarea rows="" name="update" id="form_update" placeholder="Escriba aquí su comentario *" required>[% update.text | html %]</textarea>
 
 			[% IF c.user && c.user.belongs_to_body( problem.bodies_str ) %]
 				<label for="form_state">[% loc( 'State' ) %]</label>
@@ -130,7 +130,7 @@
 				<h3 id="report-update-login">[% loc("Now to submit your update&hellip;") %]</h3>
 
 				<div class="form-group">
-					<label for="form_rznvy">[% loc('Email' ) %]</label>
+					<label for="form_rznvy">[% loc('Email' ) %] *</label>
 					[% IF field_errors.email %]
 						<p class='form-error'>[% field_errors.email %]</p>
 					[% END %]

@@ -7,7 +7,7 @@
 	[% END %]
 </script>
 
-<label for='form_category_groups' id='form_category_label_groups'>[% loc('Category group') %]</label>
+<label for='form_category_groups' id='form_category_label_groups'>[% loc('Category group') %] *</label>
 <select name='category_groups' id='form_category_groups' onchange='form_category_group_onchange()'  class="required" required>
 	[% FOREACH group IN category_groups_seen %]
 		[% group_name = group.1 %]
@@ -19,7 +19,7 @@
 [% IF category;
 	category = category | lower;
    END; %]
-<label for='form_category' id="form_category_label">[% loc('Category') %]</label>
+<label for='form_category' id="form_category_label">[% loc('Category') %] *</label>
 <select name='category' id='form_category' [% ' disabled' IF not category %]  class="required" required>
 	[% FOREACH cat_op IN category_currently_loaded %]
 		[% cat_op_lc = cat_op | lower %]
