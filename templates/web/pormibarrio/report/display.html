@@ -87,14 +87,15 @@
 		</form>
 	</div>
 </div>
-</div>
-
+	</div>
+				
 [% INCLUDE 'footer.html' %]
 
 
-
+				<div style="margin-left: -290px; position: absolute; top: 10%; width: 580px"><a id="display_problem_close" style="background: #aaaaaa; color: #ffffff; padding: 5px; position: absolute; right: 25px; font-size:small;">[x] [% loc('Close') %]</a></div>
+				<script>$('#display_problem_close').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
 			</div>
-		</div>
+		</div>	
 		<!--end report-->
 	</div>
 	<!--end container report-->   
