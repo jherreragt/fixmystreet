@@ -127,14 +127,15 @@
 				[% INCLUDE name %]
 				<input class="final-submit green-btn" type="submit" id="update_post" value="Comentar">
 			[% ELSE %]
-				<h3>[% loc("Now to submit your update&hellip;") %]</h3>
+				<h3 id="report-update-login">[% loc("Now to submit your update&hellip;") %]</h3>
 
 				<div class="form-group">
 					<label for="form_rznvy">[% loc('Email' ) %]</label>
 					[% IF field_errors.email %]
 						<p class='form-error'>[% field_errors.email %]</p>
 					[% END %]
-					<input type="email" name="form_rznvy" id="form_rznvy" value="[% update.user.email | html %]" placeholder="[% loc('Your email address' ) %]">
+					<input type="email" name="form_rznvy" id="form_rznvy" value="[% update.user.email | html %]" 
+						class="required" placeholder="[% loc('Your email address' ) %]" required>
 				</div>
 				
 				<div id="form_sign_in">

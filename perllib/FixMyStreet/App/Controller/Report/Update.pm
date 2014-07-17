@@ -104,6 +104,9 @@ Load user from the database or prepare a new one.
 sub process_user : Private {
     my ( $self, $c ) = @_;
 
+	# Reset scroll to stash variable
+	$c->stash->{scroll_to} = '';
+
     my $update = $c->stash->{update};
 
     if ( $c->user_exists ) {
@@ -134,6 +137,7 @@ sub process_user : Private {
     if ( $c->req->param('submit_sign_in') || $c->req->param('password_sign_in') ) {
         unless ( $c->forward( '/auth/sign_in', [ $email ] ) ) {
             $c->stash->{field_errors}->{password} = _('There was a problem with your email/password combination. If you cannot remember your password, or do not have one, please fill in the &lsquo;sign in by email&rsquo; section of the form.');
+            $c->stash->{scroll_to} = '#report-update-login';
             return 1;
         }
         my $user = $c->user->obj;

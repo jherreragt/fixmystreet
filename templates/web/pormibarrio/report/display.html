@@ -21,7 +21,7 @@
 	<div class="container-report">
 		<!--REPORT-->
 		<div class="report">
-			<div class="info-report scrolled-report">
+			<div id="update-display" class="info-report scrolled-report">
 			
 [% INCLUDE 'report/_main.html' %]
 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
@@ -99,3 +99,11 @@
 	</div>
 	<!--end container report-->   
 </div>
+
+<script>
+	/*$('#update-display').slimScroll({ scrollTo: 100 });*/
+	
+	[% IF scroll_to %]
+		$().ready(function() { $('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); });
+	[% END %]
+</script>
