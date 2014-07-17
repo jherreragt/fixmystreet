@@ -139,10 +139,24 @@
 				</div>
 				
 				<div id="form_sign_in">
-					<h2>[% loc("Do you have a FixMyStreet password?") %]</h2>
+					<h2>[% loc("Do you have a social network account?") %]</h2>
 
-					<div id="form_sign_in_yes" class="form-box">
-						<h5>[% loc('<strong>Yes</strong> I have a password') %]</h5>
+					[% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
+					<div id="form_sign_social" class="form-box no-account">
+						<h5>[% loc('<strong>Yes</strong> I have a social network account') %]</h5>
+						<div>
+							[% IF c.config.FACEBOOK_APP_ID %]
+							<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>
+							[% END %]
+							[% IF c.config.TWITTER_KEY %]
+							<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
+							[% END %]
+						</div>
+					</div>
+					[% END %]
+
+					<div id="form_sign_in_yes" class="form-box no-account">
+						<h5>[% loc('<strong>No</strong> I have a FixMyStreet password') %]</h5>
 
 						<div class="form-group">
 							<label class="hidden-js n" for="password_sign_in">[% loc('Yes I have a password') %]</label>
@@ -166,8 +180,8 @@
 						</div>
 						-->
 					</div>
-					<div id="form_sign_in_no" class="form-box">
-						<h5>[% loc('<strong>No</strong> Let me confirm my update by email') %]</h5>
+					<div id="form_sign_in_no" class="form-box no-account">
+						<h5>[% loc('<strong>Or</strong> Let me confirm my update by email') %]</h5>
 
 						[% INCLUDE name %]
 
@@ -184,20 +198,6 @@
 								<input class="green-btn" type="submit" name="submit_register" id="submit_register" value="[% loc('Post') %]">
 							</div>
 						</div>
-					</div>
-
-					<div id="form_sign_social" class="form-box">
-						[% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
-						<h5>[% loc('<strong>Or</strong> Use a social network account') %]</h5>
-						<div>
-							[% IF c.config.FACEBOOK_APP_ID %]
-							<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in"><img src="/i/FB-f-Logo__blue_50.png"/></button>
-							[% END %]
-							[% IF c.config.TWITTER_KEY %]
-							<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
-							[% END %]
-						</div>
-						[% END %]
 					</div>
 				</div>
 			[% END %]
