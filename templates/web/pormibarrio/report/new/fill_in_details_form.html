@@ -222,6 +222,10 @@
 									<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in"><img src="/i/Twitter_logo_blue_50px_50px.png"/></button>
 									[% END %]
 								</div>
+								<div class="checkbox-group">
+									<input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+									<label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+								</div>
 							</div>
 							[% END %]
 
