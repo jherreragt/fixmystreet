@@ -223,8 +223,8 @@
 									[% END %]
 								</div>
 								<div class="checkbox-group">
-									<input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
-									<label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+									<input type="checkbox" name="may_show_name_social" id="form_may_show_name_social" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+									<label class="inline" for="form_may_show_name_social">[% loc('Show my name publicly') %] </label>
 								</div>
 							</div>
 							[% END %]
