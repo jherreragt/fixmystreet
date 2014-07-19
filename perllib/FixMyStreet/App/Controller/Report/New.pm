@@ -889,7 +889,11 @@ sub process_report : Private {
     $report->longitude( $c->stash->{longitude} );
 
     # set some simple bool values (note they get inverted)
-    $report->anonymous( $params{may_show_name} ? 0 : 1 );
+    if ( $c->stash->{is_social_user} ) {
+		$report->anonymous( $c->req->param('may_show_name_social') ? 0 : 1 );
+	} else {
+		$report->anonymous( $params{may_show_name} ? 0 : 1 );
+	}
 
     # clean up text before setting
     $report->title( Utils::cleanup_text( $params{title} ) );
@@ -1108,9 +1112,7 @@ sub save_user_and_report : Private {
         }
         $report->confirm();
     } elsif ( !$report->user->in_storage) {
-        if ( $c->stash->{is_social_user} ) {
-			$report->anonymous( $c->req->param('may_show_name_social') ? 0 : 1 );
-			
+        if ( $c->stash->{is_social_user} ) {		
             my $token_data = {
                 postcode => $report->postcode,
                 latitude => $report->latitude,
