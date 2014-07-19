@@ -1109,6 +1109,8 @@ sub save_user_and_report : Private {
         $report->confirm();
     } elsif ( !$report->user->in_storage) {
         if ( $c->stash->{is_social_user} ) {
+			$report->anonymous( $c->req->param('may_show_name_social') ? 0 : 1 );
+			
             my $token_data = {
                 postcode => $report->postcode,
                 latitude => $report->latitude,
