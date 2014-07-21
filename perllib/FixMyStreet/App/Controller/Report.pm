@@ -231,9 +231,13 @@ sub delete :Local :Args(1) {
     return $c->res->redirect($uri) unless $c->user_exists;
 
     my $body = $c->user->obj->from_body;
-    return $c->res->redirect($uri) unless $body;
-
-    return $c->res->redirect($uri) unless $p->bodies->{$body->id};
+    
+    if ($body){
+        return $c->res->redirect($uri) unless $p->bodies->{$body->id};
+    }
+    else {
+        return $c->res->redirect($uri) unless $c->user->id == $p->user_id;
+    }
 
     $p->state('hidden');
     $p->lastupdate( \'ms_current_timestamp()' );
