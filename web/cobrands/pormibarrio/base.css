@@ -130,8 +130,8 @@ ul.error{background:#ff0000;color:#fff;padding:0 0.5em;-webkit-border-radius:0.2
 div.label-valid,p.label-valid{display:none !important;visibility:hidden}
 .container{padding:0 1em 1em}
 .full-width,.shadow-wrap,#footer-mobileapps,#map_box,.promo,.alert,#front-main #postcodeForm{margin:0 -1em}
-#site-header{border-top:0.25em solid #f90;height:3em;background:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #000000), color-stop(10%, #222222), color-stop(90%, #222222), color-stop(100%, #000000));background:-webkit-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:-moz-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:-o-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:linear-gradient(#000000,#222222 10%,#222222 90%,#000000)}
-#site-header .container{min-height:4em}
+/*#site-header{border-top:0.25em solid #f90;height:3em;background:-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #000000), color-stop(10%, #222222), color-stop(90%, #222222), color-stop(100%, #000000));background:-webkit-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:-moz-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:-o-linear-gradient(#000000,#222222 10%,#222222 90%,#000000);background:linear-gradient(#000000,#222222 10%,#222222 90%,#000000)}
+#site-header .container{min-height:4em}*/
 #site-logo{
 	display:block;
 	width:175px;

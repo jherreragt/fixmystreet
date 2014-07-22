@@ -125,8 +125,8 @@ sub _populate_service_request_params {
         || ( !$self->send_notpinpointed && !$problem->used_map
              && !$problem->postcode ) )
     {
-        $params->{lat} = -34.900907;#$problem->latitude;
-        $params->{long} = -56.187381;#$problem->longitude;
+        $params->{lat} = $problem->latitude;
+        $params->{long} = $problem->longitude;
     # this is a special case for sending to Bromley so they can
     # report accuracy levels correctly. We include easting and
     # northing as attributes elsewhere.
@@ -142,7 +142,7 @@ sub _populate_service_request_params {
         $params->{address_string} = $problem->{address_string};
     }
     if ( $problem->user->identity_document ) {
-        $params->{ document } = '1887532';#$problem->user->identity_document;
+        $params->{ document } = substr($problem->user->identity_document, 0, -2);
     }
     if ( $problem->user->phone ) {
         #$params->{ phone } = $problem->user->phone;

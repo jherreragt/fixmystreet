@@ -15,7 +15,11 @@ use Open311::GetServiceRequestUpdates;
 
 my $dt = DateTime->now();
 my $dt_24hrs_ago = $dt->clone;
-$dt_24hrs_ago->add( hours => -24*100 );
+$dt_24hrs_ago->add( hours => -24 );
+
+my $tz = 'America/Montevideo';
+$dt->set_time_zone( $tz );
+$dt_24hrs_ago->set_time_zone( $tz );
 
 my $updates = Open311::GetServiceRequestUpdates->new(
     verbose => 1,
