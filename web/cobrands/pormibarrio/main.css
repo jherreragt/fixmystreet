@@ -456,11 +456,15 @@ div.status-report{
 	border-bottom:#ebebeb solid 1px;
 }
 
-div.status-report h4{
+div.status-report h4, div.comment-reports h3{
 	text-transform:uppercase;
-	color:#a40301;
+	color:#fc4349;
 	font-weight:600;
 	font-size:0.875em;	
+}
+
+div.comment-reports h3 {
+    padding: 20px 0 0 40px;
 }
 
 div.status-report ul{
@@ -495,14 +499,6 @@ div.comment{
 	border-bottom:#ebebeb solid 1px
 }
 
-div.comment-reports h4{
-	text-transform:uppercase;
-	color:#a40301;
-	font-weight:600;
-	font-size:0.875em;
-	padding: 20px 40px;	
-}
-
 div.user-avatar{
 	float:left;
 	width:60px;
@@ -516,6 +512,33 @@ div.user-avatar img{
 	height:auto;
 }
 
+div.user-info form textarea, div.user-info .form-control {
+    background-color: #fafafa;
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+    color: #464646;
+    font-family: 'Source Sans Pro',sans-serif;
+    font-size: 14px;
+    height: 65px;
+    margin-bottom: 15px;
+    padding: 10px;
+    width: 100%;
+}
+
+div.user-info .form-control {
+    height: 39px;
+}
+
+#form_photo {
+	background-color: inherit;
+    border: medium none;
+    color: #7d7d7d;
+    font-size: 14px;
+    font-style: italic;
+    height: auto;
+    margin-bottom: 0;
+    padding: 0;
+}
 div.user-info form textarea{
 	border:#d3d3d3 solid 1px;
 	background-color:#fafafa;
@@ -527,6 +550,18 @@ div.user-info form textarea{
 	color:#464646;
 	width:84%;
 	height:45px;	
+}
+
+.form-group label {
+    color: #758a9d;
+    font-size: 1.375em;
+    font-weight: 400;
+}
+
+div.user-info div.checkbox label {
+    color: #7d7d7d;
+    display: inline;
+    font-size: 1em;
 }
 
 div.user-comment .btn-disabled{
@@ -554,7 +589,16 @@ div.user-comment p{
 }
 
 div.comment-user{
-	border-bottom:none;	
+	border-bottom: medium none;
+	padding-bottom: 5px;	
+}
+
+div.comments-user-info {
+    float: left;
+    margin-top: 3px;
+    overflow: auto;
+    padding-bottom: 50px;
+    width: 84%;
 }
 
 div.imm-comment{
@@ -565,6 +609,28 @@ div.user-picture{
 	margin-top:15px;
 	border-radius:5px;
 	overflow:hidden	
+}
+
+div.actions {
+    margin-bottom: 30px;
+    padding: 15px 0;
+}
+
+div.actions ul li {
+    float: left;
+    margin-right: 20px;
+}
+
+div.actions li a {
+    color: #7d7d7d;
+    font-size: 15px;
+    padding: 0 0 5px 27px;
+}
+
+div.share {
+    clear: both;
+    float: left;
+    margin-top: 10px;
 }
 
 /*INGRESAR UN REPORTE-----------------------------------------------------------------------------*/

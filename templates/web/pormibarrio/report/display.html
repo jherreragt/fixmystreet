@@ -27,47 +27,55 @@
 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
 
 <div class="comment-reports">
-    <h4>Comentarios</h4>
+    <h3>Comentarios</h3>
     [% INCLUDE 'report/updates.html' %]
     <div class="comment comment-user">
         <div class="user-avatar">
             <!--avatar dinámico -->
             <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">
         </div>
-        <div class="user-info">
+        <div class="user-info comments-user-info">
             [% INCLUDE 'report/update-form.html' %]
         </div>
     </div>
+</div>
 
-<div class="shadow-wrap">
-    <ul id="key-tools">
+<script>
+var imComments = $('.comment-IM');
+if (imComments.length > 0){
+    var statusList=document.createElement("ul");
+    imComments.each(function() {
+        statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
+        $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
+    });
+    statusList.innerHTML += '</ul>';
+    $('.status-report').append(statusList);
+}
+</script>
+
+<div class="actions">
+    <ul class="actions">
         [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
-        <li><form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
-            <input type="submit" id="key-tool-report-abuse" class="abuse" value="Remove from site">
-        </form></li>
-        [% ELSIF c.cobrand.moniker != 'zurich' %]
-        <li><a rel="nofollow" id="key-tool-report-abuse" class="abuse" href="[% c.uri_for( '/contact', { id => problem.id } ) %]">[% loc('Report abuse' ) %]</a></li>
+            <li>
+                <form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
+                    <input type="submit" id="key-tool-report-abuse" class="abuse" value="Remove from site">
+                </form>
+            </li>
+        [% ELSE %]
+            <li>
+                <a rel="nofollow" id="key-tool-report-abuse" class="abuse" href="[% c.uri_for( '/contact', { id => problem.id } ) %]">[% loc('Report abuse' ) %]</a>
+            </li>
         [% END %]
-        [% IF c.cobrand.moniker != 'zurich' %]
-        <li><a rel="nofollow" id="key-tool-report-updates" class="feed" href="[% c.uri_for( '/alert/subscribe', { id => problem.id } ) %]">[% loc('Get updates' ) %]</a></li>
-        [% END %]
-        [%# IF c.cobrand.moniker == 'fixmystreet' %]
-        <li><a rel="nofollow" id="key-tool-report-share" class="share" href="#report-share">[% loc('Share') %]</a></li>
-        [%# END %]
-      [% IF c.cobrand.moniker == 'zurich' %]
-        <li><a class="chevron" id="key-tool-problems-nearby" href="[% c.uri_for( '/around', { lat => short_latitude, lon => short_longitude } ) %]">[% loc( 'Problems on the map' ) %]</a></li>
-      [% ELSE %]
-        <li><a class="chevron" id="key-tool-problems-nearby" href="[% c.uri_for( '/around', { lat => short_latitude, lon => short_longitude } ) %]">[% loc( 'Problems nearby' ) %]</a></li>
-      [% END %]
+        <li>
+            <a rel="nofollow" id="key-tool-report-updates" class="feed" href="[% c.uri_for( '/alert/subscribe', { id => problem.id } ) %]">[% loc('Get updates' ) %]</a>
+        </li>
     </ul>
-
-[%# IF c.cobrand.moniker == 'fixmystreet' %]
-    <div id="report-share" class="hidden-js" align="center">
+    <div id="report-share" class="share">
         <a href="https://twitter.com/share" class="twitter-share-button" data-text="[% loc('I just reported') %] [% problem.title_safe | html %]" data-hashtags="PorMiBarrio" data-related="mysociety" data-count="none" data-dnt="true"></a>
-		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-		<div class="fb-like" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        <div class="fb-like" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
     </div>
-[%# END %]
+</div>
 
 	<div id="report-updates-data" class="hidden-js">
 		<form action="[% c.uri_for( '/alert/subscribe' ) %]" method="post">
