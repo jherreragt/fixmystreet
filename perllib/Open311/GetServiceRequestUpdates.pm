@@ -56,7 +56,6 @@ sub update_comments {
     my ( $self, $open311, $body_details ) = @_;
 
     my @args = ();
-
     if ( $self->start_date || $self->end_date ) {
         return 0 unless $self->start_date && $self->end_date;
 
@@ -73,9 +72,6 @@ sub update_comments {
     }
 
     my $requests = $open311->get_service_request_updates( @args );
-    use Data::Dumper;
-
-    print Dumper($requests);
 
     unless ( $open311->success ) {
         warn "Failed to fetch ServiceRequest Updates for " . join(",", keys %{$body_details->{areas}}) . ":\n" . $open311->error
@@ -84,6 +80,8 @@ sub update_comments {
     }
 
     for my $request (@$requests) {
+        use Data::Dumper;
+        print Dumper($request);
         my $request_id = $request->{service_request_id};
 
         # If there's no request id then we can't work out
@@ -94,13 +92,14 @@ sub update_comments {
         my $criteria = {
             external_id => $request_id,
             # XXX This assumes that areas will actually only be one area.
-            bodies_str => { like => '%' . join(",", keys %{$body_details->{areas}}) . '%' },
+            #bodies_str => { like => '%' . join(",", keys %{$body_details->{areas}}) . '%' },
         };
+        print "\nCriteria:";
+        print Dumper($criteria);
         $problem = FixMyStreet::App->model('DB::Problem')->search( $criteria );
-
-        print Dumper($problem);
-        
+        print "\nPROBLEM";
         if (my $p = $problem->first) {
+            print 'ENTRA PROBLEM';
             my $c = $p->comments->search( { external_id => $request->{update_id} } );
 
             if ( !$c->first ) {
@@ -121,7 +120,8 @@ sub update_comments {
                         state => 'confirmed',
                     }
                 );
-
+                print 'COMMENT';
+                print Dumper($comment);
                 # if the comment is older than the last update
                 # do not change the status of the problem as it's
                 # tricky to determine the right thing to do.
