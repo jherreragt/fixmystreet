@@ -20,15 +20,16 @@
         <p>Aquí encontrará problemas en su zona o en la zona que desee reportar o chequear. Para hacer el reporte sólo debe hacer click en el mapa.</p>
     </div>
     <!--/end intro reports-->
-    <div class="rl scrolled" id="current">
-    <!--REPORTS LIST-->
+    <div class="rl scrolled">
+    <div id="current">
+        <!--REPORTS LIST-->
         [% INCLUDE "around/on_map_list_items.html" %]
-    	[% INCLUDE "around/around_map_list_items.html" %]
+    	<!--[% INCLUDE "around/around_map_list_items.html" %]-->
     </div>
-    <!--
-    <div class="rl scrolled" id="current_near">
+    <div id="current_near">
+        [% INCLUDE "around/around_map_list_items.html" %]
     </div>
-    -->
+    </div>
     <!--/end reports list-->
 </div>
 <!--end listado de reportes-->
