@@ -2,9 +2,14 @@
 <div class="comment-reports">
 [% END %]
      <div class="comment comment-[% update.name %]">
-		<div class="user-avatar"><img alt="" src="/cobrands/pormibarrio/images/no_pic.png"></div>
+		<div class="user-avatar">
+			[% IF update.users.facebook_id %]
+				<img alt="" src="http://graph.facebook.com/[% update.users.facebook_id %]/picture?type=square"></div>
+			[% ELSE %]
+				<img alt="" src="/cobrands/pormibarrio/images/no_pic.png"></div>
+			[% END %]
 		<div class="user-info">
-			<h4>[% update.name %]</h4>
+			<h4>[% update.users.name %]</h4>
 			<span class="time-report">[% INCLUDE meta_line %]</span>
 		</div>
 		<div class="user-comment">

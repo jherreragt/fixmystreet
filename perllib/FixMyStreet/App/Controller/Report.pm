@@ -128,7 +128,7 @@ sub load_updates : Private {
 
     my $updates = $c->model('DB::Comment')->search(
         { problem_id => $c->stash->{problem}->id, state => 'confirmed' },
-        { order_by => 'confirmed' }
+        { join => 'users', order_by => 'confirmed' }
     );
 
     my $questionnaires = $c->model('DB::Questionnaire')->search(

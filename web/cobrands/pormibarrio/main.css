@@ -42,6 +42,7 @@ a, button, div.it-r {
 
 body.mappage div.problem-container {
 	width: 100%;
+	background:url(images/bg/bg-content-report.png) repeat-x left bottom;
 }
 
 /*FIRST NAVIGATION------------------------------------*/
@@ -373,7 +374,6 @@ div.c-report{
 	width:100%;
 	height:100%;
 	z-index:10;
-	background:url(images/bg/bg-content-report.png) repeat-x left bottom;
 	display:block
 }
 
@@ -387,7 +387,7 @@ div.report{
 	border-radius: 5px;
     height: 100%;
     /*left: 50%;*/
-    margin-left: -290px;
+    margin-left: -410px;
     overflow: hidden;
     padding-bottom: 50px;
     position: absolute;
@@ -1085,4 +1085,78 @@ p.photo-credit{
 		width:100%		
 	}
 	
+}
+
+
+/*TOOLTIPS y PINS*/
+
+.arrow_box {
+	position: relative;
+	background: #fff;
+	border-radius:5px;
+
+}
+.arrow_box:after {
+	right: 100%;
+	top: 20%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 10px;
+	margin-top: -10px;
+}
+
+div.tool{
+	display:inline-block;
+}
+
+div.tool div.it-r{
+	background-color: inherit;
+	cursor:default;
+	padding:0;
+	overflow:hidden;
+	border-radius:5px;
+	border-bottom:none
+}
+
+div.tool div.it-r-info{
+	padding:20px 25px;	
+}
+
+div.tool-details{
+	background-color:#fbfbfb;
+	clear:both;
+	border-top:#ebebeb solid 1px;
+}
+
+div.user-small{
+	padding:7px 10px 7px 23px;
+	float:left
+}
+
+div.tool-details img{
+}
+
+span.name{
+	font-size:0.875em;
+	color:#252525;
+	font-style:italic;	
+}
+
+.btn-detalle span{
+	display:block;
+	width:5px;
+	height:10px;
+	float:right;
+	background: url(../images/bg/white-arrow.png) no-repeat left top;
+	margin:5px 0 0 8px;
+}
+
+.tool h3{
+	color:#a40301	
 }
