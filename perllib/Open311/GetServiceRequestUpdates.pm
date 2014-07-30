@@ -79,9 +79,11 @@ sub update_comments {
         return 0;
     }
 
+    print Dumper($requests);
+
     for my $request (@$requests) {
         use Data::Dumper;
-        print Dumper($request);
+
         my $request_id = $request->{service_request_id};
 
         # If there's no request id then we can't work out
@@ -94,12 +96,8 @@ sub update_comments {
             # XXX This assumes that areas will actually only be one area.
             #bodies_str => { like => '%' . join(",", keys %{$body_details->{areas}}) . '%' },
         };
-        print "\nCriteria:";
-        print Dumper($criteria);
         $problem = FixMyStreet::App->model('DB::Problem')->search( $criteria );
-        print "\nPROBLEM";
         if (my $p = $problem->first) {
-            print 'ENTRA PROBLEM';
             my $c = $p->comments->search( { external_id => $request->{update_id} } );
 
             if ( !$c->first ) {
@@ -120,8 +118,6 @@ sub update_comments {
                         state => 'confirmed',
                     }
                 );
-                print 'COMMENT';
-                print Dumper($comment);
                 # if the comment is older than the last update
                 # do not change the status of the problem as it's
                 # tricky to determine the right thing to do.
@@ -169,11 +165,15 @@ sub map_state {
     $incoming_state =~ s/_/ /g;
 
     my %state_map = (
-        fixed                         => 'fixed - council',
+        'fixed'                       => 'fixed - council',
         'not councils responsibility' => 'not responsible',
         'no further action'           => 'unable to fix',
-        open                          => 'confirmed',
-        closed                        => 'fixed - council'
+        'open'                        => 'confirmed',
+        'closed'                      => 'fixed - council',
+        'Ingresado'                   => 'in progress',     
+        'Anulado'                     => 'unable to fix',
+        'En Proceso'                  => 'in progress',
+        'Finalizado'                  => 'fixed - council',
     );
 
     return $state_map{$incoming_state} || $incoming_state;

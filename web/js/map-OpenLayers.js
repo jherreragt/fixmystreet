@@ -71,6 +71,8 @@ function fms_markers_list(pins, transform) {
     var markers = [];
     for (var i=0; i<pins.length; i++) {
         var pin = pins[i];
+        console.log('Pin '+i);
+        console.log(pin);
         var loc = new OpenLayers.Geometry.Point(pin[1], pin[0]);
         if (transform) {
             // The Strategy does this for us, so don't do it in that case.
@@ -84,11 +86,12 @@ function fms_markers_list(pins, transform) {
             size: pin[5] || 'normal',
             id: pin[3],
             title: pin[4] || '',
-            user: pin[5] || 'UserMarker',
-            date: pin[6] || 'DateMarker',
-            category : pin[7] || 'CatMarker',
-            hasPhoto : pin[8] || '',
-            hasComments : pin[9] || ''
+            user: pin[6] || 'UserMarker',
+            category: pin[7] || 'CatMarker',
+            category_id : pin[8] || 'CatIDMarker',
+            date : pin[9] || 'DateMarker',
+            hasPhoto : pin[10] || 1,
+            hasComments : pin[11] || 1
         });
         markers.push( marker );
     }

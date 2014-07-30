@@ -82,28 +82,21 @@ h1{margin-top:0}
 #main-nav ul#mysoc-menu li a#mysoc-logo:hover{opacity:1}
 #main-nav ul#mysoc-menu li a:hover{color:#fff}
 .ie7 #main-nav ul#mysoc-menu li a#mysoc-logo{background-position:-260px -43px}
-.content{
-	width:27em;
-	/*margin:3em 0.5em -1em;*/
-	max-height: 39em;
-	padding: 0 182px;
-	color:#222;
-	overflow: auto;
-	/*background:#fff;
-	-webkit-box-shadow:0px 0px 6px 1px #000;
-	-moz-box-shadow:0px 0px 6px 1px #000;
-	box-shadow:0px 0px 6px 1px #000;*/
-}
 .ie6 .content,.ie7 .content,.ie8 .content{border:1px solid #666;margin:0 0.5em}
 body.mappage .container{
 	float: left;
     width: 500px;
+    background: none;
 }
 body.mappage .content{
 	float:left;
 	/*padding:1em 1em 10em;*/
 	/*background-color:#C0C0C0;*/
 }
+.container  .problem-container {
+	width: 100%;
+}
+
 body.mappage #main-nav ul#main-menu li a,
 body.mappage #main-nav ul#main-menu li span{padding:1.4em 0.75em 1.35em 0.75em}
 body.mappage #main-nav ul#main-menu li a.report-a-problem-btn{padding:0.5em;margin:0.9em 0.25em 0.85em 0.25em}

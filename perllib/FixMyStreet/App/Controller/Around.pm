@@ -201,13 +201,14 @@ sub display_location : Private {
                 colour    => $colour,
                 id        => $p->id,
                 title     => $p->title_safe,
-                type      => ''
+                type      => '',
                 user      => 'UsuarioAround',
                 category  => 'CATEGORIAAr',
                 catId     => '35Ar',
                 date      => 'HoyAr',
                 hasPhoto  => 1,
-                hasComments => 1
+                hasComments => 1,
+                status    => 'StatusAr'
             }
         } @$on_map_all, @$around_map;
     }

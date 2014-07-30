@@ -461,12 +461,14 @@ sub add_row {
         colour    => $c->cobrand->pin_colour( $problem, 'reports' ),
         id        => $problem->id,
         title     => $problem->title_safe,
+        type      => '',
         user      => 'UsuarioReport',
-        date      => 'HoyPR',
-        catId     => '35pr',
-        category  => 'CATEGORIAPR',
+        category  => 'CATEGORIARp',
+        catId     => '35Rp',
+        date      => 'HoyRp',
         hasPhoto  => 1,
-        hasComments => 1
+        hasComments => 1,
+        status    => 'StatusRp'
     };
 }
 

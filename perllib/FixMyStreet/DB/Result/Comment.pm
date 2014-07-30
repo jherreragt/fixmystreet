@@ -80,6 +80,13 @@ __PACKAGE__->belongs_to(
   { id => "user_id" },
   { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
+__PACKAGE__->belongs_to(
+  "user",
+  "FixMyStreet::DB::Result::User",
+  { id => "user_id" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
 
 
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-09-10 17:11:54

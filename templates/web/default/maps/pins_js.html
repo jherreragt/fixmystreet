@@ -1,4 +1,5 @@
 [ [% FOR pin IN map.pins -%]
-    [ [% pin.latitude %], [% pin.longitude %], '[% pin.colour %]', '[% pin.id %]', "[% pin.title | escape_js %]", '[% pin.type %]', '[% pin.user %]', '[% pin.category %]', '[% pin.catId %]', '[% pin.date %]', '[% pin.hasPhoto %]', '[% pin.hasComments %]']
+    [ [% pin.latitude %], [% pin.longitude %], '[% pin.colour %]', '[% pin.id %]', "[% pin.title | escape_js %]", '[% pin.type %]', '[% pin.user %]', '[% pin.category %]', '[% pin.catId %]', '[% pin.date %]', '[% pin.hasPhoto %]', '[% pin.hasComments %]', '[% pin.status %]'
+    ]
     [%- IF !loop.last %],[% END %]
 [% END %] ]

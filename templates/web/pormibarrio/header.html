@@ -6,7 +6,7 @@
 <!--[if gt IE 9]><!--><html class="no-js" lang="[% lang_code %]"><!--<![endif]-->
     <head>
         <title>Por mi Barrio</title>
-        <meta name="viewport" content="initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
         <meta name="HandHeldFriendly" content="true">
@@ -91,17 +91,35 @@
     <div class="container [% " $containerclass" | html IF containerclass %]">
         <!--FIRST LEVEL NAVIGATION-->
         <nav class="first-navigation">
-            <ul>
-                <li class="home"><a href="/"><span></span></a></li>
-                <li class="reportar"><a href="javascript:void(0);">Reportar</a></li>
-                <li class="reportes"><a href="javascript:void(0);">Reportes</a></li>
-                <li class="help"><a href="/faq">Ayuda</a></li>
+            <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <img class="img-responsive" alt="" src="cobrands/pormibarrio/images/bg/PMB-small.png">
+            </a>
+            <ul class="r-small">
+                <li class="reportar reportar-small">
+                    <a href="javascript:void(0)" onclick="geolocate(10000, 3)">
+                        <span>Reportar</span>
+                    </a>
+                </li>
             </ul>
-            <ul class="help-info">
-                <li class="doc-info"><a href="/faq">Doc info</a></li>
-                <li class="data"><a href="http://datauy.org" target="_blank">DATA</a></li>
-                <li class="my-society"><a href="http://mysociety.org" target="_blank">My Society</a></li>
-            </ul>
+            <div class="navbar-collapse collapse">
+                <ul>
+                    <li class="home"><a href="/"><span></span></a></li>
+                    <li class="reportar"><a href="javascript:void(0);" onclick="geolocate(10000, 4)">Reportar</a></li>
+                    <li class="reportes"><a href="javascript:void(0);" onclick="geolocate(10000, 2)">Reportes</a></li>
+                    <li class="help"><a href="/faq">Ayuda</a></li>
+                </ul>
+                <ul class="help-info">
+                    <li class="doc-info"><a href="/faq">Doc info</a></li>
+                    <li class="data"><a href="http://datauy.org" target="_blank">DATA</a></li>
+                    <li class="my-society"><a href="http://mysociety.org" target="_blank">My Society</a></li>
+                </ul>
+            </div>
         </nav>
         <div class="content[% " $mainclass" | html IF mainclass %]" role="main">
 
