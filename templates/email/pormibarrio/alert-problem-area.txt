@@ -1,12 +1,12 @@
-Subject: New problems in <?=$values['area_name']?> on FixMyStreet
+Subject: Nuevos reportes en <?=$values['area_name']?> desde Por Mi Barrio
 
-The following new problems have been added within
+Los siguientes nuevos reportes se subieron dentro de
 <?=$values['area_name']?>:
 
 <?=$values['data']?>
 
 <?=$values['signature']?>
 
-To stop receiving emails when there are new problems in
-<?=$values['area_name']?>, please follow this link: 
+Para dejar de recibir correos con los nuevos reportes en
+<?=$values['area_name']?>, por favor seguí éste enlace: 
 <?=$values['unsubscribe_url']?>
