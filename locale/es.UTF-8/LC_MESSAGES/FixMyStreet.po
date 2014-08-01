@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fixmystreet\n"
 "Report-Msgid-Bugs-To: matthew@mysociety.org\n"
 "POT-Creation-Date: 2013-11-12 13:15+0000\n"
-"PO-Revision-Date: 2014-07-09 00:47-0300\n"
+"PO-Revision-Date: 2014-08-01 00:44-0300\n"
 "Last-Translator: Daniel Carranza <chino@datauy.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/fixmystreet/"
 "language/es/)\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.6.7\n"
 
 #: perllib/FixMyStreet/DB/Result/Problem.pm:602
 #: perllib/FixMyStreet/DB/ResultSet/Problem.pm:373
@@ -171,11 +171,11 @@ msgstr "(enviado a ambos)"
 #: templates/web/default/report/new/fill_in_details_form.html:211
 msgid "(we never show your email address or phone number)"
 msgstr ""
-"(nunca se muestra su dirección de correo electrónico o número de teléfono)"
+"(nunca se muestra tu dirección de correo electrónico o número de teléfono)"
 
 #: templates/web/default/report/update-form.html:158
 msgid "(we never show your email)"
-msgstr "(nunca se muestra su dirección de correo electrónico)"
+msgstr "(nunca se muestra tu dirección de correo electrónico)"
 
 #: perllib/FixMyStreet/App/Controller/Report/New.pm:637
 #: perllib/FixMyStreet/App/Controller/Report/New.pm:664
@@ -204,7 +204,7 @@ msgstr ""
 "<code>MAPIT_TYPES</code>.<br>\n"
 "              Posiblemente por esto \"area covered\" está vacía (abajo)."
 "<br>\n"
-"              Quizás deberías bregar <code>MAPIT_TYPES</code> a tu archivo "
+"              Quizás deberías agregar <code>MAPIT_TYPES</code> a tu archivo "
 "de configuración."
 
 #: templates/web/default/questionnaire/completed.html:20
@@ -1685,7 +1685,7 @@ msgid ""
 "public, but the problem will <strong>not</strong> be reported to the council."
 msgstr ""
 "Si envía un problema, el título y detalles serán públicos pero el problema "
-"<strong>no</ strong> se informará al Ayuntamiento."
+"<strong>no</ strong> se informará a la Intendencia."
 
 #: templates/web/emptyhomes/report/new/councils_text_none.html:9
 msgid ""
@@ -1693,8 +1693,8 @@ msgid ""
 "the council &ndash; please still leave your report, so that we can show to "
 "the council the activity in their area."
 msgstr ""
-"Si envía un reporte aquí, se quedará en el sitio pero no se informará al "
-"Ayuntamiento - por favor siga dejando su reporte de manera que podamos "
+"Si envía un reporte aquí, se quedará en el sitio pero no se informará a la "
+"Intendencia - por favor siga dejando su reporte de manera que podamos "
 "mostrar a la Intendencia la actividad en su área."
 
 #: templates/web/default/auth/token.html:22
@@ -1888,11 +1888,11 @@ msgstr ""
 "propiedad está en muy mal estado o el propietario no está dispuesto a "
 "actuar. En la mayoría de los casos puede tomar seis meses o más antes de que "
 "usted pueda ver cualquier cambio y a veces puede haber una propiedad "
-"comprada de nuevo para ser usada. Esto no significa que el Ayuntamiento no "
-"esté haciendo nada. Animamos a los Ayuntamientos a actualizar la web para "
-"que pueda ver lo que está sucediendo. Puede ser un proceso largo, pero "
-"notificar sus preocupaciones sobre esta propiedad al Ayuntamiento es un "
-"primer paso valioso."
+"comprada de nuevo para ser usada. Esto no significa que la Intendencia no "
+"esté haciendo nada. Animamos a las intendencias a actualizar la web para que "
+"pueda ver lo que está sucediendo. Puede ser un proceso largo, pero notificar "
+"sus preocupaciones sobre esta propiedad al Ayuntamiento es un primer paso "
+"valioso."
 
 #: templates/web/bromley/report/display.html:168
 #: templates/web/bromley/report/new/fill_in_details_form.html:209
@@ -2243,11 +2243,11 @@ msgstr "Sin organismo"
 
 #: templates/web/default/admin/stats.html:85
 msgid "No council"
-msgstr "Sin Ayuntamiento"
+msgstr "Sin Intendencia"
 
 #: perllib/FixMyStreet/DB/Result/Problem.pm:362
 msgid "No council selected"
-msgstr "Ningún Ayuntamiento seleccionado"
+msgstr "Ningúna Intendencia seleccionada"
 
 #: templates/web/default/admin/edit-league.html:17
 msgid "No edits have yet been made."
@@ -2347,7 +2347,7 @@ msgstr "No se notificó antes"
 
 #: templates/web/default/report/_main.html:10
 msgid "Not reported to council"
-msgstr "Sin comunicar al Ayuntamiento"
+msgstr "Sin comunicar a la Intendencia"
 
 #: templates/web/default/admin/body.html:59
 #: templates/web/default/admin/body_edit.html:87
@@ -2482,8 +2482,8 @@ msgid ""
 "Or you can subscribe to an alert based upon what ward or council you&rsquo;"
 "re in:"
 msgstr ""
-"O puede suscribirse a una alerta basada en el barrio o Ayuntamiento en el "
-"que estás:"
+"O puede suscribirse a una alerta basada en el barrio o Intendencia en la que "
+"estás:"
 
 #: perllib/FixMyStreet/App/Controller/Report/New.pm:1053
 #: perllib/FixMyStreet/App/Controller/Report/New.pm:664
@@ -2679,7 +2679,8 @@ msgid ""
 msgstr ""
 "Por favor <strong>no</strong> notifique de problemas a través de este "
 "formulario, los mensajes van a\n"
-"el equipo de FixMyStreet, no a un Ayuntamiento. Para notificar un problema,\n"
+"el equipo de Por Mi Barrio, no a la Intendencia. Para notificar un "
+"problema,\n"
 "por favor <a href=\"/\">vaya a la página principal </a> y siga las "
 "instrucciones."
 
@@ -2778,7 +2779,7 @@ msgid ""
 "Please enter your full name, councils need this information – if you do not "
 "wish your name to be shown on the site, untick the box below"
 msgstr ""
-"Por favor escriba su nombre completo, los Ayuntamientos necesitan esta "
+"Por favor escriba su nombre completo, la Intendencia necesita esta "
 "información - si usted no desea que su nombre aparecerá en la página, "
 "desactive la casilla de abajo"
 
@@ -2868,7 +2869,7 @@ msgid ""
 "description (and a\n"
 "photo of the problem if you have one), etc."
 msgstr ""
-"Por favor, rellene los datos del siguiente problema. El Ayuntamiento no "
+"Por favor, rellene los datos del siguiente problema. La intendencia no "
 "podrá\n"
 "ayudar a menos que deje todos los detalles que pueda, por favor describa la "
 "ubicación exacta del\n"
@@ -2956,7 +2957,7 @@ msgstr "Proporcione un texto así como una foto"
 msgid ""
 "Please say whether you've ever reported a problem to your council before"
 msgstr ""
-"Por favor, diga si alguna vez ha notificado de un problema al Ayuntamiento "
+"Por favor, diga si alguna vez ha notificado de un problema a la Intendencia "
 "con anterioridad"
 
 #: perllib/FixMyStreet/App/Controller/Alert.pm:80
@@ -3046,7 +3047,7 @@ msgstr "Problema %s confirmado"
 
 #: templates/web/default/admin/timeline.html:26
 msgid "Problem %s sent to council %s"
-msgstr "Problema %s enviado al Ayuntamiento %s"
+msgstr "Problema %s enviados a la Intendencia %s"
 
 #: templates/web/default/admin/index.html:36
 #: templates/web/zurich/admin/index.html:9
@@ -3319,7 +3320,7 @@ msgstr ""
 "Recuerde que FixMyStreet es principalmente para informar sobre problemas "
 "físicos que pueden ser arreglados. Si su problema no es apropiado para ser "
 "presentado a través de este sitio recuerde que puede ponerse en contacto "
-"directamente Ayuntamiento mediante su página web."
+"directamente a la Inetndencia mediante su página web."
 
 #: templates/web/fixmybarangay/report/new/notes.html:9
 msgid ""
@@ -3886,7 +3887,7 @@ msgid ""
 "back into use as soon as possible."
 msgstr ""
 "Gracias por informarnos de una propiedad vacía en ReportEmptyHomes.com. "
-"Hemos escrito a la oficina principal de viviendas vacías en el Ayuntamiento, "
+"Hemos escrito a la oficina principal de viviendas vacías en la Intendencia, "
 "responsable por los detalles, y les pedimos que hicieran todo lo posible "
 "para volver a poner la propiedad vacía en uso lo antes posible."
 
@@ -3946,7 +3947,7 @@ msgid ""
 "reported a problem to a council before?"
 msgstr ""
 "Gracias, me alegro de oír que fue arreglado! ¿Podríamos preguntar si alguna "
-"vez ha notificado de un problema a un Ayuntamiento con anterioridad?"
+"vez ha notificado de un problema a la Intendencia con anterioridad?"
 
 #: perllib/FixMyStreet/App/Controller/Photo.pm:190
 msgid ""
@@ -3960,7 +3961,7 @@ msgid ""
 "That location does not appear to be covered by a council; perhaps it is "
 "offshore or outside the country. Please try again."
 msgstr ""
-"Esa localización no parece estar cubierta por un Ayuntamiento, tal vez esté "
+"Esa localización no parece estar cubierta por la Intendencia, tal vez esté "
 "en alta mar o fuera del país. Por favor, inténtelo de nuevo."
 
 #: perllib/FixMyStreet/App/Controller/Location.pm:123
@@ -4162,7 +4163,7 @@ msgstr ""
 
 #: db/alert_types_eha.pl:20
 msgid "The latest reports for {{COUNCIL}} reported by users"
-msgstr "Últimos reportes para {{Ayuntamiento}} notificados por los usuarios"
+msgstr "Últimos reportes para {{council}} notificados por los usuarios"
 
 #: db/alert_types_eha.pl:24
 msgid ""
@@ -4348,7 +4349,7 @@ msgid ""
 "the correct council to deal with the issue, or let us know what category of "
 "problem this is so we can add it to our system."
 msgstr ""
-"Este correo electrónico ha sido enviado a los dos Ayuntamientos que cubren "
+"Este correo electrónico ha sido enviado a las dos Imntendencias que cubren "
 "la ubicación del problema, ya que el usuario no lo categorizar, por favor, "
 "hacer caso omiso de él si usted no es el consejo correcto para hacer frente "
 "al problema, o háganos saber qué clase de problema es por lo que podemos "
@@ -4715,7 +4716,7 @@ msgstr "Visualizando un problema"
 
 #: templates/web/default/reports/body.html:16
 msgid "Wards of this council"
-msgstr "Barrios de este Ayuntamiento"
+msgstr "Barrios de esta Intendencia"
 
 #: templates/web/default/alert/choose.html:6
 #: templates/web/default/around/around_index.html:13
@@ -4772,7 +4773,7 @@ msgstr ""
 
 #: templates/web/default/index-steps.html:31
 msgid "We send it to the council on your behalf"
-msgstr "Se lo enviamos al Ayuntamiento en su nombre"
+msgstr "Se lo enviamos a la Intendencia en su nombre"
 
 #: templates/web/bromley/report/new/fill_in_details_form.html:217
 #: templates/web/default/report/new/notes.html:5
@@ -4845,7 +4846,7 @@ msgid ""
 "mysociety.org/for-councils/fixmystreet/\">Find out about FixMyStreet for "
 "councils</a>."
 msgstr ""
-"¿Le gustaría una mejor integración con FixMyStreet? <a href=\"http://www."
+"¿Le gustaría una mejor integración con Por Mi Barrio? <a href=\"http://www."
 "mysociety.org/for-councils/fixmystreet/\">Conozca sobre FixMyStreet para "
 "Ayuntamientos</a>."
 
@@ -5246,7 +5247,7 @@ msgstr "por %s"
 #: templates/web/default/reports/body.html:6
 #: templates/web/default/reports/body.html:7
 msgid "council"
-msgstr "Ayuntamiento"
+msgstr "Intendencia"
 
 #: perllib/FixMyStreet/DB/Result/Problem.pm:649
 msgid "council ref:&nbsp;%s"
@@ -5384,7 +5385,7 @@ msgstr "Salir"
 #: templates/web/fixmystreet/report/new/fill_in_details_form.html:6
 #: templates/web/fixmystreet/report/new/fill_in_details_form.html:9
 msgid "the local council"
-msgstr "el Ayuntamiento local"
+msgstr "la Intendencia local"
 
 #: templates/web/default/report/_main.html:6
 #: templates/web/zurich/report/_main.html:5
@@ -5407,7 +5408,7 @@ msgstr "mapa utilizado"
 
 #: templates/web/default/admin/update_edit.html:35
 msgid "user is from same council as problem - %d"
-msgstr "El usuario es del mismo Ayuntamiento que el problema - %d"
+msgstr "El usuario es de la misma Intendencia que el problema - %d"
 
 #: templates/web/default/admin/update_edit.html:38
 msgid "user is problem owner"
@@ -5459,9 +5460,9 @@ msgid "We do not yet have details for the council that covers this location."
 msgid_plural ""
 "We do not yet have details for the councils that cover this location."
 msgstr[0] ""
-"Todavía no tenemos detalles para el Ayuntamiento que cubre esta zona."
+"Todavía no tenemos detalles para la Intendencia que cubre esta zona."
 msgstr[1] ""
-"Todavía no tenemos detalles para el Ayuntamiento que cubre esta zona."
+"Todavía no tenemos detalles para las Intendencias que cubren esta zona."
 
 #: perllib/Utils.pm:278
 #, perl-format
@@ -5493,10 +5494,10 @@ msgid_plural ""
 "We do <strong>not</strong> yet have details for the other councils that "
 "cover this location."
 msgstr[0] ""
-"Todavía <strong>no</strong> tenemos detalles para el Ayuntamiento que cubre "
+"Todavía <strong>no</strong> tenemos detalles para la Intendencia que cubre "
 "esta zona."
 msgstr[1] ""
-"Todavía <strong>no</strong> tenemos detalles para el Ayuntamiento que cubre "
+"Todavía <strong>no</strong> tenemos detalles para las Intendencias que cubre "
 "esta zona."
 
 #: perllib/Utils.pm:280
