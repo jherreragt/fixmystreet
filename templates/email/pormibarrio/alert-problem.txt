@@ -1,10 +1,10 @@
-Subject: New problems on FixMyStreet
+Subject: Nuevor reportes en Por Mi Barrio
 
-The following new problems have been added:
+Se agregaron los siguientes reportes:
 
 <?=$values['data']?>
 
 <?=$values['signature']?>
 
-To stop receiving emails when there are new problems,
-please follow this link: <?=$values['unsubscribe_url']?>
+Para dejar de recibir correos de nuevos problemas,
+por favor seguí este enlace: <?=$values['unsubscribe_url']?>
