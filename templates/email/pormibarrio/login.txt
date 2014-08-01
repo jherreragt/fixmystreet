@@ -1,7 +1,7 @@
-Subject: Your FixMyStreet.com account details
+Subject: Tu cuenta en Por Mi Barrio
 
-Please click on the link below to confirm your email address. Then you will be
-able to view your problem reports and manage them more easily.
+Por favor hacé click en el enlace para confirmar tu dirección de correo.
+Con eso podés ver y gestionar tus reportes más fácilmente.
 
 [% c.uri_for_action( 'auth/token', token ) %]
 
