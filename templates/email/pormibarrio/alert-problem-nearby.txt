@@ -1,10 +1,10 @@
-Subject: New nearby problems on FixMyStreet
+Subject: Nuevos problemas cercanos en Por Mi Barrio
 
-The following nearby problems have been added:
+Se agregaron los siguientes reportes:
 
 <?=$values['data']?>
 
 <?=$values['signature']?>
 
-To stop receiving emails when there are nearby problems,
-please follow this link: <?=$values['unsubscribe_url']?>
+para dejar de recibir correos cuando hay problemas cercanos,
+por favor seguí este enlace: <?=$values['unsubscribe_url']?>
