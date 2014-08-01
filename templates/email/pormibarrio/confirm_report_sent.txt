@@ -1,9 +1,9 @@
-Subject: Problem Report Sent: <?=$values['title']?>
+Subject: Reporte de problema enviado: <?=$values['title']?>
 
-Hi,
+Hola,
 
-Your report about "<?=$values['title']?>" has been sent to <?=$values['bodies_name']?>.
+Tu reporte sobre "<?=$values['title']?>" fue enviado a <?=$values['bodies_name']?>.
 
-Thanks
+Gracias,
 
 <?=$values['signature']?>
