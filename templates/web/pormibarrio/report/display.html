@@ -15,8 +15,6 @@
 
 </div>
 
-[% INCLUDE 'report/banner.html' %]
-
 <div class="c-report">
 	<div class="container-report">
 		<!--REPORT-->
@@ -43,13 +41,15 @@
 <script>
 var imComments = $('.comment-IM');
 if (imComments.length > 0){
-    var statusList=document.createElement("ul");
-    imComments.each(function() {
-        statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
-        $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
-    });
-    statusList.innerHTML += '</ul>';
-    $('.status-report').append(statusList);
+    if ($('.status-report ul').length == 0){
+        var statusList=document.createElement("ul");
+        imComments.each(function() {
+            statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
+            $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
+        });
+        statusList.innerHTML += '</ul>';
+        $('.status-report').append(statusList);
+    }
 }
 </script>
 
@@ -98,10 +98,6 @@ if (imComments.length > 0){
 	</div>
 				
 [% INCLUDE 'footer.html' %]
-
-
-				<div style="margin-left: -290px; position: absolute; top: 10%; width: 580px"><a id="display_problem_close" style="background: #aaaaaa; color: #ffffff; padding: 5px; position: absolute; right: 25px; font-size:small;">[x] [% loc('Close') %]</a></div>
-				<script>$('#display_problem_close').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
 			</div>
 		</div>	
 		<!--end report-->

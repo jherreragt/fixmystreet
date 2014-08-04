@@ -6,6 +6,7 @@
 <!--[if gt IE 9]><!--><html class="no-js" lang="[% lang_code %]"><!--<![endif]-->
     <head>
         <title>Por mi Barrio</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/cobrands/pormibarrio/images/favicon.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
@@ -88,7 +89,7 @@
 
     [% pre_container_extra %]
 
-    <div class="container [% " $containerclass" | html IF containerclass %]">
+    <div class="container [% "$containerclass" | html IF containerclass %]">
         <!--FIRST LEVEL NAVIGATION-->
         <nav class="first-navigation">
             <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
@@ -98,7 +99,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">
-                <img class="img-responsive" alt="" src="cobrands/pormibarrio/images/bg/PMB-small.png">
+                <img class="img-responsive" alt="" src="/cobrands/pormibarrio/images/bg/PMB-small.png">
             </a>
             <ul class="r-small">
                 <li class="reportar reportar-small">
@@ -112,12 +113,13 @@
                     <li class="home"><a href="/"><span></span></a></li>
                     <li class="reportar"><a href="javascript:void(0);" onclick="geolocate(10000, 4)">Reportar</a></li>
                     <li class="reportes"><a href="javascript:void(0);" onclick="geolocate(10000, 2)">Reportes</a></li>
-                    <li class="help"><a href="/faq">Ayuda</a></li>
+                    <li class="help"><a href="http://datauy.uservoice.com/forums/233161-por-mi-barrio" target="_blank">Ayuda</a></li>
                 </ul>
                 <ul class="help-info">
-                    <li class="doc-info"><a href="/faq">Doc info</a></li>
-                    <li class="data"><a href="http://datauy.org" target="_blank">DATA</a></li>
-                    <li class="my-society"><a href="http://mysociety.org" target="_blank">My Society</a></li>
+                    <li class="doc-info"><a href="/faq">FAQ</a></li>
+                    <li class="data"><a href="http://datauy.org" target="_blank" alt="DATA"></a></li>
+                    <li class="my-society"><a href="http://mysociety.org" target="_blank" alt="My Society"></a></li>
+                    <li class="avina"><a href="http://www.avinaamericas.org/" target="_blank" alt="Avina Americas"></a></li>
                 </ul>
             </div>
         </nav>
