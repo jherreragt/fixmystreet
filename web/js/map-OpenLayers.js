@@ -175,14 +175,11 @@ function fixmystreet_onload() {
             fixmystreet.map.removePopup(fixmystreet.map.popups[0]);
         }
     });
-    console.log('PINS:');
-    console.log(fixmystreet.pins);
+
     var markers = fms_markers_list( fixmystreet.pins, true );
-    console.log('Markers1:');
-    console.log(markers);
+
     fixmystreet.markers.addFeatures( markers );
-    console.log('Markers2:');
-    console.log(markers);
+
     function onPopupClose(evt) {
         fixmystreet.select_feature.unselect(selectedFeature);
         OpenLayers.Event.stop(evt);
@@ -192,8 +189,7 @@ function fixmystreet_onload() {
         var selectedFeature;
         fixmystreet.markers.events.register( 'featureunselected', fixmystreet.markers, function(evt) {
             var feature = evt.feature, popup = feature.popup;
-            console.log('Features');
-            console.log(feature);
+
             fixmystreet.map.removePopup(popup);
             popup.destroy();
             feature.popup = null;
@@ -201,7 +197,7 @@ function fixmystreet_onload() {
         fixmystreet.markers.events.register( 'featureselected', fixmystreet.markers, function(evt) {
             var feature = evt.feature;
             selectedFeature = feature;
-            var popupHtml = '<div class="it-r-info"><h3 class="' + feature.attributes.catId + '">'+ feature.attributes.category +'</h3><p>' + feature.attributes.title + '</p><ul class="details"><li>' + feature.attributes.date + '</li><li class="icon-camera"><span></span></li><li class="icon-comments"><span></span></li><li class="icon-tags"><span></span></li></ul></div><div class="tool-details"><div class="user-small"><img class="img-circle" src="/cobrands/pormibarrio/images/no_pic.png" width="24" height="24"><span class="name">'+feature.attributes.user+'</span></div><a href=/report/' + feature.attributes.id + ' class="btn btn-detalle">DETALLE<span></span></a></div>';
+            var popupHtml = '<div class="it-r-info"><h3>'+ feature.attributes.category +'</h3><p>' + feature.attributes.title + '</p><ul class="details"><li>' + feature.attributes.date + '</li><li class="icon-camera"><span></span></li><li class="icon-comments"><span></span></li><li class="icon-tags"><span></span></li></ul></div><div class="tool-details"><div class="user-small"><img class="img-circle" src="/cobrands/pormibarrio/images/no_pic.png" width="24" height="24"><span class="name">'+ feature.attributes.user +'</span></div><a href=/report/' + feature.attributes.id + ' class="btn btn-detalle">DETALLE<span></span></a></div>';
             var popup = new OpenLayers.Popup("popup",
                 feature.geometry.getBounds().getCenterLonLat(),
                 null,

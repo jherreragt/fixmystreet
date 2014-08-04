@@ -1,12 +1,11 @@
-//INDICAR LOS REPORTES ABIERTOS EN EL LISTADO
-	$('div.it-r').click(function(){
-		$('div.rl div.active').removeClass('active');	
-		$(this).addClass('active');	
-	})
-	
+/*
+ * pormibarrio-main.js
+ * FixMyStreet JavaScript for PMB design
+ */
+
 //QUITAR BORDE AL ULTIMO BLOQUE DE COMENTARIO
-	$('.leave-comment').prev().css('border', 'none')	
-	$('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px')	
+$('.leave-comment').prev().css('border', 'none');
+$('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px');
 	
 //SCROLL EN EL LISTADO DE REPORTES		
 	var types = ['DOMMouseScroll', 'mousewheel', 'MozMousePixelScroll', 'wheel'];	
@@ -62,10 +61,11 @@
 		
 		
 //MOSTRAR EL FORM DE REGISTRO
-	$('.registrate').click(function(){
+/*	$('.registrate').click(function(){
+		alert('Registra?');
 		$('div.bloque-registro').slideDown();
 		$('div.bloque-sesion').slideUp();	
-	})
+	})*/
 
 
 //MOSTRAR REPORTE
@@ -74,7 +74,6 @@
 	})
 
 function geolocate(timeout, zoom){
-	alert('geolocate');
 	setTimeout(function(){location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=' + zoom}, timeout);
 	if (geo_position_js.init()) {
 	    console.log('Va a init');
@@ -162,9 +161,15 @@ $('.responsive').responsiveText();
 	$(".first-navigation").hover(
 	  function () {
 		$('.report').addClass("report-medium");
+		if ($('.content').hasClass('content-horizontal')){
+			$('.content').addClass("content-aside");
+		}
 	  },
 	  function () {
 		$('.report').removeClass("report-medium");
+		if ($('.content').hasClass('content-horizontal')){
+			$('.content').removeClass("content-aside");
+		}
 	  }
 	);
 
@@ -176,12 +181,20 @@ $('.responsive').responsiveText();
 
 //REPORTAR EN PANTALLA CHICA
 $(window).resize(function() {
-	if (fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
-		if ( $(window).width() < 780){
+	if ( $(window).width() < 780){
+		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
 			$('#report-list').hide();
+			$('#fms_pan_zoom').css('top', "6.75em");
 		}
-		if ( $(window).width() >= 780){
+		$('.content').addClass('content-vertical');
+		$('.content').removeClass('content-horizontal');
+	}
+	if ( $(window).width() >= 780){
+		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
 			$('#report-list').show();
+			$('#fms_pan_zoom').css('top', "1.75em");
 		}
+		$('.content').removeClass('content-vertical');
+		$('.content').addClass('content-horizontal');
 	}
 });

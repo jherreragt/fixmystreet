@@ -55,7 +55,7 @@ function form_category_group_onchange() {
 		$('#form_category').empty();
 
 		var options = '';
-		options += '<option value="">-- Pick a category --</option>';
+		options += '<option value="">-- Selecciona una categoría --</option>';
 
 		for (var i = 0; i < category_groups[group_id].length; i++) {
 			options += '<option value="' + category_groups[group_id][i] + '">' + category_groups[group_id][i] + '</option>';
