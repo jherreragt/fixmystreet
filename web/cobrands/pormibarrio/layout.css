@@ -87,6 +87,11 @@ body.mappage .container{
 	float: left;
     width: 500px;
     background: none;
+    overflow: visible;
+}
+body.mappage .problem-container{
+    width: 100%;
+    background:url(images/bg/bg-content-report.png) repeat-x left bottom;
 }
 body.mappage .content{
 	float:left;
@@ -112,7 +117,26 @@ body.mappage #user-meta{max-width:none}
 .ie8 body.mappage .nav-wrapper .nav-wrapper-2{position:static}
 .ie8 body.mappage #site-logo{position:absolute}
 body.fullwidthpage .content{width:auto}
-body.twothirdswidthpage .content{width:40em;position:relative}
+
+body.twothirdswidthpage {
+	color: black;
+}
+
+body.twothirdswidthpage h1 {
+	margin-top:5px;
+	margin-bottom:20px;
+}
+
+body.twothirdswidthpage h3 {
+        margin-top:15px;
+        margin-bottom:5px;
+}
+
+body.twothirdswidthpage p {
+        margin-top:5px;
+        margin-bottom:5px;
+}
+
 body.twothirdswidthpage .content aside{
 	background:#eee;
 	position:absolute;
@@ -123,7 +147,7 @@ body.twothirdswidthpage .content aside{
 	padding:1em;
 	-webkit-box-shadow:0px 0px 6px 1px #000;
 	-moz-box-shadow:0px 0px 6px 1px #000;
-	box-shadow:0px 0px 6px 1px #000
+	box-shadow:0px 0px 6px 1px #000;
 }
 body.twothirdswidthpage .content aside h2{margin-top:0}
 body.twothirdswidthpage .content aside img{margin-bottom:0.25em}

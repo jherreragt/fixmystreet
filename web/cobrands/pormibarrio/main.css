@@ -39,8 +39,27 @@ a, button, div.it-r {
 .container{
 	height: 100%;
 	background:url(images/bg/bg-intro.jpg) no-repeat center top;
+	background-size: cover;
+	width: 100%;
+	overflow: auto;
 }
 
+.content-horizontal{
+	padding: 20px 39px 20px 120px;
+}
+
+div#fms_pan_zoom.pan-horizontal div{
+	top: 6.75em !important;
+}
+
+.content-vertical{
+	padding-top: 120px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.content-aside{
+	padding-left: 200px;
+}
 /*PAGE INTRO--------------------------------------*/
 
 html {
@@ -48,20 +67,11 @@ html {
   min-height: 100%;
 }
 
-body.intro {
-  background:url(images/bg/bg-intro.jpg) no-repeat center top;
-  background-size:cover;
-}
 
-/*div.overlay-blue{
-	height:100%;
-	width:100%;
-	position:absolute;
-	left:0;
-	top:0;
-	background:url(../images/bg/bg-blue-overlay.png);
-	z-index:1	
-}*/
+body.intro {
+  overflow:auto;
+  height: inherit;
+}
 
 div.c-intro{
 	z-index:2;
@@ -87,7 +97,8 @@ div.c-intro p{
 	max-width:740px;
 	margin:0 auto;
 	line-height:1.44444em;
-	margin-top: 1.5rem;}
+	margin-top: 1.5rem;
+}
 
 div.steps{
 	margin-top: 6rem;
@@ -133,7 +144,6 @@ a.know-more:hover{
 p.photo-credit{
 	opacity:0.2;
 }
-
 
 /*FIRST NAVIGATION------------------------------------*/
 nav.first-navigation{
@@ -229,7 +239,7 @@ nav.first-navigation:hover li.home a span{
 }
 
 li.reportar{
-	margin-top:94px;
+	margin-top:60px;
 }
 
 li.reportar a{
@@ -277,7 +287,7 @@ ul.help-info{
 }
 
 ul.help-info li a{
-	text-indent:-99999em!important;
+	/*text-indent:-99999em!important;*/
 	padding-left:35px;
 }
 
@@ -292,9 +302,11 @@ li.data a{
 
 li.my-society a{
 	background:url(images/icon-my-society.png.png) no-repeat center 18px
-	
 }
 
+li.avina a{
+	background:url(images/avina-americas6.png) no-repeat center 18px
+}
 
 /*SECOND NAVIGATION---------------------------------------------------*/
 /*nav.second-navigation{
@@ -373,7 +385,7 @@ div.side-active{
 }
 
 div.reportes{
-	background: rgba(255,255,255,0.9);
+	background: rgba(255,255,255,0.95);
 	height:100%;
 	overflow:hidden;
 }
@@ -401,6 +413,10 @@ div.it-r{
 	padding:30px 40px;
 	overflow:auto;
 	cursor:pointer
+}
+
+div.c-t {
+    padding: 55px 40px 25px;
 }
 
 div.it-r:hover, div.rl div.active{
@@ -443,6 +459,13 @@ div.it-r ul li span{
 	float:left
 }
 
+div.it-r ul li.icon-solved span{
+	background:url(images/icon-resuelto.png) no-repeat left top;
+	width:20px;
+	height:16px;
+	margin-top:2px
+}
+
 div.it-r ul li.icon-camera span{
 	background:url(images/icon-camera.png) no-repeat left top;
 	width:20px;
@@ -464,36 +487,35 @@ div.it-r ul li.icon-tags span{
 	margin-top:2px
 }
 
+
 /*Arbolado*/
-div.r-arbolado, div.r-category-group-1 {
+div.r-category-group-1, 
+div.r-category-group-39{
 	background:url(images/r-arbolado.png) no-repeat left top;	
 }
-h3.arbolado {
-	color:#3b8686	
+h3.r-category-group-1, 
+h3.r-category-group-39{
+	color:#3b8686;
 }
 
-/*Alcantarillas*/
-div.r-alcantarillas{
+/*Saneamiento*/
+div.r-category-group-37{
 	background:url(images/r-alcantarillas.png) no-repeat left top;	
 }
-h3.alcantarillas{
+h3.r-category-group-37{
 	color:#a40301	
 }
 
 /*Basura*/
-div.r-basura{
+div.r-category-group-18,
+div.r-category-group-38,
+div.r-category-group-40 {
 	background:url(images/r-basura.png) no-repeat left top;	
 }
-h3.basura{
+h3.r-category-group-18,
+h3.r-category-group-38,
+h3.r-category-group-40{
 	color:#f47026	
-}
-
-/*Desarrollo*/
-div.r-desarrollo, div.r-category-group-0 {
-	background:url(images/r-desarrollo.png) no-repeat left top;	
-}
-h3.desarrollo{
-	color:#6dbcdb	
 }
 
 /*Barometrica*/
@@ -512,6 +534,15 @@ h3.vereda{
 	color:#d7dadb	
 }
 
+/*Desarrollo*/
+div.r-category-group-36{
+	background:url(images/r-basura.png) no-repeat left top;	
+}
+h3.r-category-group-36{
+	color:#f47026;
+}
+
+
 /*MAP-------------------------------------------------------------------------------*/
 div.map{
 	width:100%;
@@ -521,7 +552,6 @@ div.map{
 
 /*CONTENT REPORT-------------------------------------------------------------------*/
 div.c-report{
-	background:url(../images/bg/bg-content-report.png) repeat-x left bottom;
 	position:absolute;
 	width:100%;
 	height:100%;
@@ -600,7 +630,8 @@ div.intro-report h3{
 	font-size:2.37625em;
 	margin:0;
 	font-weight:normal;
-	color:#000	
+	color:#000;
+	width: 86%;
 }
 
 div.intro-report address{
@@ -615,6 +646,18 @@ div.intro-report p{
 	line-height:1.5em;
 	margin:0;
 	padding:15px 0;	
+}
+
+a.btn-close-report {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 0.875em;
+    font-weight: 600;
+    padding: 2px 10px;
+    position: absolute;
+    right: 30px;
+    text-transform: uppercase;
+    top: 20px;
 }
 
 div.sign{
@@ -828,6 +871,7 @@ div.user-picture{
 div.actions {
     margin-bottom: 30px;
     padding: 15px 0;
+    height: 50px;
 }
 
 div.actions ul li {
@@ -993,7 +1037,7 @@ div.drag span{
 
 .btn-green{
 	background-color:#1fb384;
-	color:#fff;	
+	color: #fff!important;
 }
 
 .btn-green:hover{
@@ -1107,7 +1151,18 @@ div.login div.ir{
 }
 
 div.bloque-registro{
-	display:none;	
+	/*display:none;	*/
+}
+
+div.checkbox-group input{
+	height: inherit;
+	margin: 4px 0 0;
+	float: left;
+	max-width: 4%;
+}
+
+div.checkbox-group label{
+font-size: 1em;
 }
 
 div.social-buttons{
@@ -1149,103 +1204,6 @@ div.scrolled-report{
 	padding-bottom:600px;
 }*/
 
-/*PAGE INTRO--------------------------------------*/
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body.intro {
-  margin-bottom: 200px;
-  background:url(images/bg/bg-intro.jpg) no-repeat center top;
-  background-size:cover;
-}
-
-div.intro {
-	width: auto;
-}
-/*div.overlay-blue{
-	height:100%;
-	width:100%;
-	position:absolute;
-	left:0;
-	top:0;
-	background:url(../images/bg/bg-blue-overlay.png);
-	z-index:1	
-}*/
-
-div.c-intro{
-	z-index:2;
-	position:relative;
-	width:100%;
-	max-width:940px;
-	margin:0 auto;
-	text-align:center;
-	color:#fff;
-	padding-top:6rem;
-	/*padding-left:15px;
-	padding-right:15px*/
-}
-
-div.c-intro h2{
-	font-weight:300;
-	font-size:3.375em;
-	margin: 4rem 0 0 0; 	
-}
-
-div.c-intro p{
-	font-size:1.125em;
-	max-width:740px;
-	margin:0 auto;
-	line-height:1.44444em;
-	margin-top: 1.5rem;}
-
-div.steps{
-	margin-top: 6rem;
-}
-
-div.step{
-	width:33.3333%;
-	float:left;
-	min-width:276px;
-	text-align:center	
-}
-
-div.step h3{
-	font-size:1.125em;
-	font-weight:400;
-	line-height:1.44444em;
-	margin-top: 13px;}
-
-div.c-buttons-intro{
-	margin-top: 7rem;}
-
-.footer {
-  position: relative;
-  bottom: 0px;
-  width: 100%;
-  height: 148px;
-  text-align:center;
-  z-index:2;
-  font-size:0.875em;
-  color:#fff;
-}
-
-a.know-more{
-	display:block;
-	margin:23px 0 4px 0;
-	color:#fff	
-}
-
-a.know-more:hover{
-	text-decoration:none;
-	opacity:0.9;
-}
-
-p.photo-credit{
-	opacity:0.2;
-}
 
 /*MEDIAQUERIES------------------------------------------------------------*/
 @media (max-width: 967px) {
@@ -1483,7 +1441,7 @@ a.navbar-brand, li.reportar-small {
 		padding-left:55px;!important
 	}
 	
-	li.doc-info a, li.data a, li.my-society a{
+	li.doc-info a, li.data a, li.my-society a, li.avina a{
 		background-position:20px center;		
 	}
 	

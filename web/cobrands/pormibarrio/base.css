@@ -241,7 +241,7 @@ footer{margin-top:1em}
 .problem-header .update-img{float:right;margin-left:0.5em;margin-bottom:0.5em}
 #map_box{background:#333;height:29em;margin-bottom:1em;overflow:hidden;position:relative}
 #map_box #map{width:100%;height:100%}
-#fms_pan_zoom{right:0.5em !important;top:0.5em;left:0.5em !important}
+#fms_pan_zoom{right:1.75em !important;top:1.75em;left:1.75em !important}
 .ie6 #fms_pan_zoom{left:auto !important}
 #fms_pan_zoom_panup,#fms_pan_zoom_pandown,#fms_pan_zoom_panleft,#fms_pan_zoom_panright,#fms_pan_zoom_zoomin,#fms_pan_zoom_zoomout{width:36px !important;height:36px !important;text-indent:-999999px;opacity:0.85;background:url("/cobrands/fixmystreet/images/sprite.png") no-repeat;filter:none !important}
 #fms_pan_zoom_panup:hover,#fms_pan_zoom_pandown:hover,#fms_pan_zoom_panleft:hover,#fms_pan_zoom_panright:hover,#fms_pan_zoom_zoomin:hover,#fms_pan_zoom_zoomout:hover{opacity:1}
