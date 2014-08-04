@@ -202,13 +202,13 @@ sub display_location : Private {
                 id        => $p->id,
                 title     => $p->title_safe,
                 type      => '',
-                user      => 'UsuarioAround',
-                category  => 'CATEGORIAAr',
-                catId     => '35Ar',
-                date      => 'HoyAr',
+                user      => $p->user->name,
+                category  => $p->category,
+                catId  => 'CATEGORIARp',
+                date      =>  $p->created->ymd('-'),
                 hasPhoto  => 1,
                 hasComments => 1,
-                status    => 'StatusAr'
+                status    => $p->state
             }
         } @$on_map_all, @$around_map;
     }

@@ -462,13 +462,13 @@ sub add_row {
         id        => $problem->id,
         title     => $problem->title_safe,
         type      => '',
-        user      => 'UsuarioReport',
-        category  => 'CATEGORIARp',
-        catId     => '35Rp',
-        date      => 'HoyRp',
+        user      => $problem->user->name,
+        category  => $problem->category,
+        catId  => 'CATEGORIARp',
+        date      =>  $problem->created->ymd('-'),
         hasPhoto  => 1,
         hasComments => 1,
-        status    => 'StatusRp'
+        status    => $problem->state
     };
 }
 

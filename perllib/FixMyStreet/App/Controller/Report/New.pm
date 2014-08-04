@@ -634,7 +634,7 @@ sub setup_categories_and_bodies : Private {
 	$groups_items_encoded{-2} = [];
 
 	my @array_groups_seen;
-	push (@array_groups_seen, [ '', '-- Pick a group --' ]);
+	push (@array_groups_seen, [ '', '-- Selecciona un grupo --' ]);
 
     # variables to populate
     my %bodies_to_list = ();       # Bodies with categories assigned
@@ -720,7 +720,7 @@ sub setup_categories_and_bodies : Private {
         }
     }
     
-    push (@array_groups_seen, [ -2, "Other" ]);
+    push (@array_groups_seen, [ -2, "Otro" ]);
 
     # put results onto stash for display
     $c->stash->{bodies} = \%bodies;

@@ -120,7 +120,11 @@ sub pin_colour {
 		my $category_name = $p->category;
 		
 		if ( $categories && $categories->{$category_name}) {
-			return 'group-'.$categories->{$category_name};
+			my $pin = 'group-'.$categories->{$category_name};
+			if ($p->is_fixed){
+				$pin .= '-resuelto';
+			}
+			return $pin;
 		} else {
 			return 'yellow';
 		}
@@ -131,5 +135,7 @@ sub pin_colour {
 
 # let staff and owners hide reports
 sub users_can_hide { 1 }
+
+sub language_override { 'es' }
 
 1;
