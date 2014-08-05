@@ -1891,7 +1891,7 @@ msgstr ""
 "comprada de nuevo para ser usada. Esto no significa que la Intendencia no "
 "esté haciendo nada. Animamos a las intendencias a actualizar la web para que "
 "pueda ver lo que está sucediendo. Puede ser un proceso largo, pero notificar "
-"sus preocupaciones sobre esta propiedad al Ayuntamiento es un primer paso "
+"sus preocupaciones sobre esta propiedad al Intendencia es un primer paso "
 "valioso."
 
 #: templates/web/bromley/report/display.html:168
@@ -2140,7 +2140,7 @@ msgstr "Nueva nota interna:"
 
 #: db/alert_types.pl:18 db/alert_types.pl:22
 msgid "New local problems on FixMyStreet"
-msgstr "Nuevos problemas locales en FixMyStreet"
+msgstr "Nuevos problemas locales en PorMiBarrio"
 
 #: db/alert_types_eha.pl:12
 msgid "New local reports on reportemptyhomes.com"
@@ -2154,23 +2154,23 @@ msgstr "Nuevos problemas"
 
 #: db/alert_types.pl:38
 msgid "New problems for {{COUNCIL}} within {{WARD}} ward on FixMyStreet"
-msgstr "Nuevos problemas en {{COUNCIL}} para el barrio {{WARD}} en FixMyStreet"
+msgstr "Nuevos problemas en {{COUNCIL}} para el barrio {{WARD}} en PorMiBarrio"
 
 #: db/alert_types.pl:26 db/alert_types.pl:30
 msgid "New problems near {{POSTCODE}} on FixMyStreet"
-msgstr "Nuevos problemas cerca de {{POSTCODE}} En FixMyStreet"
+msgstr "Nuevos problemas cerca de {{POSTCODE}} En PorMiBarrio"
 
 #: db/alert_types.pl:10
 msgid "New problems on FixMyStreet"
-msgstr "Nuevos problemas en FixMyStreet"
+msgstr "Nuevos problemas en PorMiBarrio"
 
 #: db/alert_types.pl:34
 msgid "New problems to {{COUNCIL}} on FixMyStreet"
-msgstr "Nuevos problemas en {{COUNCIL}} en FixMyStreet"
+msgstr "Nuevos problemas en {{COUNCIL}} en PorMiBarrio"
 
 #: db/alert_types.pl:42
 msgid "New problems within {{NAME}}'s boundary on FixMyStreet"
-msgstr "Nuevos problemas en los límites de {{NAME}} en FixMyStreet"
+msgstr "Nuevos problemas en los límites de {{NAME}} en PorMiBarrio"
 
 #: templates/web/zurich/admin/index-sdm.html:4
 msgid "New reports"
@@ -2381,7 +2381,7 @@ msgstr "Y ahora a enviar tu reporte..."
 
 #: templates/web/default/report/new/fill_in_details_form.html:131
 msgid "Now to submit your report&hellip; do you have a FixMyStreet password?"
-msgstr "Y ahora a enviar tu reporte... no tienes contraseña en FixMyStreet?"
+msgstr "Y ahora a enviar tu reporte... no tienes contraseña en PorMiBarrio?"
 
 #: templates/web/fixmystreet/report/update-form.html:83
 msgid "Now to submit your update&hellip;"
@@ -2390,7 +2390,7 @@ msgstr "Y ahora a enviar tu comentario..."
 #: templates/web/default/report/update-form.html:86
 msgid "Now to submit your update&hellip; do you have a FixMyStreet password?"
 msgstr ""
-"Y ahora a enviar tu comentario... ¿no tienes contraseña en FixMyStreet?"
+"Y ahora a enviar tu comentario... ¿no tienes contraseña en PorMiBarrio?"
 
 #: templates/web/default/js/translation_strings.html:42
 #: templates/web/oxfordshire/js/translation_strings.html:36
@@ -3083,7 +3083,7 @@ msgstr "Problemas en el mapa"
 
 #: db/alert_types.pl:14
 msgid "Problems recently reported fixed on FixMyStreet"
-msgstr "Problemas recientemente notificados como arreglados en FixMyStreet"
+msgstr "Problemas recientemente notificados como arreglados en PorMiBarrio"
 
 #: templates/web/default/alert/_list.html:19
 #: templates/web/fixmystreet/alert/_list.html:21
@@ -3105,7 +3105,7 @@ msgstr "Problemas en el barrio %s"
 #: templates/web/default/reports/body.html:0
 #: templates/web/default/reports/body.html:24
 msgid "Problems within %s, FixMyStreet"
-msgstr "Problemas en %s, FixMyStreet"
+msgstr "Problemas en %s, PorMiBarrio"
 
 #: templates/web/default/alert/_list.html:40
 #: templates/web/fixmybarangay/alert/_list.html:13
@@ -3292,7 +3292,7 @@ msgstr "Reciba un correo cuando se dejen comentarios sobre este problema."
 #: templates/web/default/around/display_location.html:0
 #: templates/web/default/around/display_location.html:32
 msgid "Recent local problems, FixMyStreet"
-msgstr "Problemas locales recientes, FixMyStreet"
+msgstr "Problemas locales recientes, PorMiBarrio"
 
 #: templates/web/default/reports/index.html:19
 #: templates/web/fixmybarangay/reports/index.html:19
@@ -3317,7 +3317,7 @@ msgid ""
 "site remember that you can contact your council directly using their own "
 "website."
 msgstr ""
-"Recuerde que FixMyStreet es principalmente para informar sobre problemas "
+"Recuerde que PorMiBarrio es principalmente para informar sobre problemas "
 "físicos que pueden ser arreglados. Si su problema no es apropiado para ser "
 "presentado a través de este sitio recuerde que puede ponerse en contacto "
 "directamente a la Inetndencia mediante su página web."
@@ -3983,7 +3983,7 @@ msgstr "Ese reporte no puede ser visto en %s."
 
 #: perllib/FixMyStreet/App/Controller/Report.pm:111
 msgid "That report has been removed from FixMyStreet."
-msgstr "Ese reporte ha sido eliminado de FixMyStreet."
+msgstr "Ese reporte ha sido eliminado de PorMiBarrio."
 
 #: templates/web/default/admin/body.html:115
 msgid ""
@@ -4002,7 +4002,7 @@ msgid ""
 "will connect to \n"
 "            when sending reports to this body."
 msgstr ""
-"El <strong>endpoint</strong> es la URL del servicio al que FixMyStreet se "
+"El <strong>endpoint</strong> es la URL del servicio al que PorMiBarrio se "
 "conectará \n"
 "            cuando envíe reportes a este organismo."
 
@@ -4645,7 +4645,7 @@ msgstr "Actualizaciones en {{title}}"
 #: templates/web/fixmystreet/report/display.html:0
 #: templates/web/fixmystreet/report/display.html:8
 msgid "Updates to this problem, FixMyStreet"
-msgstr "Actualizaciones para este problema, FixMyStreet"
+msgstr "Actualizaciones para este problema, PorMiBarrio"
 
 #: templates/web/default/admin/body.html:153
 msgid ""
@@ -4848,7 +4848,7 @@ msgid ""
 msgstr ""
 "¿Le gustaría una mejor integración con Por Mi Barrio? <a href=\"http://www."
 "mysociety.org/for-councils/fixmystreet/\">Conozca sobre FixMyStreet para "
-"Ayuntamientos</a>."
+"Intendencias</a>."
 
 #: templates/web/fixmystreet/footer.html:17
 #: templates/web/stevenage/footer.html:18
@@ -4856,7 +4856,7 @@ msgid ""
 "Would you like to contribute to FixMyStreet? Our code is open source and <a "
 "href=\"http://github.com/mysociety/fixmystreet\">available on GitHub</a>."
 msgstr ""
-"¿Le gustaría contribuir a FixMyStreet? Nuestro código es open source y está "
+"¿Le gustaría contribuir a PorMiBarrio? Nuestro código es open source y está "
 "<a href=\"http://github.com/mysociety/fixmystreet\">disponible en GitHub</a>."
 
 #: templates/web/default/questionnaire/index.html:106
