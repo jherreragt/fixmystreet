@@ -89,8 +89,8 @@ img{height:auto;max-width:100%}
 select,input,textarea{font-size:99%;max-width:95%}
 .ie7 select,.ie7 input,.ie7 textarea{max-width:none}
 select{width:100%}
-a,a:visited{text-decoration:none;color:#0BA7D1}
-a:hover,a:active,a:visited:hover,a:visited:active{text-decoration:underline;color:#0D7CCE}
+a,a:visited{text-decoration:none; color: DarkBlue;}
+a:hover,a:active,a:visited:hover,a:visited:active{text-decoration:underline;color: blue}
 .small-print{margin-bottom:1.2307em;color:#666666}
 .meta{color:#555555;font-style:italic;margin-bottom:0px}
 .meta-2{font-family:Helmet,Freesans,sans-serif;color:#666666;font-style:italic;font-size:0.75em}
