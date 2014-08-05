@@ -807,22 +807,6 @@ sub as_hashref {
     };
 }
 
-sub category_group {
-	my ( $problem, $c ) = @_;
-	
-	if ( $problem->category ) {
-		my $contact = $c->model('DB::Contact')->find({ category => $problem->category, deleted => 0 });
-		
-		if ( $contact ) {
-			if ( $contact->group_id ) {
-				return $contact->group_id;
-			}
-		}
-	}
-	
-	return 0;
-}
-
 # we need the inline_constructor bit as we don't inherit from Moose
 __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
