@@ -23,6 +23,7 @@ body{
 body.fullwidthpage{
 	width: 100%;
 	background: url("images/bg/bg-intro.jpg") no-repeat scroll center top / cover rgba(0, 0, 0, 0);
+	color: white;
 }
 a, button, div.it-r {
 	-webkit-transition: all .3s ease;
