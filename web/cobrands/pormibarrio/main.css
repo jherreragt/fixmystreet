@@ -503,7 +503,7 @@ div.r-category-group-37{
 	background:url(images/r-alcantarillas.png) no-repeat left top;	
 }
 h3.r-category-group-37{
-	color:#a40301	
+	color:#6dbcdb;	
 }
 
 /*Basura*/
@@ -515,7 +515,7 @@ div.r-category-group-40 {
 h3.r-category-group-18,
 h3.r-category-group-38,
 h3.r-category-group-40{
-	color:#f47026	
+	color:#a40301;
 }
 
 /*Barometrica*/
@@ -523,7 +523,7 @@ div.r-barometrica, div.r-category-group-3 {
 	background:url(images/r-barometrica.png) no-repeat left top;	
 }
 h3.barometrica{
-	color:#d9cf48	
+	color:#d9cf48;
 }
 
 /*Vereda*/
@@ -531,7 +531,7 @@ div.r-vereda, div.r-category-group-8 {
 	background:url(images/r-vereda.png) no-repeat left top;	
 }
 h3.vereda{
-	color:#d7dadb	
+	color:#d7dadb;
 }
 
 /*Desarrollo*/

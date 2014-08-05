@@ -101,6 +101,7 @@ sub update_comments {
             my $c = $p->comments->search( { external_id => $request->{update_id} } );
 
             if ( !$c->first ) {
+                print "\nEntra a comment\n";
                 my $comment_time = DateTime::Format::W3CDTF->parse_datetime( $request->{updated_datetime} );
 
                 my $comment = FixMyStreet::App->model('DB::Comment')->new(
@@ -123,11 +124,14 @@ sub update_comments {
                 # tricky to determine the right thing to do.
                 if ( $comment->created > $p->lastupdate ) {
                     my $state = $self->map_state( $request->{status} );
-
+                    print $request->{status};
+                    print "\nEntra a update\n";
+                    print $state;
                     # don't update state unless it's an allowed state and it's
                     # actually changing the state of the problem
                     if ( FixMyStreet::DB::Result::Problem->council_states()->{$state} && $p->state ne $state &&
                         !( $p->is_fixed && FixMyStreet::DB::Result::Problem->fixed_states()->{$state} ) ) {
+                        print "\nEntra a state\n";
                         $p->state($state);
                         $comment->problem_state($state);
                     }
@@ -136,6 +140,8 @@ sub update_comments {
                 $p->lastupdate( $comment->created );
                 $p->update;
                 $comment->insert();
+
+                print "\nHace el update\n";
 
                 if ( $self->suppress_alerts ) {
                     my $alert = FixMyStreet::App->model('DB::Alert')->find( {
@@ -170,10 +176,10 @@ sub map_state {
         'no further action'           => 'unable to fix',
         'open'                        => 'confirmed',
         'closed'                      => 'fixed - council',
-        'Ingresado'                   => 'in progress',     
+        'ingresado'                   => 'in progress',     
         'Anulado'                     => 'unable to fix',
-        'En Proceso'                  => 'in progress',
-        'Finalizado'                  => 'fixed - council',
+        'en Proceso'                  => 'in progress',
+        'finalizado'                  => 'fixed - council',
     );
 
     return $state_map{$incoming_state} || $incoming_state;
