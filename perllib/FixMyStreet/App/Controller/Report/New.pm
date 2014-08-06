@@ -720,7 +720,9 @@ sub setup_categories_and_bodies : Private {
         }
     }
     
-    push (@array_groups_seen, [ -2, "Otro" ]);
+    if ( scalar @{$groups_items{-2}} > 0 ) {
+    	push (@array_groups_seen, [ -2, "Otro" ]);
+    }
 
     # put results onto stash for display
     $c->stash->{bodies} = \%bodies;
