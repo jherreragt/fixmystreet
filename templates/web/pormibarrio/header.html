@@ -5,16 +5,16 @@
 <!--[if IE 9]>   <html class="no-js ie9 oldie" lang="[% lang_code %]"><![endif]-->
 <!--[if gt IE 9]><!--><html class="no-js" lang="[% lang_code %]"><!--<![endif]-->
     <head>
-        <title>Por mi Barrio</title>
+        <title>PorMiBarrio</title>
         <link rel="shortcut icon" type="image/x-icon" href="/cobrands/pormibarrio/images/favicon.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <!--<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">-->
         <meta name="HandHeldFriendly" content="true">
         <meta name="mobileoptimized" content="0">
 
         <meta property="og:url" content="[% c.cobrand.base_url %][% c.req.uri.path %]">
-        <meta property="og:title" content="[% title || 'FixMyStreet' %]">
+        <meta property="og:title" content="[% title || 'PorMiBarrio' %]">
         <meta property="og:site_name" content="[% c.cobrand.site_title %]">
         [% IF c.req.uri.path == '/' %]<meta property="og:description" content="Report, view, and discuss local street-related problems.">[% END %]
         <meta property="og:type" content="website">
@@ -79,7 +79,7 @@
 		 var js, fjs = d.getElementsByTagName(s)[0];
 		 if (d.getElementById(id)) {return;}
 		 js = d.createElement(s); js.id = id;
-		 js.src = "http://connect.facebook.net/en_US/all.js";
+		 js.src = "http://connect.facebook.net/es_UY/all.js";
 		 fjs.parentNode.insertBefore(js, fjs);
 	   }(document, 'script', 'facebook-jssdk'));
 	</script>
@@ -117,9 +117,9 @@
                 </ul>
                 <ul class="help-info">
                     <li class="doc-info"><a href="/faq">FAQ</a></li>
-                    <li class="data"><a href="http://datauy.org" target="_blank" alt="DATA"></a></li>
-                    <li class="my-society"><a href="http://mysociety.org" target="_blank" alt="My Society"></a></li>
-                    <li class="avina"><a href="http://www.avinaamericas.org/" target="_blank" alt="Avina Americas"></a></li>
+                    <li class="data"><a href="http://datauy.org" target="_blank"></a></li>
+                    <li class="my-society"><a href="http://mysociety.org" target="_blank"></a></li>
+                    <li class="avina"><a href="http://www.avinaamericas.org/" target="_blank"></a></li>
                 </ul>
             </div>
         </nav>

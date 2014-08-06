@@ -736,6 +736,9 @@ div.status-report li{
 	padding:10px 0;
 	font-size:1em;
 	border-bottom:#ebebeb solid 1px;	
+	color:#7d7d7d;
+	font-size:1em;
+	line-height:1.4375em;
 }
 
 div.status-report li:before{
@@ -873,9 +876,8 @@ div.user-picture{
 }
 
 div.actions {
-    margin-bottom: 30px;
-    padding: 15px 0;
-    height: 50px;
+    margin-bottom: 20px;
+    padding: 20px 40px;
 }
 
 div.actions ul li {
@@ -889,12 +891,49 @@ div.actions li a {
     padding: 0 0 5px 27px;
 }
 
+a.follow-report{
+	background:url(images/icon-follow.png) no-repeat left top
+}
+
+a.follow-report:active{
+	background:url(images/icon-follow-active.png) no-repeat left top;
+	color:#1fb384!important;
+}
+
+a.reportar-abuso{
+	background: url(images/icon-abuse.png) no-repeat left top
+}
+
+a.reportar-abuso:active{
+	background: url(images/icon-abuse-active.png) no-repeat left top;
+	color:#fc4349!important
+}
+
+div.actions ul li a:hover{
+	text-decoration:none;
+}
+
 div.share {
     clear: both;
     float: left;
     margin-top: 10px;
 }
 
+div.actions li.share {
+	width: 20%;
+	float: right;
+	margin: 0;
+}
+div.actions li.share a{
+	float: right;
+    padding: 0;
+}
+div#twitter-share{
+	float: left;
+}
+div#facebook-share{
+	float: right;
+}
 /*INGRESAR UN REPORTE-----------------------------------------------------------------------------*/
 div.new-report{
 	color:#758a9d;
@@ -1297,7 +1336,9 @@ div.tool div.it-r{
 	padding:0;
 	overflow:hidden;
 	border-radius:5px;
-	border-bottom:none
+	border-bottom:none;
+	width: 250px !important;
+	height: auto !important;
 }
 
 div.tool div.it-r-info{

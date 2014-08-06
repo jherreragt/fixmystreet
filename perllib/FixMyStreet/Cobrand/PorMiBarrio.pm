@@ -138,4 +138,6 @@ sub users_can_hide { 1 }
 
 sub language_override { 'es' }
 
+sub site_title { return 'PorMiBarrio'; }
+
 1;

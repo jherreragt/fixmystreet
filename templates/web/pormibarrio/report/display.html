@@ -21,90 +21,60 @@
 		<div class="report">
 			<div id="update-display" class="info-report scrolled-report">
 			
-[% INCLUDE 'report/_main.html' %]
-[% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
+                [% INCLUDE 'report/_main.html' %]
+                [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
+                <div class="actions">
+                    <ul class="actions">
+                        <li>
+                            <a class="follow-report" target="_blank" href="[% c.uri_for( '/alert/subscribe', { id => problem.id } ) %]">[% loc('Get updates' ) %]</a>
+                        </li>
+                        [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
+                            <li>
+                                <a class="reportar-abuso" target="_blank" href="/report/delete/[% problem.id %]">Ocultar</a>
+                            </li>
+                        [% ELSE %]
+                            <li>
+                                <a class="reportar-abuso" target="_blank" href="[% c.uri_for( '/contact', { id => problem.id } ) %]">[% loc('Report abuse' ) %]</a>
+                            </li>
+                        [% END %]
+                        <li class="share">
+                            <div class="addthis_sharing_toolbox"></div>
+                        </li>
+                    </ul>
+                </div><!--end actions -->   
+                <div class="comment-reports">
+                    <h3>Comentarios</h3>
+                    [% INCLUDE 'report/updates.html' %]
+                    <div class="comment comment-user">
+                        <div class="user-avatar">
+                            <!--avatar dinámico -->
+                            <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">
+                        </div>
+                        <div class="user-info comments-user-info">
+                            [% INCLUDE 'report/update-form.html' %]
+                        </div>
+                    </div>
+                </div>
 
-<div class="comment-reports">
-    <h3>Comentarios</h3>
-    [% INCLUDE 'report/updates.html' %]
-    <div class="comment comment-user">
-        <div class="user-avatar">
-            <!--avatar dinámico -->
-            <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">
-        </div>
-        <div class="user-info comments-user-info">
-            [% INCLUDE 'report/update-form.html' %]
-        </div>
-    </div>
-</div>
-
-<script>
-var imComments = $('.comment-IM');
-if (imComments.length > 0){
-    if ($('.status-report ul').length == 0){
-        var statusList=document.createElement("ul");
-        imComments.each(function() {
-            statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
-            $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
-        });
-        statusList.innerHTML += '</ul>';
-        $('.status-report').append(statusList);
-    }
-}
-</script>
-
-<div class="actions">
-    <ul class="actions">
-        [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
-            <li>
-                <form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
-                    <input type="submit" id="key-tool-report-abuse" class="abuse" value="Remove from site">
-                </form>
-            </li>
-        [% ELSE %]
-            <li>
-                <a rel="nofollow" id="key-tool-report-abuse" class="abuse" href="[% c.uri_for( '/contact', { id => problem.id } ) %]">[% loc('Report abuse' ) %]</a>
-            </li>
-        [% END %]
-        <li>
-            <a rel="nofollow" id="key-tool-report-updates" class="feed" href="[% c.uri_for( '/alert/subscribe', { id => problem.id } ) %]">[% loc('Get updates' ) %]</a>
-        </li>
-    </ul>
-    <div id="report-share" class="share">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-text="[% loc('I just reported') %] [% problem.title_safe | html %]" data-hashtags="PorMiBarrio" data-related="mysociety" data-count="none" data-dnt="true"></a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-        <div class="fb-like" data-layout="button" data-action="like" data-show-faces="true" data-share="true"></div>
-    </div>
-</div>
-
-	<div id="report-updates-data" class="hidden-js">
-		<form action="[% c.uri_for( '/alert/subscribe' ) %]" method="post">
-			<a href="[% c.uri_for( '/rss', problem.id ) %]">
-				<img src="/i/feed.png" width="16" height="16" title="[% loc('RSS feed') %]" alt="[% loc('RSS feed of updates to this problem' ) %]" border="0">
-			</a>
-			<p>[% loc('Receive email when updates are left on this problem.' ) %]</p>
-			<fieldset>
-			<label class="hidden n" for="alert_rznvy">[% loc('Your email') %]</label>
-			<div class="form-txt-submit-box">
-				<input type="email" name="rznvy" id="alert_rznvy" value="[% email | html %]" size="30" placeholder="[% loc('Your email') %]">
-				<input class="green-btn" type="submit" value="[% loc('Subscribe') %]">
-			</div>
-			<input type="hidden" name="id" value="[% problem.id %]">
-			<input type="hidden" name="type" value="updates">
-			</fieldset>
-		</form>
-	</div>
-</div>
-	</div>
-				
-[% INCLUDE 'footer.html' %]
-			</div>
-		</div>	
-		<!--end report-->
-	</div>
-	<!--end container report-->   
-</div>
-
+                <script>
+                var imComments = $('.comment-IM');
+                if (imComments.length > 0){
+                    if ($('.status-report ul').length == 0){
+                        var statusList=document.createElement("ul");
+                        imComments.each(function() {
+                            statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
+                            $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
+                        });
+                        statusList.innerHTML += '</ul>';
+                        $('.status-report').append(statusList);
+                    }
+                }
+                </script>		
+			</div><!--end update-display-->
+            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53e182280cb1c22a"></script>
+		</div><!--end report-->
+	</div><!--end container report-->   
+</div><!--end c-report-->
 <script>
 	/*$('#update-display').slimScroll({ scrollTo: 100 });*/
 	
@@ -112,3 +82,5 @@ if (imComments.length > 0){
 		$().ready(function() { $('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); });
 	[% END %]
 </script>
+
+[% INCLUDE 'footer.html' %]

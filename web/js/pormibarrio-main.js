@@ -21,8 +21,8 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		railOpacity:1,
 		distance:10,
 		railColor: '',
-		color: '#ebebeb',
-		size:'8px',
+		color: '#ACACAC',
+		size:'9px',
 		borderRadius:4,
 		opacity: 1,
 	});
@@ -38,7 +38,7 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		distance:10,
 		railColor: '',
 		color: '#65788a',
-		size:'8px',
+		size:'9px',
 		borderRadius:4,
 		opacity: 1,
 	});
@@ -53,8 +53,8 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		railOpacity:1,
 		distance:10,
 		railColor: '',
-		color: '#ebebeb',
-		size:'8px',
+		color: '#ACACAC',
+		size:'9px',
 		borderRadius:4,
 		opacity: 1,
 	});
