@@ -132,7 +132,7 @@ function fixmystreet_onload() {
         'normal': {
             externalGraphic: "/i/pin-${colour}.png",
             graphicWidth: 29,
-            graphicHeight: 29,
+            graphicHeight: 34,
             graphicXOffset: -15,
             graphicYOffset: -29,
             backgroundGraphic: "/i/pin-shadow.png",

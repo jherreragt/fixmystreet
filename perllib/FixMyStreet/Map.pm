@@ -131,12 +131,17 @@ sub map_pins {
     # create a list of all the pins
     my @pins = map {
         # Here we might have a DB::Problem or a DB::Nearby, we always want the problem.
-        my $p = (ref $_ eq 'FixMyStreet::App::Model::DB::Nearby') ? $_->problem : $_;    
+        my $p = (ref $_ eq 'FixMyStreet::App::Model::DB::Nearby') ? $_->problem : $_;
+
+        my $username = 'Anonimo';
+        if ( !$p->anonymous ){
+            $username = $p->user->name;
+        }
         
         my $colour = $c->cobrand->pin_colour( $p, 'around', $c, \%categories);
         [ $p->latitude, $p->longitude,
           $colour,
-          $p->id, $p->title_safe,'', $p->user->name, $p->category, $categories{$p->category}, $p->created->ymd('-'), 1, 1, $p->state
+          $p->id, $p->title_safe,'', $username, $p->category, $categories{$p->category}, $p->created->ymd('-'), 1, 1, $p->state
         ]
     } @$around_map, @$nearby;
 
