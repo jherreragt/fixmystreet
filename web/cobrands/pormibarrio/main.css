@@ -299,6 +299,11 @@ ul.help-info li a{
 	padding-left:35px;
 }
 
+li.data a{
+	/*border-top:#2c3e50 solid 1px;*/
+	background:url(images/icon-data.png) no-repeat center 10px;	
+}
+
 li.my-society a{
 	background:url(images/icon-my-society.png.png) no-repeat center 18px
 }
