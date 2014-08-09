@@ -13,7 +13,7 @@ body{
 }
 #popup{
 	height: auto !important;
-	width: 250px !important;
+	width: auto !important;
 	color:#000;
 }
 h1{margin-top:0}

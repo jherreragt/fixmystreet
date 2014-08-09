@@ -256,12 +256,16 @@ li.reportes a{
 	background:url(images/icon-reportes.png) no-repeat 20px center;	
 }
 
-li.reportes a:hover, li.help a:hover{
+li.reportes a:hover, li.help a:hover, li.doc-info a:hover{
 	background-color:#131e29;
 }
 
 li.help a{
 	background:url(images/icon-help.png) no-repeat 20px center;
+}
+
+li.doc-info a{
+       background: url(images/icon-data-info.png) no-repeat 20px center;
 }
 
 nav.first-navigation li.profile a{
@@ -293,15 +297,6 @@ ul.help-info{
 ul.help-info li a{
 	/*text-indent:-99999em!important;*/
 	padding-left:35px;
-}
-
-li.doc-info a{
-	background: url(images/icon-data-info.png) no-repeat center 10px;	
-}
-
-li.data a{
-	/*border-top:#2c3e50 solid 1px;*/
-	background:url(images/icon-data.png) no-repeat center 10px;	
 }
 
 li.my-society a{
@@ -715,6 +710,12 @@ div.status-report{
 	padding:20px 40px;
 	border-top:#ebebeb solid 1px;
 	border-bottom:#ebebeb solid 1px;
+}
+
+span.status-report-im{
+	color: #7d7d7d;
+    font-size: 0.875em;
+    font-style: italic;
 }
 
 div.status-report h4, div.comment-reports h3{
@@ -1486,7 +1487,7 @@ a.navbar-brand, li.reportar-small {
 		padding-left:55px;!important
 	}
 	
-	li.doc-info a, li.data a, li.my-society a, li.avina a{
+	li.data a, li.my-society a, li.avina a{
 		background-position:20px center;		
 	}
 	
