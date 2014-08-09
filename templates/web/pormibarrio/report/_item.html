@@ -20,8 +20,12 @@
 				[% ELSIF NOT no_fixed AND problem.is_closed %]
 					<li>[% loc('closed') %]</li>
 				[% END %]
-				<li class="icon-camera"><span></span></li>
-                <li class="icon-comments"><span></span></li>
+				[% IF problem.get_photo_params.url_full %]
+					<li class="icon-camera"><span></span></li>
+				[% END %]
+				[% IF problem.has_comments %]
+                	<li class="icon-comments"><span></span></li>
+                [% END %]
                 <li class="icon-tags"><span></span></li>
             </ul>
 		</div>

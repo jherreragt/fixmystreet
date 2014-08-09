@@ -525,6 +525,18 @@ meta data about the report.
 
 =cut
 
+sub has_comments {
+  my $self = shift;
+  
+  my $c = $self->comments->search( { problem_id => $self->id } );
+  if ( $c->first ) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
 sub meta_line {
     my ( $problem, $c ) = @_;
 
