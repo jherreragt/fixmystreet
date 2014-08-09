@@ -184,7 +184,7 @@ detail: @{[$problem->detail()]}
 
 url: $extra->{url}
 
-Submitted via FixMyStreet
+Enviado por PorMiBarrio
 EOT
 ;
     if ($self->extended_description ne 'oxfordshire') {
