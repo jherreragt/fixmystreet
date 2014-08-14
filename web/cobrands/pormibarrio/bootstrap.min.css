@@ -227,8 +227,7 @@ body {
 	font-family: "Roboto", Arial, sans-serif;
 	font-size: 16px;
 	line-height: 1.42857143;
-	/*color: #383f3a;*/
-	background-color: #f2f2f2
+	color: #383f3a;
 }
 input, button, select, textarea {
 	font-family: inherit;

@@ -71,7 +71,7 @@
 
     [% TRY %][% PROCESS 'set_body_class.html' %][% CATCH file %][% END %]
     <body class="[% bodyclass | html IF bodyclass %]">
-
+    <div class="overlay" style="display: none"></div>
 	<div id="fb-root"></div>
 	<script>
 	  window.fbAsyncInit = function() {
@@ -120,8 +120,8 @@
             <div class="navbar-collapse collapse">
                 <ul>
                     <li class="home"><a href="/"><span></span></a></li>
-                    <li class="reportar"><a href="javascript:void(0);" onclick="geolocate(10000, 4)">Reportar</a></li>
-                    <li class="reportes"><a href="javascript:void(0);" onclick="geolocate(10000, 2)">Reportes</a></li>
+                    <li class="reportar"><a href="javascript:void(0);" onclick="report(10000, 4)">Reportar</a></li>
+                    <li class="reportes"><a href="javascript:void(0);" onclick="report_list(10000, 2)">Reportes</a></li>
                     <li class="help"><a href="http://datauy.uservoice.com/forums/233161-por-mi-barrio" target="_blank">Ayuda</a></li>
                     <li class="doc-info"><a href="/faq">Preguntas</a></li>
                 </ul>

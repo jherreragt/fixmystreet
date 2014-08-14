@@ -26,6 +26,20 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		borderRadius:4,
 		opacity: 1,
 	});
+
+	$('div.scrolled-100').slimScroll({
+		position: 'right',
+		height: '100%',
+		railVisible: true,
+		alwaysVisible: true,
+		railOpacity:1,
+		distance:10,
+		railColor: '',
+		color: '#ACACAC',
+		size:'9px',
+		borderRadius:4,
+		opacity: 1,
+	});
 	
 
 //SCROLL AL INGRESAR UN REPORTE
@@ -59,7 +73,16 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		opacity: 1,
 	});
 		
-		
+
+//SCROLL EN FAQ
+$( document ).ready(function() {
+	$('a.pregunta').click(function(){
+		var ref = this.href.split('#');
+		console.log(ref[1]);
+		$('div.scrolled-100').slimScroll({ scrollTo: $('#' + ref[1]).offset().top });
+	})
+});
+
 //MOSTRAR EL FORM DE REGISTRO
 /*	$('.registrate').click(function(){
 		alert('Registra?');
@@ -72,6 +95,24 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 	$('div.it-r').click(function(){
 		$('div.c-report').show();
 	})
+
+function report(timeout, zoom){
+	/*if (typeof fixmystreet != 'undefined'){
+		alert('FMS definido Report');
+		$('#side').hide();
+		$('#side-form').show();
+	}*/
+	geolocate(timeout, zoom);
+}
+
+function report_list(timeout, zoom){
+	/*if (typeof fixmystreet != 'undefined'){
+		alert('FMS definido Report LISTADO');
+		$('#side').show();
+		$('#side-form').hide();
+	}*/
+	geolocate(timeout, zoom);
+}
 
 function geolocate(timeout, zoom){
 	setTimeout(function(){location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=' + zoom}, timeout);
@@ -188,6 +229,14 @@ $(window).resize(function() {
 		}
 		$('.content').addClass('content-vertical');
 		$('.content').removeClass('content-horizontal');
+		$('div.como-funciona a').click(function(){
+			$('#faq-list').hide();
+			$('.first-navigation').hide();
+		})
+		$('div.c-respuestas span').click(function(){
+			$('#faq-list').show();
+			$('.first-navigation').show();
+		})
 	}
 	if ( $(window).width() >= 780){
 		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
@@ -196,5 +245,8 @@ $(window).resize(function() {
 		}
 		$('.content').removeClass('content-vertical');
 		$('.content').addClass('content-horizontal');
+		$('div.como-funciona a').unbind("click");
+		$('#faq-list').show();
+		$('.first-navigation').show();
 	}
 });

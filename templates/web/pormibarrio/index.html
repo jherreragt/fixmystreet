@@ -73,14 +73,18 @@ setTimeout(
         overlayDiv.appendChild(gotoMap);
     }
     , 15000);*/
-
+function video(){
+    $('.overlay').html('<iframe width="800" height="450" src="//www.youtube.com/embed/9jsmU3093WA" frameborder="0" allowfullscreen></iframe>');
+    $('.overlay').show();
+    $('.overlay').click(function(){
+        $('.overlay').hide();
+    })
+}
 </script>
 [% END %]
 
 [% pre_container_extra = PROCESS 'around/postcode_form.html' %]
 [% INCLUDE 'header.html', title = '', bodyclass = 'intro' mainclass = 'intro' %]
-
-<body class="intro">
     <div class="overlay-blue"></div>
         <!--MAIN CONTAINER-->
         <div class="c-intro">
@@ -91,13 +95,13 @@ setTimeout(
             (una organización de la sociedad civil) usando la plataforma de servicios abiertos de la Intendencia 
             de Montevideo y con el apoyo del Defensor del Vecino.</p>
             <div class="c-buttons-intro">
-                <a href="/faq" class="btn btn-reportar btn-intro">Como funciona</a>
+                <a href="#" onclick="video()" class="btn btn-reportar btn-intro">Como funciona</a>
                 <a href="#" onclick="locate()" class="btn btn-green btn-intro">Comenzar ahora</a>
             </div>
             <div class="steps">
                 <div class="step step-one">
                     <img src="/cobrands/pormibarrio/images/intro-step-01.png" alt=""/>
-                    <h3>1.Reportá un problema en el mapa ó 
+                    <h3>1.Reportá un problema en el mapa o 
                     sumate a uno ya creado.</h3>
                 </div>
                 <div class="step step-two">
@@ -134,5 +138,4 @@ setTimeout(
     [% IF error %]
         <p class="form-error">[% error %]</p>
     [% END %]
-    <script type="text/javascript" src="[% version('/js/pormibarrio-main.js') %]"></script>
-</body>
+[% INCLUDE 'footer.html' %]
