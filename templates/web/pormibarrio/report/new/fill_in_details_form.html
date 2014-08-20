@@ -6,6 +6,9 @@
             <div class="c-form-report">
                 <div class="ir">
                 <!--<div id="report-a-problem-main"> -->
+                    <div class='full-wide'>
+                        <a class="btn btn-back report-back" href="#">Volver</a>
+                    </div>
                     <h2>[% loc('Reporting a problem') %]</h2>
 
                     [% IF js %]
@@ -132,126 +135,95 @@
 
                 </div>
 
+            [% IF partial_token %]
+                <input type="hidden" name="partial" value="[% partial_token.token %]">
+            [% END %]
+                <input type="hidden" name="submit_problem" value="1">
+            [% IF c.user_exists %]
+                <input disabled type="hidden" value="[% c.user.email | html %]">
+
+                [% IF field_errors.general %]
+                    <p class='form-error'>[% field_errors.general %]</p>
+                [% END %]
+                <input class="form-control [% IF field_errors.identity_document %] error [% END %]" type="hidden" value="[% c.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]" required>
+
+                [% INCLUDE 'report/new/extra_name.html' %]
+
+                <input type="hidden" class="validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" placeholder="[% loc('Your name') %]">
+                <input class="" type="hidden" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="[% loc('Your phone number') %]">
+                [%# if there is nothing in the name field then set check box as default on form %]
+                <div class="checkbox-group">
+                    <input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+                    <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+                </div>
                 <div class="form-group">
-                    [% IF partial_token %]
-                        <input type="hidden" name="partial" value="[% partial_token.token %]">
-                    [% END %]
-                    <input type="hidden" name="submit_problem" value="1">
+                    <input class="btn btn-block btn-reportar" type="submit" id="submit_register" name="submit_register" value="Publicar">
+                </div>
+            
+            [% ELSE %]
+                <div class="form-group">
+                    <input class="btn btn-block btn-reportar disabled" type="submit" id="submit_register" name="submit_register" value="Publicar" disabled>
                 </div>
             </div>
-
             <div class="login">
-				[% IF c.user_exists %]
-					<div class="form-box">
-						<label for="form_email">[% loc('Your email') %] *</label>
-						<input disabled type="text" value="[% c.user.email | html %]">
-
-						[% IF field_errors.general %]
-							<p class='form-error'>[% field_errors.general %]</p>
-						[% END %]
-
-						<label for="form_identity_document">Documento *</label>
-						<input class="form-control [% IF field_errors.identity_document %] error [% END %]" type="text" value="[% c.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]" required>
-
-						[% INCLUDE 'report/new/extra_name.html' %]
-
-						<label for="form_name">[% loc('Name') %] *</label>
-						<input type="text" class="validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" placeholder="[% loc('Your name') %]">
-
-						[%# if there is nothing in the name field then set check box as default on form %]
-						<div class="checkbox-group">
-							<input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
-							<label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
-						</div>
-
-						[% IF c.cobrand.moniker != 'fixmybarangay' || c.user.from_body %]
-    						<div class="general-sidebar-notes">
-    							<p>[% loc('We never show your email address or phone number.') %]</p>
-    						</div>
-						[% END %]
-
-						<label for="form_phone">[% loc('Phone number (optional)') %]</label>
-						<input class="" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="[% loc('Your phone number') %]">
-
-						<div class="form-group">
-							<input class="btn btn-block btn-reportar" type="submit" id="submit_register" name="submit_register" value="Publicar">
-						</div>
-					</div>
-				[% ELSE %]
-					<div class="bloque-sesion">
-						<div class="ir" id="report-new-login">
-							<h2>Accede a tu cuenta</h2>
-							<p>Conectate a tu cuenta para poder finalizar tu reporte y enviarlo a la Intendencia.</p>
-						</div>
-						<div class="form-group">
-							<input type="email" class="form-control required [% IF field_errors.email %] error [% END %]" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="Correo electrónico *" required>
-						</div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" name="may_show_name_social" id="form_may_show_name_social" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
-                            <label class="inline" for="form_may_show_name_social">[% loc('Show my name publicly') %] </label>
-                        </div>
-						[% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
-							<div class="social-buttons">
-								[% IF c.config.FACEBOOK_APP_ID %]
-									<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in" class="btn btn-block btn-social btn-facebook">Registrate con Facebook</button>
-								[% END %]
-								[% IF c.config.TWITTER_KEY %]
-									<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in" class="btn btn-block btn-social btn-twitter">Registrate con Twitter</button>
-								[% END %]
-							</div>
-						[% END %]
-						<p>...ó ingresa los datos si ya tienes cuenta:</p>
-						<div class="form-group">
-							<input type="password" class="form-control [% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
-
-							<div class="checkbox-group">
-                                <input type="checkbox" id="remember_me" name="remember_me" value='1'[% ' checked' IF remember_me %]>
-                                <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
-							</div>
-                            <input class="green-btn" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Submit') %]">
-
-								<!--<div class="general-sidebar-notes" id="forgotten-pw">
-									<p class="dark">[% loc('Forgotten your password?') %]</p>
-									<p>[% loc('Confirm by email below, providing a new password at that point. When you confirm, your password will be updated.') %]</p>
-								</div>-->
-                            <p class="no-account">¿No utilizas redes sociales? No hay problema!</p>
-								<!--<div class="general-sidebar-notes form-focus-hidden">
-									<p class="dark">[% loc('We never show your email address or phone number.') %]</p>
-									<p>[% loc('Providing a password is optional, but doing so will allow you to more easily report problems, leave updates and manage your reports.') %]</p>
-								</div>-->
-						</div>
-					</div> <!-- bloque-sesion -->
-                    <div class="bloque-registro">
-                        <div class="ir">
-                            <h2>Regístrate y se parte</h2>
-                            <p>Crea una cuenta en PorMiBarrio y comienza a colaborar.</p>
-                        </div>
-                        <!--<div class="form-group">
-                            <input type="email" class="form-control required [% IF field_errors.email %] error [% END %]" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="Correo electrónico *" required>
-                        </div>-->
-                        <div class="form-group">
-                            [% INCLUDE 'report/new/extra_name.html' %]
-                            <input type="text" placeholder="Nombre y apellido" class="form-focus-trigger validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" >                                
-                            <input type="text" placeholder="Cédula de Identidad: 0.000.000-0" class="form-control form-focus-trigger [% IF field_errors.identity_document %] error [% END %]" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" >
-                            <input class="form-control" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="Teléfono (opcional)">              
-                            <input name="password_sign_in" id="password_sign_in" type="password" placeholder="Contraseña" class="form-control [% IF field_errors.password %] error [% END %]" for="form_phone">
-                        </div>
-                        <!--<div class="checkbox-group">
-                            <input type="checkbox" name="may_show_name_social" id="form_may_show_name_social" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
-                            <label class="inline" for="form_may_show_name_social">[% loc('Show my name publicly') %] </label>
-                        </div>-->
-                        <!--<div class="checkbox">
-                            <label>
-                              <input type="checkbox"> Al continuar con tu registro, aceptas haber leído y aceptado nuestra 
-                              <a href="javascript:;"> Política de privacidad</a>.
-                            </label>
-                        </div> -->
-                        <div class="form-group">
-                            <button class="btn btn-block btn-green" type="submit" id="submit_register" name="submit_register">Regístrate y publica</button>
-                        </div>
+    			<div class="bloque-sesion">
+    				<div class="ir" id="report-new-login">
+    					<h2>Accede a tu cuenta</h2>
+    					<p>Conectate a tu cuenta para poder finalizar tu reporte y enviarlo a la Intendencia.</p>
+    				</div>
+    				<div class="form-group">
+    					<input type="email" class="form-control required [% IF field_errors.email %] error [% END %]" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="Correo electrónico *" required>
+    				</div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="may_show_name_social" id="form_may_show_name_social" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+                        <label class="inline" for="form_may_show_name_social">[% loc('Show my name publicly') %] </label>
                     </div>
-				[% END %]
-            </div> <!-- login -->
+    				[% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
+    					<div class="social-buttons">
+    						[% IF c.config.FACEBOOK_APP_ID %]
+    							<button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in" class="btn btn-block btn-social btn-facebook">Registrate con Facebook</button>
+    						[% END %]
+    						[% IF c.config.TWITTER_KEY %]
+    							<button name="twitter_sign_in" id="twitter_sign_in" value="twitter_sign_in" class="btn btn-block btn-social btn-twitter">Registrate con Twitter</button>
+    						[% END %]
+    					</div>
+    				[% END %]
+    				<p>...ó ingresa los datos si ya tienes cuenta:</p>
+    				<div class="form-group">
+    					<input type="password" class="form-control [% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
+
+    					<div class="checkbox-group">
+                            <input type="checkbox" id="remember_me" name="remember_me" value='1'[% ' checked' IF remember_me %]>
+                            <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
+    					</div>
+                        <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Submit') %]">
+                        <p class="no-account">
+                            ¿No utilizas redes sociales? No hay problema!<br>
+                            <a class="green registrate" href="#">Regístrate aquí con tu mail</a>
+                        </p>
+    				</div>
+    			</div> <!-- bloque-sesion -->
+                <div class="bloque-registro">
+                    <div class='full-wide'>
+                        <a class="btn btn-back registrate-back" href="#">Volver</a>
+                    </div>
+                    <div class="ir">
+                        <h2>Regístrate y se parte</h2>
+                        <p>Crea una cuenta en PorMiBarrio y comienza a colaborar.</p>
+                    </div>
+                    <div class="form-group">
+                        [% INCLUDE 'report/new/extra_name.html' %]
+                        <input type="text" placeholder="Nombre y apellido" class="form-focus-trigger validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" >                                
+                        <input type="text" placeholder="Cédula de Identidad: 0.000.000-0" class="form-control form-focus-trigger [% IF field_errors.identity_document %] error [% END %]" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" >
+                        <input class="form-control" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="Teléfono (opcional)">              
+                        <input name="password_register" id="password_register" type="password" placeholder="Contraseña" class="form-control [% IF field_errors.password %] error [% END %]">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-green" type="submit" id="submit_register" name="submit_register">Regístrate y publica</button>
+                    </div>
+                </div>
+			</div> <!-- login -->
+            [% END %]
         </div> <!-- scrolled-reportar -->
     </div>
     <!--</fieldset>-->

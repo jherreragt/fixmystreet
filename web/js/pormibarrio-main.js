@@ -74,6 +74,7 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 	});
 		
 
+//MOSTRAR EL FORM DE REGISTRO
 //SCROLL EN FAQ
 $( document ).ready(function() {
 	$('a.pregunta').click(function(){
@@ -81,14 +82,29 @@ $( document ).ready(function() {
 		console.log(ref[1]);
 		$('div.scrolled-100').slimScroll({ scrollTo: $('#' + ref[1]).offset().top });
 	})
-});
-
-//MOSTRAR EL FORM DE REGISTRO
-/*	$('.registrate').click(function(){
-		alert('Registra?');
+	$('.registrate').click(function(e){
+		e.preventDefault();
+		var regCont = $('.bloque-registro .form-group').first();
+		$('#form_email').prependTo(regCont);
 		$('div.bloque-registro').slideDown();
 		$('div.bloque-sesion').slideUp();	
-	})*/
+	})
+	$('.registrate-back').click(function(e){
+		e.preventDefault();
+		var sesCont = $('.bloque-sesion .form-group').first();
+		$('#form_email').prependTo(sesCont);
+		$('div.bloque-registro').slideUp();
+		$('div.bloque-sesion').slideDown();	
+	})
+	$('.report-back').click(function(e){
+		e.preventDefault();
+		$('#side-form').hide();
+	})
+	$('.reports-back').click(function(e){
+		e.preventDefault();
+		$('#side').hide();
+	})
+});
 
 
 //MOSTRAR REPORTE
@@ -97,21 +113,39 @@ $( document ).ready(function() {
 	})
 
 function report(timeout, zoom){
-	/*if (typeof fixmystreet != 'undefined'){
-		alert('FMS definido Report');
-		$('#side').hide();
-		$('#side-form').show();
-	}*/
-	geolocate(timeout, zoom);
+	if (typeof fixmystreet != 'undefined'){
+		switch (fixmystreet.page) {
+			case 'around':
+				alert('No es visible');
+				$('#side-form').show();
+				$('#side').hide();
+				break;	
+		}
+	}
+	else {
+		alert('Geolocate');
+		geolocate(timeout, zoom);
+	}
 }
 
 function report_list(timeout, zoom){
-	/*if (typeof fixmystreet != 'undefined'){
-		alert('FMS definido Report LISTADO');
-		$('#side').show();
-		$('#side-form').hide();
-	}*/
-	geolocate(timeout, zoom);
+	if (typeof fixmystreet != 'undefined'){
+		switch (fixmystreet.page) {
+			case 'around':
+				alert('No es visible');
+				$('#side-form').hide();
+				$('#side').show();
+				break;
+			case 'new':
+				alert('Nueva pagina');
+				window.history.back();
+				break;
+		}
+	}
+	else {
+		alert('Geolocate');
+		geolocate(timeout, zoom);
+	}
 }
 
 function geolocate(timeout, zoom){
@@ -224,11 +258,10 @@ $('.responsive').responsiveText();
 $(window).resize(function() {
 	if ( $(window).width() < 780){
 		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
-			$('#report-list').hide();
+			$('#side').hide();
 			$('#fms_pan_zoom').css('top', "6.75em");
 		}
 		$('.content').addClass('content-vertical');
-		$('.content').removeClass('content-horizontal');
 		$('div.como-funciona a').click(function(){
 			$('#faq-list').hide();
 			$('.first-navigation').hide();
@@ -240,11 +273,10 @@ $(window).resize(function() {
 	}
 	if ( $(window).width() >= 780){
 		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
-			$('#report-list').show();
+			$('#side').show();
 			$('#fms_pan_zoom').css('top', "1.75em");
 		}
 		$('.content').removeClass('content-vertical');
-		$('.content').addClass('content-horizontal');
 		$('div.como-funciona a').unbind("click");
 		$('#faq-list').show();
 		$('.first-navigation').show();
