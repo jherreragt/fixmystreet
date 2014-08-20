@@ -116,14 +116,12 @@ function report(timeout, zoom){
 	if (typeof fixmystreet != 'undefined'){
 		switch (fixmystreet.page) {
 			case 'around':
-				alert('No es visible');
 				$('#side-form').show();
 				$('#side').hide();
 				break;	
 		}
 	}
 	else {
-		alert('Geolocate');
 		geolocate(timeout, zoom);
 	}
 }
@@ -132,18 +130,15 @@ function report_list(timeout, zoom){
 	if (typeof fixmystreet != 'undefined'){
 		switch (fixmystreet.page) {
 			case 'around':
-				alert('No es visible');
 				$('#side-form').hide();
 				$('#side').show();
 				break;
 			case 'new':
-				alert('Nueva pagina');
 				window.history.back();
 				break;
 		}
 	}
 	else {
-		alert('Geolocate');
 		geolocate(timeout, zoom);
 	}
 }
