@@ -257,6 +257,7 @@ $(window).resize(function() {
 			$('#fms_pan_zoom').css('top', "6.75em");
 		}
 		$('.content').addClass('content-vertical');
+		$('.content').removeClass('content-horizontal');
 		$('div.como-funciona a').click(function(){
 			$('#faq-list').hide();
 			$('.first-navigation').hide();
@@ -272,6 +273,7 @@ $(window).resize(function() {
 			$('#fms_pan_zoom').css('top', "1.75em");
 		}
 		$('.content').removeClass('content-vertical');
+		$('.content').addClass('content-horizontal');
 		$('div.como-funciona a').unbind("click");
 		$('#faq-list').show();
 		$('.first-navigation').show();

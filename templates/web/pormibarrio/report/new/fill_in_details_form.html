@@ -189,13 +189,13 @@
     					</div>
     				[% END %]
     				<p>...ó ingresa los datos si ya tienes cuenta:</p>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember_me" name="remember_me" value='1'[% ' checked' IF remember_me %]>
+                        <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
+                    </div>
     				<div class="form-group">
     					<input type="password" class="form-control [% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
 
-    					<div class="checkbox-group">
-                            <input type="checkbox" id="remember_me" name="remember_me" value='1'[% ' checked' IF remember_me %]>
-                            <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
-    					</div>
                         <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Submit') %]">
                         <p class="no-account">
                             ¿No utilizas redes sociales? No hay problema!<br>
