@@ -3,8 +3,12 @@
 [% END %]
      <div class="comment comment-[% update.name %]">
 		<div class="user-avatar">
-			[% IF update.users.facebook_id %]
-				<img alt="" src="http://graph.facebook.com/[% update.users.facebook_id %]/picture?type=square"></div>
+			[% IF update.users.picture_url %]	
+				<img alt="" class="user_avatar_[% update.users.id %]"></div>
+				<script>
+					$(".user_avatar_[% update.users.id %]").error(function() { $(this).attr("src", "/cobrands/pormibarrio/images/no_pic.png"); }).
+						attr( "src", "[% update.users.picture_url %]" );
+				</script>
 			[% ELSE %]
 				<img alt="" src="/cobrands/pormibarrio/images/no_pic.png"></div>
 			[% END %]

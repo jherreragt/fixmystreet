@@ -48,7 +48,16 @@
                     <div class="comment comment-user">
                         <div class="user-avatar">
                             <!--avatar dinámico -->
-                            <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">
+                            <!--<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">-->
+                            [% IF c.user.picture_url %]
+								<img alt="" id="current_user_avatar">
+								<script>
+									$("#current_user_avatar").error(function() { $( this ).attr("src", "/cobrands/pormibarrio/images/no_pic.png"); }).
+										attr( "src", "[% c.user.picture_url %]" );
+								</script>
+							[% ELSE %]
+								<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">								
+							[% END %]
                         </div>
                         <div class="user-info comments-user-info">
                             [% INCLUDE 'report/update-form.html' %]
@@ -79,7 +88,9 @@
 	/*$('#update-display').slimScroll({ scrollTo: 100 });*/
 	
 	[% IF scroll_to %]
-		$().ready(function() { $('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); });
+		$().ready(function() { 
+			$('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); 
+		});
 	[% END %]
 </script>
 

@@ -38,6 +38,8 @@ __PACKAGE__->add_columns(
   { data_type => "bigint", is_nullable => 1 },
   "facebook_id",
   { data_type => "bigint", is_nullable => 1 },
+  "picture_url",
+  { data_type => "text", is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("users_email_key", ["email"]);
