@@ -189,9 +189,18 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 	
 	my $params = $c->req->parameters;
 
-    my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
-    my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
-    my $facebook_callback_url = $c->uri_for('/auth/Facebook');
+	if ( $params->{error_code} ) {
+		#Redirect to error page...
+		$c->set_session_cookie_expire(0);
+
+		#$c->res->redirect( $c->uri_for( "/" ) );
+
+		$c->stash->{message} = 'No es posible iniciar la sesi&oacute;n en Facebook. Por favor vuelva a intetarlo m&aacute;s tarde.';
+		$c->stash->{template} = 'errors/generic.html';
+	} else {
+	my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
+	my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
+	my $facebook_callback_url = $c->uri_for('/auth/Facebook');
     
 	my $fb = Net::Facebook::Oauth2->new(
 		application_id => $facebook_app_id,  ##get this from your facebook developers platform
@@ -237,6 +246,7 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		} else {
 			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
 		}
+	}
 	}
 }
 
