@@ -232,8 +232,9 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 			name => $name,
 			email => $email,
 			facebook_id => $uid,
+			picture_url => 'http://graph.facebook.com/'.$uid.'/picture?type=square',
 		});
-		
+			
 		$c->stash->{user} = $new_user;		
 		$c->stash->{template} = 'auth/social_signup.html';
 	} else {
@@ -313,17 +314,25 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my($access_token, $access_token_secret, $uid, $name) =
 		$twitter->request_access_token(verifier => $verifier);
    
+	my $twitter_user = $twitter->show_user($uid);
+   
 	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
-	if (!$user) {
+	if (!$user) {	
 		my $new_user = $c->model('DB::User')->new({ 
 			name => $name,
 			twitter_id => $uid,
+			picture_url => $twitter_user->{profile_image_url},
 		});
 		
 		$c->stash->{user} = $new_user;
 		$c->stash->{template} = 'auth/social_signup.html';
-	} else {	
+	} else {
+		if ( $user->picture_url != $twitter_user->{profile_image_url} ) {
+			$user->picture_url( $twitter_user->{profile_image_url} );
+			$user->update();
+		}
+		
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
 
@@ -351,6 +360,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
 	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
 	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
+	my $picture_url = $c->req->param('picture_url') if $c->req->param('picture_url');
 	
 	my $new_user = $c->model('DB::User')->new({ 
 		name => $name,
@@ -358,9 +368,11 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 		identity_document => $identity_document,
 		facebook_id => $facebook_id,
 		twitter_id => $twitter_id,
+		picture_url => $picture_url,
 	});
 
 	$c->stash->{user} = $new_user;
+		
 	$c->stash->{field_errors} ||= {};	
 	my %field_errors = $c->cobrand->user_check_for_errors( $c );
 
@@ -374,7 +386,8 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				twitter_id => $new_user->twitter_id,
 				name => $new_user->name,
 				email => $new_user->email,
-				identity_document => $new_user->identity_document
+				identity_document => $new_user->identity_document,
+				picture_url => $new_user->picture_url,
 			};
 			
 			my $token_social_sign_up = $c->model("DB::Token")->create( {
@@ -452,6 +465,7 @@ sub token : Path('/M') : Args(1) {
 		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
 		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
 		$user->identity_document( $data->{identity_document} );
+		$user->picture_url( $data->{picture_url} );
 		$user->update;
 			
 		$c->authenticate( { email => $data->{email} }, 'no_password' );
