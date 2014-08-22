@@ -180,7 +180,7 @@ sub _generate_service_request_description {
     my $extra = shift;
 
     my $description = <<EOT;
-detail: @{[$problem->detail()]}
+detalles: @{[$problem->detail()]}
 
 url: $extra->{url}
 
@@ -189,7 +189,7 @@ EOT
 ;
     if ($self->extended_description ne 'oxfordshire') {
         $description = <<EOT . $description;
-title: @{[$problem->title()]}
+titulo: @{[$problem->title()]}
 
 EOT
     }

@@ -177,8 +177,8 @@ sub map_state {
         'open'                        => 'confirmed',
         'closed'                      => 'fixed - council',
         'ingresado'                   => 'in progress',     
-        'Anulado'                     => 'unable to fix',
-        'en Proceso'                  => 'in progress',
+        'anulado'                     => 'unable to fix',
+        'en proceso'                  => 'in progress',
         'finalizado'                  => 'fixed - council',
     );
 

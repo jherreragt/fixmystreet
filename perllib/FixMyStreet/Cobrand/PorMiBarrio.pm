@@ -11,8 +11,9 @@ sub process_extras {
     my $body = shift;
     my $extra = shift;
 
-    if ($c->user_exists){
-    	push @$extra, { name => 'document', value => $c->user->identity_document };
+    if ($c->stash->{report}->{has_photo}){
+    	my $image_url = FixMyStreet->path_to( 'web', 'photo', $c->stash->{report}->id . '.*' );
+    	push @$extra, { name => 'image_url', value => $image_url };
     }
 }
 
