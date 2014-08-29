@@ -779,20 +779,21 @@ div.status-report{
 	border-bottom:#ebebeb solid 1px;
 }
 
+p.status-report-im,
 span.status-report-im{
 	color: #7d7d7d;
     font-size: 0.875em;
     font-style: italic;
 }
 
-div.status-report h4, div.comment-reports h3{
+div.status-report h4, div.comments h3{
 	text-transform:uppercase;
 	color:#fc4349;
 	font-weight:600;
 	font-size:0.875em;	
 }
 
-div.comment-reports h3 {
+div.comments h3 {
     padding: 20px 0 0 40px;
 }
 
@@ -835,13 +836,17 @@ div.user-avatar{
 	float:left;
 	width:60px;
 	height:60px;
-	border-radius:100px;
 	margin-right:20px;	
+}
+
+div.current-user-avatar{
+	margin: 0 20px 0 40px;
 }
 
 div.user-avatar img{
 	max-width:100%;
 	height:auto;
+	border-radius:100px;
 }
 
 div.user-info form textarea, div.user-info .form-control {
@@ -925,12 +930,14 @@ div.comment-user{
 	padding-bottom: 5px;	
 }
 
+p.status-report-im {
+	padding: 0 0 20px 40px
+}
 div.comments-user-info {
-    float: left;
-    margin-top: 3px;
+    margin-top: 20px;
     overflow: auto;
     padding-bottom: 50px;
-    width: 84%;
+    max-width: 60%;
 }
 
 div.imm-comment{
@@ -1052,7 +1059,7 @@ div.c-form-report div.ir{
 .form-group input, .form-group textarea, .form-group select{
 	border-radius:3px;
 	width:100%;
-	display:block;
+	display:inline-block;
 	background:none;
 	border:#758a9d solid 1px;
 	padding: 7px 12px;
@@ -1622,6 +1629,11 @@ div.respuesta p a:hover{
 
 /*TOOLTIPS y PINS*/
 
+.tooltip{
+	display: inline-block; 
+	position: relative; 
+	right: -1px;
+}
 .arrow_box {
 	position: relative;
 	background: #fff;

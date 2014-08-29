@@ -42,26 +42,29 @@
                         </li>
                     </ul>
                 </div><!--end actions -->   
-                <div class="comment-reports">
+                <div class="comments">
                     <h3>Comentarios</h3>
+                [% IF problem.is_fixed %]
+                    <p class="status-report-im">La IM no recibirá comentarios ya que el problema se encuentra finalizado. Puedes hacer un nuevo reclamo haciendo click <a href="" id="new-report-link">aquí</a>.</p>
+                    <script>$('#new-report-link').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
+                [% END %]
                     [% INCLUDE 'report/updates.html' %]
-                    <div class="comment comment-user">
-                        <div class="user-avatar">
-                            <!--avatar dinámico -->
-                            <!--<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">-->
-                            [% IF c.user.picture_url %]
-								<img alt="" id="current_user_avatar">
-								<script>
-									$("#current_user_avatar").error(function() { $( this ).attr("src", "/cobrands/pormibarrio/images/no_pic.png"); }).
-										attr( "src", "[% c.user.picture_url %]" );
-								</script>
-							[% ELSE %]
-								<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">								
-							[% END %]
-                        </div>
-                        <div class="user-info comments-user-info">
+                    <div class="comment-user">
+                            <div class="user-avatar current-user-avatar">
+                                <!--avatar dinámico -->
+                                <!--<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">-->
+                                [% IF c.user.picture_url %]
+                                    <img alt="" id="current_user_avatar">
+                                    <script>
+                                        $("#current_user_avatar").error(function() { $( this ).attr("src", "/cobrands/pormibarrio/images/no_pic.png"); }).
+                                            attr( "src", "[% c.user.picture_url %]" );
+                                    </script>
+                                [% ELSE %]
+                                    <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">                              
+                                [% END %]
+                            </div>
+                            <div class="user-info comments-user-info">
                             [% INCLUDE 'report/update-form.html' %]
-                        </div>
                     </div>
                 </div>
 
