@@ -112,7 +112,6 @@
                     </div>
                     <div class="form-group">
                         [% INCLUDE 'report/new/extra_name.html' %]
-                        <input type="text" placeholder="Nombre y apellido" class="form-focus-trigger validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" >                                
                         <input type="text" placeholder="Cédula de Identidad: 0.000.000-0" class="form-control form-focus-trigger [% IF field_errors.identity_document %] error [% END %]" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" >
                         <input class="form-control" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="Teléfono (opcional)">              
                         <input name="password_register" id="password_register" type="password" placeholder="Contraseña" class="form-control [% IF field_errors.password %] error [% END %]">
