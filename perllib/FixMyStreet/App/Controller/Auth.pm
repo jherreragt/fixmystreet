@@ -358,6 +358,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my $name = $c->req->param('name') if $c->req->param('name');
 	my $email = $c->req->param('email') if $c->req->param('email');
 	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
+	my $password = $c->req->param('password') if $c->req->param('password');
 	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
 	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
 	my $picture_url = $c->req->param('picture_url') if $c->req->param('picture_url');
@@ -376,7 +377,11 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	$c->stash->{field_errors} ||= {};	
 	my %field_errors = $c->cobrand->user_check_for_errors( $c );
 
-	if (!scalar keys %field_errors) {
+	if ( !$password ) {
+		$field_errors{password} = _('Please enter your password');
+	}
+
+	if ( !scalar keys %field_errors ) {
 		my $user = $c->model('DB::User')->find_or_create({ email => $new_user->email });
 		
 		if ( $user ) {
@@ -386,6 +391,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				twitter_id => $new_user->twitter_id,
 				name => $new_user->name,
 				email => $new_user->email,
+				password => $password,
 				identity_document => $new_user->identity_document,
 				picture_url => $new_user->picture_url,
 			};
@@ -465,6 +471,7 @@ sub token : Path('/M') : Args(1) {
 		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
 		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
 		$user->identity_document( $data->{identity_document} );
+		$user->password( $data->{password} );
 		$user->picture_url( $data->{picture_url} );
 		$user->update;
 			
