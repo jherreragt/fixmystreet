@@ -103,7 +103,19 @@ input[type=text],input[type=password],input[type=email],textarea{-webkit-box-siz
 .ie7 input[type=text],.ie7 input[type=password],.ie7 input[type=email],.ie7 textarea{max-width:95%}
 .ie7 fieldset>input[type=text],.ie7 fieldset>input[type=password],.ie7 fieldset>input[type=email],.ie7 fieldset>textarea{margin-left:-1em}
 textarea{border:0.125em solid #888888;-webkit-border-radius:0.25em;-moz-border-radius:0.25em;-ms-border-radius:0.25em;-o-border-radius:0.25em;border-radius:0.25em;display:block;font-size:1em;line-height:1.5em;font-family:Helmet,Freesans,sans-serif;min-height:8em}
-input[type=text],input[type=password],input[type=email]{border:0.125em solid #888888;-webkit-border-radius:0.25em;-moz-border-radius:0.25em;-ms-border-radius:0.25em;-o-border-radius:0.25em;border-radius:0.25em;display:block;font-size:1em;line-height:1em}
+input[type=text],
+input[type=password],
+input[type=email]{
+	border:0.125em solid #888888;
+	-webkit-border-radius:0.25em;
+	-moz-border-radius:0.25em;
+	-ms-border-radius:0.25em;
+	-o-border-radius:0.25em;
+	border-radius:0.25em;
+	display: inline-block;
+	font-size:1em;
+	line-height:1em
+}
 label.inline{display:inline;padding:0 2em 0 1em;font-weight:normal}
 /*.form-box{margin:0 -2em 0.25em -2em;background:#eeeeee;padding:1em 2em 1em 2em}*/
 .form-box{margin:0 -2em 0.25em -2em;padding:1em 2em 1em 2em}
@@ -114,9 +126,6 @@ label.inline{display:inline;padding:0 2em 0 1em;font-weight:normal}
 .ie6 .form-box{margin:0 0 0.25em 0;padding:1em}
 .ie7 .form-box{width:100%}
 .ie7 .form-box>input[type=text]{margin-left:2em}
-.form-txt-submit-box{min-height:3em}
-.form-txt-submit-box input[type=password],.form-txt-submit-box input[type=text],.form-txt-submit-box input[type=email]{width:65%;float:left}
-.form-txt-submit-box input[type=submit]{float:right;width:28%;margin-right:0.25em;padding-top:0.7em;padding-bottom:0.6em}
 .checkbox-group{margin:1em 0}
 div.form-error,p.form-error{display:-moz-inline-stack;display:inline-block;vertical-align:middle;*vertical-align:auto;zoom:1;*display:inline;background:#ff0000;color:#fff;padding:0 0.5em;-webkit-border-radius:0.25em 0.25em 0 0;-moz-border-radius:0.25em 0.25em 0 0;-ms-border-radius:0.25em 0.25em 0 0;-o-border-radius:0.25em 0.25em 0 0;border-radius:0.25em 0.25em 0 0}
 div.form-error a,p.form-error a{color:white;text-decoration:underline}

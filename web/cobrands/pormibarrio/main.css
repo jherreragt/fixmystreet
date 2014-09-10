@@ -107,6 +107,23 @@ div#fms_pan_zoom.pan-horizontal div{
 .content-aside{
 	padding-left: 200px;
 }
+
+.form-page {
+	padding: 30px 40px;
+}
+
+#form_sign_in input.error, #form_sign_in input.error:focus, 
+#form_sign_in select.error, #form_sign_in select.error:focus,
+#form_sign_in textarea.error, #form_sign_in textarea.error:focus {
+    background: none;
+    color: #758A9D;
+}
+
+#form_sign_in .form-group {
+	border-bottom: 1px solid #EBEBEB;
+}
+
+
 /*PAGE INTRO--------------------------------------*/
 
 html {
@@ -1116,9 +1133,15 @@ div.drag span{
 }
 
 .form-group input.form-error, .form-group input.form-error:focus,
-.form-group input.error, .form-group input.error:focus {
+.form-group input.error, .form-group input.error:focus,
+.form-group input.error-m, .form-group select.error-m, .form-group textarea.error-m, .form-group input.error-m:focus {
     border-color: #fc4349 !important;
-    color: #fc4349 !important;
+}
+
+p.error-m {
+    font-size: 0.875em;
+    margin: -7px 0px 10px 15px;
+    color: #FC4349 !important;
 }
 
 /*BUTTONS----------------------------------------------------------*/

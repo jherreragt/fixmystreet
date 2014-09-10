@@ -377,10 +377,6 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	$c->stash->{field_errors} ||= {};	
 	my %field_errors = $c->cobrand->user_check_for_errors( $c );
 
-	if ( !$password ) {
-		$field_errors{password} = _('Please enter your password');
-	}
-
 	if ( !scalar keys %field_errors ) {
 		my $user = $c->model('DB::User')->find_or_create({ email => $new_user->email });
 		
@@ -391,11 +387,14 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				twitter_id => $new_user->twitter_id,
 				name => $new_user->name,
 				email => $new_user->email,
-				password => $password,
+				#password => $password,
 				identity_document => $new_user->identity_document,
 				picture_url => $new_user->picture_url,
 			};
-			
+			if ( $password ) {
+				$token_data->{password} = $password;
+			}
+
 			my $token_social_sign_up = $c->model("DB::Token")->create( {
 				scope => 'email_sign_in/social',
 				data => {
@@ -471,7 +470,7 @@ sub token : Path('/M') : Args(1) {
 		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
 		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
 		$user->identity_document( $data->{identity_document} );
-		$user->password( $data->{password} );
+		$user->password( $data->{password} ) if $data->{password};
 		$user->picture_url( $data->{picture_url} );
 		$user->update;
 			

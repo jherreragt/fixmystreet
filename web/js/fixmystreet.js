@@ -58,16 +58,16 @@ $(function(){
         messages: translation_strings,
         onkeyup: false,
         onfocusout: false,
-        errorElement: 'div',
-        errorClass: 'form-error',
+        errorElement: 'p',
+        errorClass: 'error-m',
         // we do this to stop things jumping around on blur
         success: function (err) { if ( form_submitted ) { err.addClass('label-valid').removeClass('label-valid-hidden').html( '&nbsp;' ); } else { err.addClass('label-valid-hidden'); } },
         errorPlacement: function( error, element ) {
             // Different for old/new style design
             if ($('.form-field').length) {
-                element.parent('div.form-field').before( error );
+                element.parent('div.form-field').after( error );
             } else {
-                element.before( error );
+                element.after( error );
             }
         },
         submitHandler: function(form) {

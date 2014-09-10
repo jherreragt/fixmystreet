@@ -25,34 +25,6 @@
                         [% PROCESS 'report/new/councils_text.html' %]
                     [% END %]
                 </div>
-                <!--[% IF c.cobrand.moniker != 'pormibarrio' || c.cobrand.moniker != 'fixmybarangay' || ( c.user && c.user.from_body ) %]
-                <div id="report-a-problem-sidebar">
-                    <!--
-                        The text for this section needs checking, but I can't work out which bit comes from where
-
-                    <div class="sidebar-tips">
-                        [% IF report.used_map %]
-                            [% IF partial_token %]
-                                <p id="unknown">[% loc('Please note your report has <strong>not yet been sent</strong>. Choose a category and add further information below, then submit.') %]</p>
-                            [% END %]
-                        <p>[% loc('You have located the problem at the point marked with a green pin on the map. If this is not the correct location, simply click on the map again. ') %]</p>
-                        [% END %]
-
-                        <p>
-                        [% IF report.used_map %]
-                            [% INCLUDE 'report/new/fill_in_details_text.html' %]
-                        [% ELSE %]
-                            [% loc('Please fill in the form below with details of the problem, and describe the location as precisely as possible in the details box.') %]
-                        [% END %]
-                        </p>
-                    </div>
-
-                    <div class="sidebar-notes">
-                        [% INCLUDE 'report/new/notes.html' %]
-                    </div>
-
-                </div>
-                [% END %]-->
 
                 [% INCLUDE 'errors.html' %]
 				<!--<div id="address-pick"></div>-->
@@ -83,7 +55,10 @@
                     [% ELSE %]
             			[% IF category_options.size %]
             				[% IF field_errors.category %]
-            					<p class='form-error'>[% field_errors.category %]</p>
+            					<div class="tooltip tooltip-error fade right in" role="tooltip" style="display: inline-block; position: relative; right: -1px;">
+                                    <div class="tooltip-arrow tooltip-arrow-red"></div>
+                                    <div class="tooltip-inner">[% field_errors.category %]</div>
+                                </div>
             				[% END %]
 
             				[% IF category_groups_json %]
@@ -194,7 +169,7 @@
                         <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
                     </div>
     				<div class="form-group">
-    					<input type="password" class="form-control [% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
+    					<input type="password" class="[% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
 
                         <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Submit') %]">
                         <p class="no-account">

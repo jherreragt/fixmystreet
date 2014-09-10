@@ -9,7 +9,7 @@
 		<div class="form-group">
 			<input type="text" class="form-control [% IF field_errors.name %] error [% END %]" name="name" id="form_name" value="[% update.name || c.user.name | html %]" placeholder="Nombre y apellido">
 
-			<input type="email" name="form_rznvy" id="form_rznvy" value="[% update.user.email | html %]" class="form-control [% IF field_errors.email %] error [% END %]" placeholder="[% loc('Email' ) %]">
+			<input type="email" name="form_rznvy" id="form_rznvy" value="[% c.user.email | html %]" class="form-control [% IF field_errors.email %] error [% END %]" placeholder="[% loc('Email' ) %]">
 
 		[% IF c.cobrand.allow_photo_upload %]
 			[% IF upload_fileid %]
