@@ -238,15 +238,10 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		$c->stash->{user} = $new_user;		
 		$c->stash->{template} = 'auth/social_signup.html';
 	} else {
+		#Autenthicate user with immedate expire
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-
-		# send the user to their page
-		if ( $c->session->{oauth}{detach_to} ) {
-			$c->detach( $c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args} );
-		} else {
-			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
-		}
+		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
 	}
 	}
 }
@@ -332,16 +327,10 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 			$user->picture_url( $twitter_user->{profile_image_url} );
 			$user->update();
 		}
-		
+		#Autenthicate user with immedate expire
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-
-		# send the user to their page
-		if ( $c->session->{oauth}{detach_to} ) {
-			$c->detach( $c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args} );
-		} else {
-			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
-		}
+		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
 	}
 }
 

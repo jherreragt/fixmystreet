@@ -31,7 +31,7 @@
                 [% INCLUDE 'report/new/form_heading.html' %]
 
                 [% IF field_errors.bodies %]
-                    <p class='form-error'>[% field_errors.bodies %]</p>
+                    <p class='"error-m'>[% field_errors.bodies %]</p>
                 [% END %]
 
 				<!--
@@ -55,10 +55,7 @@
                     [% ELSE %]
             			[% IF category_options.size %]
             				[% IF field_errors.category %]
-            					<div class="tooltip tooltip-error fade right in" role="tooltip" style="display: inline-block; position: relative; right: -1px;">
-                                    <div class="tooltip-arrow tooltip-arrow-red"></div>
-                                    <div class="tooltip-inner">[% field_errors.category %]</div>
-                                </div>
+            					<p class='"error-m'>[% field_errors.category %]</p>
             				[% END %]
 
             				[% IF category_groups_json %]
@@ -77,9 +74,16 @@
                 <div class="form-group">
                     <label for="form_title">[% loc('Subject') %] *</label>
                     <input class="form-control [% IF field_errors.title %] error [% END %]" type="text" value="[% report.title | html %]" name="title" id="form_title" placeholder="[% loc('Provide a title') %]" required>
+                [% IF field_errors.title  %]
+                    <p class="error-m">[% field_errors.title %]</p>
+                [% END %]
 
                     <label for="form_detail">[% loc('Details') %] *</label>
                     <textarea class="form-control [% IF field_errors.detail %] error [% END %]" rows="4" cols="26" name="detail" id="form_detail" placeholder="[% loc('Please fill in details of the problem.') %]" required>[% report.detail | html %]</textarea>
+                [% IF field_errors.detail  %]
+                    <p class="error-m">[% field_errors.detail %]</p>
+                [% END %]
+
                 </div>
 
                 <div class="form-group">
@@ -100,7 +104,7 @@
                         [% END %]
 
                         [% IF field_errors.photo %]
-                            <p class='form-error'>[% field_errors.photo %]</p>
+                            <p class='error-m'>[% field_errors.photo %]</p>
                         [% END %]
                         <input type="file" name="photo" id="form_photo">
                     </div>
@@ -118,7 +122,7 @@
                 <input disabled type="hidden" value="[% c.user.email | html %]">
 
                 [% IF field_errors.general %]
-                    <p class='form-error'>[% field_errors.general %]</p>
+                    <p class='error-m'>[% field_errors.general %]</p>
                 [% END %]
                 <input class="form-control [% IF field_errors.identity_document %] error [% END %]" type="hidden" value="[% c.user.identity_document | html %]" name="identity_document" id="form_identity_document" placeholder="[% loc('Your identity document') %]" required>
 
@@ -147,7 +151,10 @@
     					<p>Conectate a tu cuenta para poder finalizar tu reporte y enviarlo a la Intendencia.</p>
     				</div>
     				<div class="form-group">
-    					<input type="email" class="form-control required [% IF field_errors.email %] error [% END %]" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="Correo electrónico *" required>
+    					<input type="email" class="form-control required [% IF field_errors.email %] error [% END %]" value="[% report.user.email | html %]" name="form_email" id="form_email" placeholder="Correo electrónico *">
+                        [% IF field_errors.email  %]
+                            <p class="error-m">[% field_errors.email %]</p>
+                        [% END %]
     				</div>
                     <div class="checkbox-group">
                         <input type="checkbox" name="may_show_name_social" id="form_may_show_name_social" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
@@ -169,7 +176,10 @@
                         <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
                     </div>
     				<div class="form-group">
-    					<input type="password" class="[% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
+    					<input type="password" class="form-control [% IF field_errors.password %] error [% END %]" name="password_sign_in" id="password_sign_in" placeholder="Contraseña" value="">
+                        [% IF field_errors.password  %]
+                            <p class="error-m">[% field_errors.password %]</p>
+                        [% END %]
 
                         <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Submit') %]">
                         <p class="no-account">
@@ -188,15 +198,33 @@
                     </div>
                     <div class="form-group">
                         [% INCLUDE 'report/new/extra_name.html' %]
-                        <input type="text" placeholder="Nombre y apellido" class="form-focus-trigger validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" >                                
+                        <input type="text" placeholder="Nombre y apellido" class="form-focus-trigger validName form-control [% IF field_errors.name %] error [% END %]" value="[% report.name | html %]" name="name" id="form_name" >
+                        [% IF field_errors.name  %]
+                            <p class="error-m">[% field_errors.name %]</p>
+                        [% END %]                        
                         <input type="text" placeholder="Cédula de Identidad: 0.000.000-0" class="form-control form-focus-trigger [% IF field_errors.identity_document %] error [% END %]" value="[% report.user.identity_document | html %]" name="identity_document" id="form_identity_document" >
-                        <input class="form-control" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="Teléfono (opcional)">              
+                        [% IF field_errors.identity_document  %]
+                            <p class="error-m">[% field_errors.identity_document %]</p>
+                        [% END %]
+                        <input class="form-control" type="text" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="Teléfono (opcional)">
+                        [% IF field_errors.phone  %]
+                            <p class="error-m">[% field_errors.phone %]</p>
+                        [% END %]           
                         <input name="password_register" id="password_register" type="password" placeholder="Contraseña" class="form-control [% IF field_errors.password %] error [% END %]">
+                        [% IF field_errors.password  %]
+                            <p class="error-m">[% field_errors.password %]</p>
+                        [% END %]
                     </div>
                     <div class="form-group">
                         <button class="btn btn-block btn-green" type="submit" id="submit_register" name="submit_register">Regístrate y publica</button>
                     </div>
                 </div>
+                [% IF field_errors.identity_document || field_errors.name || field_errors.phone %]
+                    <script>
+                        $('div.bloque-registro').slideDown();
+                        $('div.bloque-sesion').slideUp();
+                    </script>
+                [% END %]
 			</div> <!-- login -->
             [% END %]
         </div> <!-- scrolled-reportar -->

@@ -118,10 +118,13 @@ function report(timeout, zoom){
 			case 'around':
 				$('#side-form').show();
 				$('#side').hide();
-				break;	
+				break;
+			default:
+				location.href = '/around?latitude='+fixmystreet.latitude+';longitude='+fixmystreet.longitude+'&zoom=4';
 		}
 	}
 	else {
+
 		geolocate(timeout, zoom);
 	}
 }
@@ -136,6 +139,8 @@ function report_list(timeout, zoom){
 			case 'new':
 				window.history.back();
 				break;
+			default:
+				location.href = '/around?latitude='+fixmystreet.latitude+';longitude='+fixmystreet.longitude+'&zoom=2';
 		}
 	}
 	else {
