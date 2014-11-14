@@ -23,7 +23,7 @@ body{
 
 body.fullwidthpage{
 	width: 100%;
-	background: url("images/bg/pmb-mapa-sp.png") no-repeat scroll center top / cover rgba(0, 0, 0, 0);
+	background: url(images/bg/pmb-mapa-sp.png) no-repeat scroll center top / cover rgba(0, 0, 0, 0);
 }
 
 a, button, div.it-r {
@@ -88,7 +88,7 @@ body.intro .container{
  }
 
 .content-horizontal{
-	padding: 20px 39px 20px 120px;
+	padding: 80px 39px 20px 120px;
 }
 
 body.mappage .content-horizontal{
@@ -208,6 +208,187 @@ a.know-more:hover{
 p.photo-credit{
 	opacity:0.2;
 }
+
+
+/*TOP CONTAINER---------------------------------------*/
+
+div.top-container{
+	height:55px;
+	position:fixed;
+	background-color:rgba(19,30,41,0.96);
+	z-index:5000;
+	width:100%;	
+	top:0;
+	left:0	
+}
+
+div.s-calles{
+	padding-left:70px;
+	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	position: absolute;
+	z-index: 2;
+}
+
+div.s-calles-nav{
+	padding-left:183px;
+	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+div.s-calles .pull-left{
+	width:80%;
+}
+
+div.s-calles .pull-left input{
+	width: 48%;
+	border: none;
+	height: 55px;
+	margin-bottom: 0;
+	border-radius: 0;
+	padding-left: 62px;
+}
+
+div.s-calles input:focus{
+	background: url(images/icon-search.png) 25px 18px no-repeat;
+}
+
+.btn-search{
+	background-color:rgba(88,190,247,0.30);
+	color:#4f606e;
+	padding:4px 15px!important;	
+	margin-top: 9px;
+}
+
+.btn-search:hover{
+	color:#fff;
+}
+
+ul.l-calles{
+	padding-top:55px;
+	padding-left:70px;
+	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	position: absolute;
+	width: 100%;
+	background-color: rgba(19,30,41,0.96);
+	z-index: 1;
+}
+
+ul.l-calles li{
+	border-top:solid 1px #1e2e3d;
+	padding:14px 28px;
+	color:#FFF;
+	font-size:1.125em;
+}
+
+ul.l-calles li span{
+	color:#758a9d;
+	padding-right: 13px;
+}
+
+ul.l-calles-nav{
+	padding-left:183px;
+	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+li.pick-street{
+	cursor: pointer;
+}
+
+div.info-user{
+	padding:0;
+	border-left:#1e2e3d solid 1px;
+	height:55px	;
+	z-index: 2;
+	position: absolute;
+	right: 0;
+}
+
+ul.user-login{
+	margin:12px 12px 0 12px;
+}
+
+ul.user-login li{
+	margin-right:0!important;
+	color:#758a9d!important;
+	font-size:1.125em;
+}
+
+ul.user-login li a{
+	font-size:1em;
+	color:#758a9d	
+}
+
+ul.user-login li a:hover{
+	text-decoration:none;
+	opacity:0.7;
+}
+
+div.user-log-on{
+	margin:12px 0 0 0;	
+}
+
+div.user-log-on img.img-circle{
+	width:30px;
+	height:auto;
+	margin-right:20px;	
+}
+
+a.user-name{
+	color:#fff;
+	padding:0 20px
+}
+
+a.user-name:hover, a.user-name:active{
+	opacity:.7;
+	text-decoration:none	
+}
+
+a.user-name:hover img.img-circle{
+	opacity:1;	
+}
+
+.dropdown-menu{
+	box-shadow:none;
+	background-color:rgba(19,30,41,0.96);
+	border:none;
+	right:-20px;
+	top:137%;
+	border-radius:0;
+	-webkit-border-bottom-left-radius: 4px;
+	-moz-border-radius-bottomleft: 4px;
+	border-bottom-left-radius: 4px;
+	padding:0;
+	overflow:hidden	
+}
+
+.dropdown-menu>li>a{
+	text-transform:uppercase;
+	color:#758a9d;
+	padding:12px 20px 12px 17px;
+	font-weight:600;
+	font-size:0.875em;
+	border-left:transparent solid 3px;
+}
+
+.dropdown-menu>li>a:hover{
+	background-color:#2a3e51;
+	color:#fff;
+	border-left:#495f73 solid 3px;
+}
+
+.dropdown-menu .icon{
+	float: left;
+	margin-right: 15px;
+}
+
+a:focus{
+	outline:none;
+	text-decoration:none	
+}
+
 
 /*FIRST NAVIGATION------------------------------------*/
 nav.first-navigation{
@@ -576,7 +757,7 @@ h3.r-category-group-37{
 div.r-category-group-18,
 div.r-category-group-38,
 div.r-category-group-40 {
-	background:url(images/r-basura.png) no-repeat left top;	
+	background:url(images/r-limpieza.png) no-repeat left top;	
 }
 h3.r-category-group-18,
 h3.r-category-group-38,
@@ -592,12 +773,12 @@ h3.barometrica{
 	color:#d9cf48;
 }
 
-/*Vereda*/
-div.r-vereda, div.r-category-group-8 {
-	background:url(images/r-vereda.png) no-repeat left top;	
+/*Viales*/
+div.r-category-group-6 {
+	background:url(images/r-viales.png) no-repeat left top;	
 }
-h3.vereda{
-	color:#d7dadb;
+h3.r-category-group-6{
+	color:#f47229;
 }
 
 /*Desarrollo*/
@@ -1402,7 +1583,7 @@ span.name{
 	width:5px;
 	height:10px;
 	float:right;
-	background: url(../images/bg/white-arrow.png) no-repeat left top;
+	background: url(images/bg/white-arrow.png) no-repeat left top;
 	margin:5px 0 0 8px;
 }
 
@@ -1476,7 +1657,7 @@ div.profile ul li{
 
 div.profile li.dot{
 	padding-left:9px;
-	background:url(../images/bg/dot.png) no-repeat left center;
+	background:url(images/bg/dot.png) no-repeat left center;
 }
 
 div.profile ul li a{

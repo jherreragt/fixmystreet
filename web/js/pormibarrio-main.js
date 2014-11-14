@@ -3,6 +3,13 @@
  * FixMyStreet JavaScript for PMB design
  */
 
+//WIDTH SEARCH
+var anchoVentana = $( window ).width();
+var anchoUser = $("#info-user").width();
+var anchoCalles = anchoVentana - anchoUser - 80;
+var listaCalles =  [];
+$("#s-calles").width(anchoCalles);
+	
 //QUITAR BORDE AL ULTIMO BLOQUE DE COMENTARIO
 $('.leave-comment').prev().css('border', 'none');
 $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px');
@@ -81,37 +88,75 @@ $( document ).ready(function() {
 		var ref = this.href.split('#');
 		console.log(ref[1]);
 		$('div.scrolled-100').slimScroll({ scrollTo: $('#' + ref[1]).offset().top });
-	})
+	});
 	$('.registrate').click(function(e){
 		e.preventDefault();
 		var regCont = $('.bloque-registro .form-group').first();
 		$('#form_email').prependTo(regCont);
 		$('div.bloque-registro').slideDown();
 		$('div.bloque-sesion').slideUp();	
-	})
+	});
 	$('.registrate-back').click(function(e){
 		e.preventDefault();
 		var sesCont = $('.bloque-sesion .form-group').first();
 		$('#form_email').prependTo(sesCont);
 		$('div.bloque-registro').slideUp();
 		$('div.bloque-sesion').slideDown();	
-	})
+	});
 	$('.report-back').click(function(e){
 		e.preventDefault();
 		$('#side-form').hide();
-	})
+	});
 	$('.reports-back').click(function(e){
 		e.preventDefault();
 		$('#side').hide();
-	})
+	});
 });
 
+/* FUNCIONES DE CAMBIO DE PIN PARA REPORTES EN MAPA */
+//Funcionan como si tuviera solo 2 clases, la primera identifica el reporte y la segunda cambia la transición
+function bigPIN(obj){
+	if ( $( '.'+obj.id ).length ) {
+		//var background_img = $('.'+obj.id)[0].getAttributeNS('http://www.w3.org/1999/xlink', 'href').split('.');
+		var img_url = $('.'+obj.id)[1].getAttributeNS('http://www.w3.org/1999/xlink', 'href').split('.');
+		var prevClassArr = $('.'+obj.id)[1].getAttributeNS(null, 'class').split(' ');
+		$('.'+obj.id)[1].setAttributeNS(null, 'class', prevClassArr[0]+' show-icon');
+		$('.'+obj.id)[1].setAttributeNS('http://www.w3.org/1999/xlink', 'href', img_url[0]+'-big.'+img_url[1]);
+		//$($('.'+obj.id)[1]).animate({ top: '-=100px' }, 300, 'easeOutCirc', function(){
+			var prev_x = $('.'+obj.id)[1].getAttributeNS(null, 'x');
+			var prev_y = $('.'+obj.id)[1].getAttributeNS(null, 'y');
+			$('.'+obj.id)[1].setAttributeNS(null, 'x', Number(prev_x) - 15);
+			$('.'+obj.id)[1].setAttributeNS(null, 'y', Number(prev_y) - 33);
+			$('.'+obj.id)[1].setAttributeNS(null, 'width', 67);
+			$('.'+obj.id)[1].setAttributeNS(null, 'height', 69);
+		//});
+	}
+}
 
+function smallPIN(obj){
+	if ( $( '.'+obj.id ).length ) {
+		//var background_img = $('.'+obj.id)[0].getAttributeNS('http://www.w3.org/1999/xlink', 'href').split('.');
+		var img_url = $('.'+obj.id)[1].getAttributeNS('http://www.w3.org/1999/xlink', 'href').split('.');
+		var prevClassArr = $('.'+obj.id)[1].getAttributeNS(null, 'class').split(' ');
+		$('.'+obj.id)[1].setAttributeNS(null, 'class', prevClassArr[0]+' hide-icon');
+		var base_url = img_url[0].split('-');
+		base_url.pop();
+		$('.'+obj.id)[1].setAttributeNS('http://www.w3.org/1999/xlink', 'href', base_url.join('-')+'.'+img_url[1]);
+		//$($('.'+obj.id)[1]).animate({ top: '+=100px' }, 300, 'easeInCirc', function(){
+			var prev_x = $('.'+obj.id)[1].getAttributeNS(null, 'x');
+			var prev_y = $('.'+obj.id)[1].getAttributeNS(null, 'y');
+			$('.'+obj.id)[1].setAttributeNS(null, 'x', Number(prev_x) + 15);
+			$('.'+obj.id)[1].setAttributeNS(null, 'y', Number(prev_y) + 33);
+			$('.'+obj.id)[1].setAttributeNS(null, 'width', 29);
+			$('.'+obj.id)[1].setAttributeNS(null, 'height', 34);
+		//});
+	}
+}
 //MOSTRAR REPORTE
-	$('div.it-r').click(function(){
+/*	$('div.it-r').click(function(){
 		$('div.c-report').show();
-	})
-
+	});
+*/
 function report(timeout, zoom){
 	if (typeof fixmystreet != 'undefined'){
 		switch (fixmystreet.page) {
@@ -145,6 +190,137 @@ function report_list(timeout, zoom){
 	}
 	else {
 		geolocate(timeout, zoom);
+	}
+}
+
+function searchLocationAjax(event, obj){
+	//Letters, Caps and nums
+	if ( (event.which > 64 && event.which < 91) || (event.which > 96 && event.which < 123) || (event.which > 47 && event.which < 58)) {
+		if ( obj.value.length > 2 ){
+			var items = "";
+			var get = 0;
+			$('ul.l-calles').empty();
+			if (obj.id == 'esquina'){
+				if (!isNaN(obj.value)){
+					items += "<li id='" + obj.value + "' class='pick-street' onclick='streetLocate(this)' >" + obj.value + "</li>";
+					$('ul.l-calles').empty();
+					$(items).appendTo("ul.l-calles");
+				}
+				else {
+					if ( ( listaCalles[1] != undefined ) && ( listaCalles[1].length > 1 ) && ( listaCalles[1][0] == obj.value.substring(0, listaCalles[1][0].length) ) ){
+						//quitamos el primer termino y vemos el length
+						listaCalles[1].shift();
+						$.each( listaCalles[1], function( addr_key, addr_obj ) {
+							if ( addr_obj.address.indexOf( obj.value.toUpperCase() ) >= 0){
+								items += "<li id='" + addr_obj.lat + "' class='pick-street' onclick='streetLocate(this)' >" + addr_obj.address + "</li>";
+							}
+							else{
+								listaCalles[0].splice(addr_key, 1);
+							}
+					  	});
+					  	//agregamoe el término al comienzo
+					  	listaCalles[1].splice(0, 0, obj.value);
+						$('ul.l-calles').empty();
+						$(items).appendTo("ul.l-calles");
+					}
+					else {
+						var code = $('input#main-street-code');
+						if ( !code.val() ){
+							items = "<li class='pick-street-error'>Debe ingresar una calle primero</li>";
+							$(items).appendTo("ul.l-calles");
+						}
+						else{
+							$.getJSON( "ajax/geocode?term="+code.val()+','+obj.value, function( data ) {
+								//vaciamos el array
+								listaCalles[1] = [];
+								listaCalles[1][0] = obj.value;
+							  	$.each( data.locations, function( key, obj ) {
+							    	items += "<li id='" + obj.lat + "' class='pick-street' onclick='streetLocate(this)' >" + obj.address + "</li>";
+							    	listaCalles[1].push(obj);
+							  	});
+								$('ul.l-calles').empty();
+								$(items).appendTo("ul.l-calles");
+							});
+						}
+					}
+				}
+			}
+			else {
+				if ( ( listaCalles[0] != undefined ) && ( listaCalles[0].length > 1 ) && (listaCalles[0][0] == obj.value.substring(0, listaCalles[0][0].length) ) ){
+					console.log(listaCalles[0]);
+					//quitamos el primer termino
+					listaCalles[0].shift();
+					console.log(listaCalles[0]);
+					$.each( listaCalles[0], function( addr_key, addr_obj ) {
+						if ( addr_obj.address.indexOf( obj.value.toUpperCase() ) >= 0){
+							items += "<li id='" + addr_obj.lat + "' class='pick-street' onclick='assignStreetValue(this)' >" + addr_obj.address + "</li>";
+						}
+						else{
+							listaCalles[0].splice(addr_key, 1);
+						}
+				  	});
+				  	//agregamoe el término al comienzo
+				  	listaCalles[0].splice(0, 0, obj.value);
+				  	console.log(listaCalles[0]);
+					$('ul.l-calles').empty();
+					$(items).appendTo("ul.l-calles");
+				}
+				else {
+					$.getJSON( "ajax/geocode?term="+obj.value, function( data ) {
+						listaCalles[0] = [];
+						listaCalles[0][0] = obj.value;
+					  	$.each( data.locations, function( key, obj ) {
+					    	items += "<li id='" + obj.lat + "' class='pick-street' onclick='assignStreetValue(this)' >" + obj.address + "</li>";
+					    	listaCalles[0].push(obj);
+					  	});
+						$('ul.l-calles').empty();
+						$(items).appendTo("ul.l-calles");
+					});
+				}
+			}
+		}
+	}
+}
+
+function assignStreetValue(obj){
+	$('input#calle').val($(obj).text());
+	$('input#main-street-code').val(obj.id);
+	$('ul.l-calles').empty();
+}
+
+function streetLocate(obj){
+	$('input#esquina').val($(obj).text());
+	$('input#second-street-code').val(obj.id);
+	$('ul.l-calles').empty();
+	var url = "ajax/geocode?term="+ $('input#main-street-code').val() +','+obj.id+', final';
+	$.getJSON( url, function( data ) {
+		var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
+		var lonlat = new OpenLayers.LonLat(latlon[1], latlon[0]);
+		lonlat.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+		//setTimeout(function(){fixmystreet.map.zoomTo(8)},500);
+		fixmystreet.map.panTo(lonlat);
+		setTimeout(function(){fixmystreet.map.zoomTo(3)},500);
+		//console.log(utm2LatLong(data.latitude, data.longitude, '21H'));
+		//var pix = new OpenLayers.Pixel(-56.20021377039099, -34.90939293505055)
+		//var latlon = fixmystreet.map.getLonLatFromViewPortPx(pix)
+		//fixmystreet.map.panTo(latlon)
+	});
+}
+function streetLocateSubmit(obj){
+	if ( $('input#main-street-code').val() && $('input#second-street-code').val() ){
+		var url = "ajax/geocode?term="+ $('input#main-street-code').val() +','+$('input#second-street-code').val()+', final';
+		$.getJSON( url, function( data ) {
+			var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
+			var lonlat = new OpenLayers.LonLat(latlon[1], latlon[0]);
+			lonlat.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+			fixmystreet.map.panTo(lonlat);
+			});
+	}
+	else {
+		if ( !$('input#main-street-code').val() )
+			$('input#main-street-code').addClass('street-error');
+		if ( !$('input#second-street-code').val() )
+			$('input#main-street-code').addClass('street-error');
 	}
 }
 
@@ -225,9 +401,13 @@ $('.responsive').responsiveText();
 	$(".first-navigation").hover(
 	  function () {
 		$('.sub').addClass("side-active");
+		$('.s-calles').addClass("s-calles-nav");
+		$('ul.l-calles').addClass("l-calles-nav");
 	  },
 	  function () {
 		$('.sub').removeClass("side-active");
+		$('.s-calles').removeClass("s-calles-nav");
+		$('ul.l-calles').removeClass("l-calles-nav");
 	  }
 	);	
 	
@@ -284,3 +464,25 @@ $(window).resize(function() {
 		$('.first-navigation').show();
 	}
 });
+
+//CATEGORIAS POR GRUPO
+function form_category_group_onchange() {
+	var group_id = $('#form_category_groups').val();
+	
+	if (group_id == '') {
+		$('#form_category').prop( "disabled", true );
+        $('#form_category').empty();
+	} else {
+		$('#form_category').prop( "disabled", false );
+		$('#form_category').empty();
+
+		var options = '';
+		options += '<option value="">-- Selecciona una categoría --</option>';
+
+		for (var i = 0; i < category_groups[group_id].length; i++) {
+			options += '<option value="' + category_groups[group_id][i] + '">' + category_groups[group_id][i] + '</option>';
+		}
+		$("#form_category").html(options);
+
+	}
+}

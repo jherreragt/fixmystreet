@@ -71,8 +71,8 @@ function fms_markers_list(pins, transform) {
     var markers = [];
     for (var i=0; i<pins.length; i++) {
         var pin = pins[i];
-        console.log('Pin '+i);
-        console.log(pin);
+        //console.log('Pin '+i);
+        //console.log(pin);
         var loc = new OpenLayers.Geometry.Point(pin[1], pin[0]);
         if (transform) {
             // The Strategy does this for us, so don't do it in that case.
@@ -125,7 +125,8 @@ function fixmystreet_onload() {
             graphicTitle: "${title}",
             graphicOpacity: 1,
             graphicZIndex: 11,
-            backgroundGraphicZIndex: 10
+            backgroundGraphicZIndex: 10,
+            graphicClass: "Id-${id}"
         })
     });
     pin_layer_style_map.addUniqueValueRules('default', 'size', {

@@ -127,8 +127,22 @@ this.indexer.clear()},setExtent:function(a,b){var c=OpenLayers.Renderer.prototyp
 b,c){var d=a.CLASS_NAME,e=!0;if("OpenLayers.Geometry.Collection"==d||"OpenLayers.Geometry.MultiPoint"==d||"OpenLayers.Geometry.MultiLineString"==d||"OpenLayers.Geometry.MultiPolygon"==d){for(var d=0,f=a.components.length;d<f;d++)e=this.drawGeometry(a.components[d],b,c)&&e;return e}d=e=!1;"none"!=b.display&&(b.backgroundGraphic?this.redrawBackgroundNode(a.id,a,b,c):d=!0,e=this.redrawNode(a.id,a,b,c));!1==e&&(b=document.getElementById(a.id))&&(b._style.backgroundGraphic&&(d=!0),b.parentNode.removeChild(b));
 d&&(b=document.getElementById(a.id+this.BACKGROUND_ID_SUFFIX))&&b.parentNode.removeChild(b);return e},redrawNode:function(a,b,c,d){c=this.applyDefaultSymbolizer(c);a=this.nodeFactory(a,this.getNodeType(b,c));a._featureId=d;a._boundsBottom=b.getBounds().bottom;a._geometryClass=b.CLASS_NAME;a._style=c;b=this.drawGeometryNode(a,b,c);if(!1===b)return!1;a=b.node;this.indexer?(c=this.indexer.insert(a))?this.vectorRoot.insertBefore(a,c):this.vectorRoot.appendChild(a):a.parentNode!==this.vectorRoot&&this.vectorRoot.appendChild(a);
 this.postDraw(a);return b.complete},redrawBackgroundNode:function(a,b,c,d){c=OpenLayers.Util.extend({},c);c.externalGraphic=c.backgroundGraphic;c.graphicXOffset=c.backgroundXOffset;c.graphicYOffset=c.backgroundYOffset;c.graphicZIndex=c.backgroundGraphicZIndex;c.graphicWidth=c.backgroundWidth||c.graphicWidth;c.graphicHeight=c.backgroundHeight||c.graphicHeight;c.backgroundGraphic=null;c.backgroundXOffset=null;c.backgroundYOffset=null;c.backgroundGraphicZIndex=null;return this.redrawNode(a+this.BACKGROUND_ID_SUFFIX,
-b,c,null)},drawGeometryNode:function(a,b,c){c=c||a._style;var d={isFilled:void 0===c.fill?!0:c.fill,isStroked:void 0===c.stroke?!!c.strokeWidth:c.stroke},e;switch(b.CLASS_NAME){case "OpenLayers.Geometry.Point":!1===c.graphic&&(d.isFilled=!1,d.isStroked=!1);e=this.drawPoint(a,b);break;case "OpenLayers.Geometry.LineString":d.isFilled=!1;e=this.drawLineString(a,b);break;case "OpenLayers.Geometry.LinearRing":e=this.drawLinearRing(a,b);break;case "OpenLayers.Geometry.Polygon":e=this.drawPolygon(a,b);break;
-case "OpenLayers.Geometry.Rectangle":e=this.drawRectangle(a,b)}a._options=d;return!1!=e?{node:this.setStyle(a,c,d,b),complete:e}:!1},postDraw:function(a){},drawPoint:function(a,b){},drawLineString:function(a,b){},drawLinearRing:function(a,b){},drawPolygon:function(a,b){},drawRectangle:function(a,b){},drawCircle:function(a,b){},removeText:function(a){var b=document.getElementById(a+this.LABEL_ID_SUFFIX);b&&this.textRoot.removeChild(b);(a=document.getElementById(a+this.LABEL_OUTLINE_SUFFIX))&&this.textRoot.removeChild(a)},
+b,c,null)},
+drawGeometryNode:function(a,b,c){
+	c=c||a._style;
+	var d={isFilled:void 0===c.fill?!0:c.fill,isStroked:void 0===c.stroke?!!c.strokeWidth:c.stroke},e;
+	switch(b.CLASS_NAME){
+		case "OpenLayers.Geometry.Point":!1===c.graphic&&(d.isFilled=!1,d.isStroked=!1);e=this.drawPoint(a,b);
+		break;
+		case "OpenLayers.Geometry.LineString":d.isFilled=!1;e=this.drawLineString(a,b);
+		break;
+		case "OpenLayers.Geometry.LinearRing":e=this.drawLinearRing(a,b);
+		break;
+		case "OpenLayers.Geometry.Polygon":e=this.drawPolygon(a,b);
+		break;
+		case "OpenLayers.Geometry.Rectangle":e=this.drawRectangle(a,b)}a._options=d;return!1!=e?{node:this.setStyle(a,c,d,b),complete:e}:!1
+	},
+	postDraw:function(a){},drawPoint:function(a,b){},drawLineString:function(a,b){},drawLinearRing:function(a,b){},drawPolygon:function(a,b){},drawRectangle:function(a,b){},drawCircle:function(a,b){},removeText:function(a){var b=document.getElementById(a+this.LABEL_ID_SUFFIX);b&&this.textRoot.removeChild(b);(a=document.getElementById(a+this.LABEL_OUTLINE_SUFFIX))&&this.textRoot.removeChild(a)},
 getFeatureIdFromEvent:function(a){var b=a.target,c=b&&b.correspondingUseElement;return(c?c:b||a.srcElement)._featureId},eraseGeometry:function(a,b){if("OpenLayers.Geometry.MultiPoint"==a.CLASS_NAME||"OpenLayers.Geometry.MultiLineString"==a.CLASS_NAME||"OpenLayers.Geometry.MultiPolygon"==a.CLASS_NAME||"OpenLayers.Geometry.Collection"==a.CLASS_NAME)for(var c=0,d=a.components.length;c<d;c++)this.eraseGeometry(a.components[c],b);else(c=OpenLayers.Util.getElement(a.id))&&c.parentNode&&(c.geometry&&(c.geometry.destroy(),
 c.geometry=null),c.parentNode.removeChild(c),this.indexer&&this.indexer.remove(c),c._style.backgroundGraphic&&(c=OpenLayers.Util.getElement(a.id+this.BACKGROUND_ID_SUFFIX))&&c.parentNode&&c.parentNode.removeChild(c))},nodeFactory:function(a,b){var c=OpenLayers.Util.getElement(a);c?this.nodeTypeCompare(c,b)||(c.parentNode.removeChild(c),c=this.nodeFactory(a,b)):c=this.createNode(b,a);return c},nodeTypeCompare:function(a,b){},createNode:function(a,b){},moveRoot:function(a){var b=this.root;a.root.parentNode==
 this.rendererRoot&&(b=a.root);b.parentNode.removeChild(b);a.rendererRoot.appendChild(b)},getRenderLayerId:function(){return this.root.parentNode.parentNode.id},isComplexSymbol:function(a){return"circle"!=a&&!!a},CLASS_NAME:"OpenLayers.Renderer.Elements"});OpenLayers.Renderer.VML=OpenLayers.Class(OpenLayers.Renderer.Elements,{xmlns:"urn:schemas-microsoft-com:vml",symbolCache:{},offset:null,initialize:function(a){if(this.supported()){if(!document.namespaces.olv){document.namespaces.add("olv",this.xmlns);for(var b=document.createStyleSheet(),c="shape rect oval fill stroke imagedata group textbox".split(" "),d=0,e=c.length;d<e;d++)b.addRule("olv\\:"+c[d],"behavior: url(#default#VML); position: absolute; display: inline-block;")}OpenLayers.Renderer.Elements.prototype.initialize.apply(this,
@@ -214,9 +228,36 @@ OpenLayers.Geometry.Point=OpenLayers.Class(OpenLayers.Geometry,{
 	getVertices:function(a){return[this]},
 	CLASS_NAME:"OpenLayers.Geometry.Point"
 });
-OpenLayers.Geometry.MultiPoint=OpenLayers.Class(OpenLayers.Geometry.Collection,{componentTypes:["OpenLayers.Geometry.Point"],addPoint:function(a,b){this.addComponent(a,b)},removePoint:function(a){this.removeComponent(a)},CLASS_NAME:"OpenLayers.Geometry.MultiPoint"});OpenLayers.Geometry.Curve=OpenLayers.Class(OpenLayers.Geometry.MultiPoint,{componentTypes:["OpenLayers.Geometry.Point"],getLength:function(){var a=0;if(this.components&&1<this.components.length)for(var b=1,c=this.components.length;b<c;b++)a+=this.components[b-1].distanceTo(this.components[b]);return a},getGeodesicLength:function(a){var b=this;if(a){var c=new OpenLayers.Projection("EPSG:4326");c.equals(a)||(b=this.clone().transform(a,c))}a=0;if(b.components&&1<b.components.length)for(var d,e=1,f=b.components.length;e<
-f;e++)c=b.components[e-1],d=b.components[e],a+=OpenLayers.Util.distVincenty({lon:c.x,lat:c.y},{lon:d.x,lat:d.y});return 1E3*a},CLASS_NAME:"OpenLayers.Geometry.Curve"});OpenLayers.Geometry.LineString=OpenLayers.Class(OpenLayers.Geometry.Curve,{removeComponent:function(a){var b=this.components&&2<this.components.length;b&&OpenLayers.Geometry.Collection.prototype.removeComponent.apply(this,arguments);return b},intersects:function(a){var b=!1,c=a.CLASS_NAME;if("OpenLayers.Geometry.LineString"==c||"OpenLayers.Geometry.LinearRing"==c||"OpenLayers.Geometry.Point"==c){var d=this.getSortedSegments();a="OpenLayers.Geometry.Point"==c?[{x1:a.x,y1:a.y,x2:a.x,y2:a.y}]:a.getSortedSegments();
-var e,f,g,h,k,l,m,r=0,p=d.length;a:for(;r<p;++r){c=d[r];e=c.x1;f=c.x2;g=c.y1;h=c.y2;var n=0,q=a.length;for(;n<q;++n){k=a[n];if(k.x1>f)break;if(!(k.x2<e||(l=k.y1,m=k.y2,Math.min(l,m)>Math.max(g,h)||Math.max(l,m)<Math.min(g,h)||!OpenLayers.Geometry.segmentsIntersect(c,k)))){b=!0;break a}}}}else b=a.intersects(this);return b},getSortedSegments:function(){for(var a=this.components.length-1,b=Array(a),c,d,e=0;e<a;++e)c=this.components[e],d=this.components[e+1],b[e]=c.x<d.x?{x1:c.x,y1:c.y,x2:d.x,y2:d.y}:
+OpenLayers.Geometry.MultiPoint=OpenLayers.Class(OpenLayers.Geometry.Collection,{componentTypes:["OpenLayers.Geometry.Point"],addPoint:function(a,b){this.addComponent(a,b)},removePoint:function(a){this.removeComponent(a)},CLASS_NAME:"OpenLayers.Geometry.MultiPoint"});
+OpenLayers.Geometry.Curve=OpenLayers.Class(OpenLayers.Geometry.MultiPoint,{componentTypes:["OpenLayers.Geometry.Point"],getLength:function(){var a=0;
+	if(this.components&&1<this.components.length)for(var b=1,c=this.components.length;b<c;b++)a+=this.components[b-1].distanceTo(this.components[b]);
+	return a
+},
+getGeodesicLength:function(a){
+	var b=this;if(a){var c=new OpenLayers.Projection("EPSG:4326");c.equals(a)||(b=this.clone().transform(a,c))
+}
+a=0;
+if(b.components&&1<b.components.length)for(var d,e=1,f=b.components.length;e<f;e++)c=b.components[e-1],d=b.components[e],a+=OpenLayers.Util.distVincenty({lon:c.x,lat:c.y},{lon:d.x,lat:d.y});return 1E3*a},CLASS_NAME:"OpenLayers.Geometry.Curve"});
+OpenLayers.Geometry.LineString=OpenLayers.Class(OpenLayers.Geometry.Curve,{removeComponent:function(a){var b=this.components&&2<this.components.length;b&&OpenLayers.Geometry.Collection.prototype.removeComponent.apply(this,arguments);return b},intersects:function(a){var b=!1,c=a.CLASS_NAME;
+	if("OpenLayers.Geometry.LineString"==c||"OpenLayers.Geometry.LinearRing"==c||"OpenLayers.Geometry.Point"==c){
+		var d=this.getSortedSegments();
+		a="OpenLayers.Geometry.Point"==c?[{x1:a.x,y1:a.y,x2:a.x,y2:a.y}]:a.getSortedSegments();
+		var e,f,g,h,k,l,m,r=0,p=d.length;
+		a:for(;r<p;++r){
+			c=d[r];
+			e=c.x1;
+			f=c.x2;
+			g=c.y1;
+			h=c.y2;
+			var n=0,q=a.length;
+			for(;n<q;++n){k=a[n];if(k.x1>f)break;
+				if(!(k.x2<e||(l=k.y1,m=k.y2,Math.min(l,m)>Math.max(g,h)||Math.max(l,m)<Math.min(g,h)||!OpenLayers.Geometry.segmentsIntersect(c,k)))){
+					b=!0;
+					break a
+				}
+			}
+		}
+	}else b=a.intersects(this);return b},getSortedSegments:function(){for(var a=this.components.length-1,b=Array(a),c,d,e=0;e<a;++e)c=this.components[e],d=this.components[e+1],b[e]=c.x<d.x?{x1:c.x,y1:c.y,x2:d.x,y2:d.y}:
 {x1:d.x,y1:d.y,x2:c.x,y2:c.y};return b.sort(function(a,b){return a.x1-b.x1})},splitWithSegment:function(a,b){for(var c=!(b&&!1===b.edge),d=b&&b.tolerance,e=[],f=this.getVertices(),g=[],h=[],k=!1,l,m,r,p={point:!0,tolerance:d},n=null,q=0,s=f.length-2;q<=s;++q)if(d=f[q],g.push(d.clone()),l=f[q+1],m={x1:d.x,y1:d.y,x2:l.x,y2:l.y},m=OpenLayers.Geometry.segmentsIntersect(a,m,p),m instanceof OpenLayers.Geometry.Point&&((r=m.x===a.x1&&m.y===a.y1||m.x===a.x2&&m.y===a.y2||m.equals(d)||m.equals(l)?!0:!1)||c))m.equals(h[h.length-
 1])||h.push(m.clone()),0===q&&m.equals(d)||m.equals(l)||(k=!0,m.equals(d)||g.push(m),e.push(new OpenLayers.Geometry.LineString(g)),g=[m.clone()]);k&&(g.push(l.clone()),e.push(new OpenLayers.Geometry.LineString(g)));if(0<h.length)var t=a.x1<a.x2?1:-1,u=a.y1<a.y2?1:-1,n={lines:e,points:h.sort(function(a,b){return t*a.x-t*b.x||u*a.y-u*b.y})};return n},split:function(a,b){var c=null,d=b&&b.mutual,e,f,g,h;if(a instanceof OpenLayers.Geometry.LineString){var k=this.getVertices(),l,m,r,p,n,q=[];g=[];for(var s=
 0,t=k.length-2;s<=t;++s){l=k[s];m=k[s+1];r={x1:l.x,y1:l.y,x2:m.x,y2:m.y};h=h||[a];d&&q.push(l.clone());for(var u=0;u<h.length;++u)if(p=h[u].splitWithSegment(r,b))if(n=p.lines,0<n.length&&(n.unshift(u,1),Array.prototype.splice.apply(h,n),u+=n.length-2),d)for(var v=0,w=p.points.length;v<w;++v)n=p.points[v],n.equals(l)||(q.push(n),g.push(new OpenLayers.Geometry.LineString(q)),q=n.equals(m)?[]:[n.clone()])}d&&0<g.length&&0<q.length&&(q.push(m.clone()),g.push(new OpenLayers.Geometry.LineString(q)))}else c=
@@ -233,21 +274,89 @@ c&&(e<f&&a>=e&&a<=f||e>f&&a<=e&&a>=f)){l=-1;break}k<=c||g!=h&&(k<Math.min(g,h)||
 d&&!(b=a.components[c].intersects(this));++c);return b},getVertices:function(a){return!0===a?[]:this.components.slice(0,this.components.length-1)},CLASS_NAME:"OpenLayers.Geometry.LinearRing"});OpenLayers.Geometry.Polygon=OpenLayers.Class(OpenLayers.Geometry.Collection,{componentTypes:["OpenLayers.Geometry.LinearRing"],getArea:function(){var a=0;if(this.components&&0<this.components.length)for(var a=a+Math.abs(this.components[0].getArea()),b=1,c=this.components.length;b<c;b++)a-=Math.abs(this.components[b].getArea());return a},getGeodesicArea:function(a){var b=0;if(this.components&&0<this.components.length)for(var b=b+Math.abs(this.components[0].getGeodesicArea(a)),c=1,d=this.components.length;c<
 d;c++)b-=Math.abs(this.components[c].getGeodesicArea(a));return b},containsPoint:function(a){var b=this.components.length,c=!1;if(0<b&&(c=this.components[0].containsPoint(a),1!==c&&c&&1<b))for(var d,e=1;e<b;++e)if(d=this.components[e].containsPoint(a)){c=1===d?1:!1;break}return c},intersects:function(a){var b=!1,c,d;if("OpenLayers.Geometry.Point"==a.CLASS_NAME)b=this.containsPoint(a);else if("OpenLayers.Geometry.LineString"==a.CLASS_NAME||"OpenLayers.Geometry.LinearRing"==a.CLASS_NAME){c=0;for(d=
 this.components.length;c<d&&!(b=a.intersects(this.components[c]));++c);if(!b)for(c=0,d=a.components.length;c<d&&!(b=this.containsPoint(a.components[c]));++c);}else for(c=0,d=a.components.length;c<d&&!(b=this.intersects(a.components[c]));++c);if(!b&&"OpenLayers.Geometry.Polygon"==a.CLASS_NAME){var e=this.components[0];c=0;for(d=e.components.length;c<d&&!(b=a.containsPoint(e.components[c]));++c);}return b},distanceTo:function(a,b){return b&&!1===b.edge&&this.intersects(a)?0:OpenLayers.Geometry.Collection.prototype.distanceTo.apply(this,
-[a,b])},CLASS_NAME:"OpenLayers.Geometry.Polygon"});OpenLayers.Geometry.Polygon.createRegularPolygon=function(a,b,c,d){var e=Math.PI*(1/c-0.5);d&&(e+=d/180*Math.PI);for(var f,g=[],h=0;h<c;++h)f=e+2*h*Math.PI/c,d=a.x+b*Math.cos(f),f=a.y+b*Math.sin(f),g.push(new OpenLayers.Geometry.Point(d,f));a=new OpenLayers.Geometry.LinearRing(g);return new OpenLayers.Geometry.Polygon([a])};OpenLayers.Event={observers:!1,KEY_SPACE:32,KEY_BACKSPACE:8,KEY_TAB:9,KEY_RETURN:13,KEY_ESC:27,KEY_LEFT:37,KEY_UP:38,KEY_RIGHT:39,KEY_DOWN:40,KEY_DELETE:46,element:function(a){return a.target||a.srcElement},isSingleTouch:function(a){return a.touches&&1==a.touches.length},isMultiTouch:function(a){return a.touches&&1<a.touches.length},isLeftClick:function(a){return a.which&&1==a.which||a.button&&1==a.button},isRightClick:function(a){return a.which&&3==a.which||a.button&&2==a.button},stop:function(a,
-b){b||OpenLayers.Event.preventDefault(a);a.stopPropagation?a.stopPropagation():a.cancelBubble=!0},preventDefault:function(a){a.preventDefault?a.preventDefault():a.returnValue=!1},findElement:function(a,b){for(var c=OpenLayers.Event.element(a);c.parentNode&&(!c.tagName||c.tagName.toUpperCase()!=b.toUpperCase());)c=c.parentNode;return c},observe:function(a,b,c,d){a=OpenLayers.Util.getElement(a);d=d||!1;"keypress"==b&&(navigator.appVersion.match(/Konqueror|Safari|KHTML/)||a.attachEvent)&&(b="keydown");
-this.observers||(this.observers={});if(!a._eventCacheID){var e="eventCacheID_";a.id&&(e=a.id+"_"+e);a._eventCacheID=OpenLayers.Util.createUniqueID(e)}e=a._eventCacheID;this.observers[e]||(this.observers[e]=[]);this.observers[e].push({element:a,name:b,observer:c,useCapture:d});a.addEventListener?a.addEventListener(b,c,d):a.attachEvent&&a.attachEvent("on"+b,c)},stopObservingElement:function(a){a=OpenLayers.Util.getElement(a)._eventCacheID;this._removeElementObservers(OpenLayers.Event.observers[a])},
-_removeElementObservers:function(a){if(a)for(var b=a.length-1;0<=b;b--){var c=a[b];OpenLayers.Event.stopObserving.apply(this,[c.element,c.name,c.observer,c.useCapture])}},stopObserving:function(a,b,c,d){d=d||!1;a=OpenLayers.Util.getElement(a);var e=a._eventCacheID;"keypress"==b&&(navigator.appVersion.match(/Konqueror|Safari|KHTML/)||a.detachEvent)&&(b="keydown");var f=!1,g=OpenLayers.Event.observers[e];if(g)for(var h=0;!f&&h<g.length;){var k=g[h];if(k.name==b&&k.observer==c&&k.useCapture==d){g.splice(h,
-1);0==g.length&&delete OpenLayers.Event.observers[e];f=!0;break}h++}f&&(a.removeEventListener?a.removeEventListener(b,c,d):a&&a.detachEvent&&a.detachEvent("on"+b,c));return f},unloadCache:function(){if(OpenLayers.Event&&OpenLayers.Event.observers){for(var a in OpenLayers.Event.observers)OpenLayers.Event._removeElementObservers.apply(this,[OpenLayers.Event.observers[a]]);OpenLayers.Event.observers=!1}},CLASS_NAME:"OpenLayers.Event"};
+[a,b])},CLASS_NAME:"OpenLayers.Geometry.Polygon"});
+OpenLayers.Geometry.Polygon.createRegularPolygon=function(a,b,c,d){
+	var e=Math.PI*(1/c-0.5);d&&(e+=d/180*Math.PI);
+	for(var f,g=[],h=0;h<c;++h)f=e+2*h*Math.PI/c,d=a.x+b*Math.cos(f),f=a.y+b*Math.sin(f),g.push(new OpenLayers.Geometry.Point(d,f));
+		a=new OpenLayers.Geometry.LinearRing(g);
+	return new OpenLayers.Geometry.Polygon([a])
+};
+OpenLayers.Event={
+	observers:!1,
+	KEY_SPACE:32,
+	KEY_BACKSPACE:8,
+	KEY_TAB:9,
+	KEY_RETURN:13,
+	KEY_ESC:27,
+	KEY_LEFT:37,
+	KEY_UP:38,
+	KEY_RIGHT:39,
+	KEY_DOWN:40,
+	KEY_DELETE:46,
+	element:function(a){return a.target||a.srcElement},
+	isSingleTouch:function(a){return a.touches&&1==a.touches.length},
+	isMultiTouch:function(a){return a.touches&&1<a.touches.length},
+	isLeftClick:function(a){return a.which&&1==a.which||a.button&&1==a.button},
+	isRightClick:function(a){return a.which&&3==a.which||a.button&&2==a.button},
+	stop:function(a,b){
+		b||OpenLayers.Event.preventDefault(a);
+		a.stopPropagation?a.stopPropagation():a.cancelBubble=!0
+	},
+	preventDefault:function(a){a.preventDefault?a.preventDefault():a.returnValue=!1},
+	findElement:function(a,b){
+		for(var c=OpenLayers.Event.element(a);c.parentNode&&(!c.tagName||c.tagName.toUpperCase()!=b.toUpperCase());)
+			c=c.parentNode;return c
+	},
+	observe:function(a,b,c,d){
+		a=OpenLayers.Util.getElement(a);d=d||!1;
+		"keypress"==b&&(navigator.appVersion.match(/Konqueror|Safari|KHTML/)||a.attachEvent)&&(b="keydown");
+		this.observers||(this.observers={});
+		if(!a._eventCacheID){
+			var e="eventCacheID_";
+			a.id&&(e=a.id+"_"+e);
+			a._eventCacheID=OpenLayers.Util.createUniqueID(e)
+		}
+		e=a._eventCacheID;this.observers[e]||(this.observers[e]=[]);
+		this.observers[e].push({element:a,name:b,observer:c,useCapture:d});
+		a.addEventListener?a.addEventListener(b,c,d):a.attachEvent&&a.attachEvent("on"+b,c)
+	},
+	stopObservingElement:function(a){
+		a=OpenLayers.Util.getElement(a)._eventCacheID;
+		this._removeElementObservers(OpenLayers.Event.observers[a])
+	},
+	_removeElementObservers:function(a){
+		if(a)for(var b=a.length-1;0<=b;b--){
+			var c=a[b];
+			OpenLayers.Event.stopObserving.apply(this,[c.element,c.name,c.observer,c.useCapture])
+		}
+	},
+	stopObserving:function(a,b,c,d){d=d||!1;a=OpenLayers.Util.getElement(a);var e=a._eventCacheID;"keypress"==b&&(navigator.appVersion.match(/Konqueror|Safari|KHTML/)||a.detachEvent)&&(b="keydown");var f=!1,g=OpenLayers.Event.observers[e];if(g)for(var h=0;!f&&h<g.length;){var k=g[h];if(k.name==b&&k.observer==c&&k.useCapture==d){g.splice(h,
+1);0==g.length&&delete OpenLayers.Event.observers[e];f=!0;break}h++}f&&(a.removeEventListener?a.removeEventListener(b,c,d):a&&a.detachEvent&&a.detachEvent("on"+b,c));return f},
+	unloadCache:function(){if(OpenLayers.Event&&OpenLayers.Event.observers){for(var a in OpenLayers.Event.observers)OpenLayers.Event._removeElementObservers.apply(this,[OpenLayers.Event.observers[a]]);OpenLayers.Event.observers=!1}},CLASS_NAME:"OpenLayers.Event"};
 OpenLayers.Event.observe(window,"unload",OpenLayers.Event.unloadCache,!1);
-OpenLayers.Events=OpenLayers.Class({BROWSER_EVENTS:"mouseover mouseout mousedown mouseup mousemove click dblclick rightclick dblrightclick resize focus blur touchstart touchmove touchend keydown".split(" "),listeners:null,object:null,element:null,eventHandler:null,fallThrough:null,includeXY:!1,extensions:null,extensionCount:null,clearMouseListener:null,initialize:function(a,b,c,d,e){OpenLayers.Util.extend(this,e);this.object=a;this.fallThrough=d;this.listeners={};this.extensions={};this.extensionCount=
-{};this._msTouches=[];null!=b&&this.attachToElement(b)},destroy:function(){for(var a in this.extensions)"boolean"!==typeof this.extensions[a]&&this.extensions[a].destroy();this.extensions=null;this.element&&(OpenLayers.Event.stopObservingElement(this.element),this.element.hasScrollEvent&&OpenLayers.Event.stopObserving(window,"scroll",this.clearMouseListener));this.eventHandler=this.fallThrough=this.object=this.listeners=this.element=null},addEventType:function(a){},attachToElement:function(a){this.element?
-OpenLayers.Event.stopObservingElement(this.element):(this.eventHandler=OpenLayers.Function.bindAsEventListener(this.handleBrowserEvent,this),this.clearMouseListener=OpenLayers.Function.bind(this.clearMouseCache,this));this.element=a;for(var b=!!window.navigator.msMaxTouchPoints,c,d=0,e=this.BROWSER_EVENTS.length;d<e;d++)c=this.BROWSER_EVENTS[d],OpenLayers.Event.observe(a,c,this.eventHandler),b&&0===c.indexOf("touch")&&this.addMsTouchListener(a,c,this.eventHandler);OpenLayers.Event.observe(a,"dragstart",
-OpenLayers.Event.stop)},on:function(a){for(var b in a)"scope"!=b&&a.hasOwnProperty(b)&&this.register(b,a.scope,a[b])},register:function(a,b,c,d){a in OpenLayers.Events&&!this.extensions[a]&&(this.extensions[a]=new OpenLayers.Events[a](this));if(null!=c){null==b&&(b=this.object);var e=this.listeners[a];e||(e=[],this.listeners[a]=e,this.extensionCount[a]=0);b={obj:b,func:c};d?(e.splice(this.extensionCount[a],0,b),"object"===typeof d&&d.extension&&this.extensionCount[a]++):e.push(b)}},registerPriority:function(a,
-b,c){this.register(a,b,c,!0)},un:function(a){for(var b in a)"scope"!=b&&a.hasOwnProperty(b)&&this.unregister(b,a.scope,a[b])},unregister:function(a,b,c){null==b&&(b=this.object);a=this.listeners[a];if(null!=a)for(var d=0,e=a.length;d<e;d++)if(a[d].obj==b&&a[d].func==c){a.splice(d,1);break}},remove:function(a){null!=this.listeners[a]&&(this.listeners[a]=[])},triggerEvent:function(a,b){var c=this.listeners[a];if(c&&0!=c.length){null==b&&(b={});b.object=this.object;b.element=this.element;b.type||(b.type=
-a);for(var c=c.slice(),d,e=0,f=c.length;e<f&&(d=c[e],d=d.func.apply(d.obj,[b]),void 0==d||!1!=d);e++);this.fallThrough||OpenLayers.Event.stop(b,!0);return d}},handleBrowserEvent:function(a){var b=a.type,c=this.listeners[b];if(c&&0!=c.length){if((c=a.touches)&&c[0]){for(var d=0,e=0,f=c.length,g,h=0;h<f;++h)g=this.getTouchClientXY(c[h]),d+=g.clientX,e+=g.clientY;a.clientX=d/f;a.clientY=e/f}this.includeXY&&(a.xy=this.getMousePosition(a));this.triggerEvent(b,a)}},getTouchClientXY:function(a){var b=window.olMockWin||
-window,c=b.pageXOffset,b=b.pageYOffset,d=a.clientX,e=a.clientY;if(0===a.pageY&&Math.floor(e)>Math.floor(a.pageY)||0===a.pageX&&Math.floor(d)>Math.floor(a.pageX))d-=c,e-=b;else if(e<a.pageY-b||d<a.pageX-c)d=a.pageX-c,e=a.pageY-b;a.olClientX=d;a.olClientY=e;return{clientX:d,clientY:e}},clearMouseCache:function(){this.element.scrolls=null;this.element.lefttop=null;this.element.offsets=null},getMousePosition:function(a){this.includeXY?this.element.hasScrollEvent||(OpenLayers.Event.observe(window,"scroll",
-this.clearMouseListener),this.element.hasScrollEvent=!0):this.clearMouseCache();if(!this.element.scrolls){var b=OpenLayers.Util.getViewportElement();this.element.scrolls=[window.pageXOffset||b.scrollLeft,window.pageYOffset||b.scrollTop]}this.element.lefttop||(this.element.lefttop=[document.documentElement.clientLeft||0,document.documentElement.clientTop||0]);this.element.offsets||(this.element.offsets=OpenLayers.Util.pagePosition(this.element));return new OpenLayers.Pixel(a.clientX+this.element.scrolls[0]-
-this.element.offsets[0]-this.element.lefttop[0],a.clientY+this.element.scrolls[1]-this.element.offsets[1]-this.element.lefttop[1])},addMsTouchListener:function(a,b,c){function d(a){c(OpenLayers.Util.applyDefaults({stopPropagation:function(){for(var a=e.length-1;0<=a;--a)e[a].stopPropagation()},preventDefault:function(){for(var a=e.length-1;0<=a;--a)e[a].preventDefault()},type:b},a))}var e=this._msTouches;switch(b){case "touchstart":return this.addMsTouchListenerStart(a,b,d);case "touchend":return this.addMsTouchListenerEnd(a,
+OpenLayers.Events=OpenLayers.Class({BROWSER_EVENTS:"mouseover mouseout mousedown mouseup mousemove click dblclick rightclick dblrightclick resize focus blur touchstart touchmove touchend keydown".split(" "),listeners:null,object:null,element:null,eventHandler:null,fallThrough:null,includeXY:!1,extensions:null,extensionCount:null,clearMouseListener:null,
+	initialize:function(a,b,c,d,e){
+		OpenLayers.Util.extend(this,e);
+		this.object=a;
+		this.fallThrough=d;
+		this.listeners={};
+		this.extensions={};
+		this.extensionCount={};this._msTouches=[];null!=b&&this.attachToElement(b)
+	},
+	destroy:function(){for(var a in this.extensions)"boolean"!==typeof this.extensions[a]&&this.extensions[a].destroy();this.extensions=null;this.element&&(OpenLayers.Event.stopObservingElement(this.element),this.element.hasScrollEvent&&OpenLayers.Event.stopObserving(window,"scroll",this.clearMouseListener));this.eventHandler=this.fallThrough=this.object=this.listeners=this.element=null},
+	addEventType:function(a){},
+	attachToElement:function(a){this.element?OpenLayers.Event.stopObservingElement(this.element):(this.eventHandler=OpenLayers.Function.bindAsEventListener(this.handleBrowserEvent,this),this.clearMouseListener=OpenLayers.Function.bind(this.clearMouseCache,this));this.element=a;for(var b=!!window.navigator.msMaxTouchPoints,c,d=0,e=this.BROWSER_EVENTS.length;d<e;d++)c=this.BROWSER_EVENTS[d],OpenLayers.Event.observe(a,c,this.eventHandler),b&&0===c.indexOf("touch")&&this.addMsTouchListener(a,c,this.eventHandler);OpenLayers.Event.observe(a,"dragstart",OpenLayers.Event.stop)},
+	on:function(a){for(var b in a)"scope"!=b&&a.hasOwnProperty(b)&&this.register(b,a.scope,a[b])},
+	register:function(a,b,c,d){a in OpenLayers.Events&&!this.extensions[a]&&(this.extensions[a]=new OpenLayers.Events[a](this));if(null!=c){null==b&&(b=this.object);var e=this.listeners[a];e||(e=[],this.listeners[a]=e,this.extensionCount[a]=0);b={obj:b,func:c};d?(e.splice(this.extensionCount[a],0,b),"object"===typeof d&&d.extension&&this.extensionCount[a]++):e.push(b)}},registerPriority:function(a,b,c){this.register(a,b,c,!0)},
+	un:function(a){for(var b in a)"scope"!=b&&a.hasOwnProperty(b)&&this.unregister(b,a.scope,a[b])},
+	unregister:function(a,b,c){null==b&&(b=this.object);a=this.listeners[a];if(null!=a)for(var d=0,e=a.length;d<e;d++)if(a[d].obj==b&&a[d].func==c){a.splice(d,1);break}},
+	remove:function(a){null!=this.listeners[a]&&(this.listeners[a]=[])},
+	triggerEvent:function(a,b){var c=this.listeners[a];if(c&&0!=c.length){null==b&&(b={});b.object=this.object;b.element=this.element;b.type||(b.type=a);for(var c=c.slice(),d,e=0,f=c.length;e<f&&(d=c[e],d=d.func.apply(d.obj,[b]),void 0==d||!1!=d);e++);this.fallThrough||OpenLayers.Event.stop(b,!0);return d}},
+	handleBrowserEvent:function(a){var b=a.type,c=this.listeners[b];if(c&&0!=c.length){if((c=a.touches)&&c[0]){for(var d=0,e=0,f=c.length,g,h=0;h<f;++h)g=this.getTouchClientXY(c[h]),d+=g.clientX,e+=g.clientY;a.clientX=d/f;a.clientY=e/f}this.includeXY&&(a.xy=this.getMousePosition(a));this.triggerEvent(b,a)}},
+	getTouchClientXY:function(a){var b=window.olMockWin||window,c=b.pageXOffset,b=b.pageYOffset,d=a.clientX,e=a.clientY;if(0===a.pageY&&Math.floor(e)>Math.floor(a.pageY)||0===a.pageX&&Math.floor(d)>Math.floor(a.pageX))d-=c,e-=b;else if(e<a.pageY-b||d<a.pageX-c)d=a.pageX-c,e=a.pageY-b;a.olClientX=d;a.olClientY=e;return{clientX:d,clientY:e}},
+	clearMouseCache:function(){this.element.scrolls=null;this.element.lefttop=null;this.element.offsets=null},
+	getMousePosition:function(a){this.includeXY?this.element.hasScrollEvent||(OpenLayers.Event.observe(window,"scroll",this.clearMouseListener),this.element.hasScrollEvent=!0):this.clearMouseCache();if(!this.element.scrolls){var b=OpenLayers.Util.getViewportElement();this.element.scrolls=[window.pageXOffset||b.scrollLeft,window.pageYOffset||b.scrollTop]}this.element.lefttop||(this.element.lefttop=[document.documentElement.clientLeft||0,document.documentElement.clientTop||0]);this.element.offsets||(this.element.offsets=OpenLayers.Util.pagePosition(this.element));return new OpenLayers.Pixel(a.clientX+this.element.scrolls[0]-this.element.offsets[0]-this.element.lefttop[0],a.clientY+this.element.scrolls[1]-this.element.offsets[1]-this.element.lefttop[1])},
+	addMsTouchListener:function(a,b,c){function d(a){c(OpenLayers.Util.applyDefaults({stopPropagation:function(){for(var a=e.length-1;0<=a;--a)e[a].stopPropagation()},preventDefault:function(){for(var a=e.length-1;0<=a;--a)e[a].preventDefault()},type:b},a))}var e=this._msTouches;switch(b){case "touchstart":return this.addMsTouchListenerStart(a,b,d);case "touchend":return this.addMsTouchListenerEnd(a,
 b,d);case "touchmove":return this.addMsTouchListenerMove(a,b,d);default:throw"Unknown touch event type";}},addMsTouchListenerStart:function(a,b,c){var d=this._msTouches;OpenLayers.Event.observe(a,"MSPointerDown",function(a){for(var b=!1,g=0,h=d.length;g<h;++g)if(d[g].pointerId==a.pointerId){b=!0;break}b||d.push(a);a.touches=d.slice();c(a)});OpenLayers.Event.observe(a,"MSPointerUp",function(a){for(var b=0,c=d.length;b<c;++b)if(d[b].pointerId==a.pointerId){d.splice(b,1);break}})},addMsTouchListenerMove:function(a,
 b,c){var d=this._msTouches;OpenLayers.Event.observe(a,"MSPointerMove",function(a){if(a.pointerType!=a.MSPOINTER_TYPE_MOUSE||0!=a.buttons)if(1!=d.length||d[0].pageX!=a.pageX||d[0].pageY!=a.pageY){for(var b=0,g=d.length;b<g;++b)if(d[b].pointerId==a.pointerId){d[b]=a;break}a.touches=d.slice();c(a)}})},addMsTouchListenerEnd:function(a,b,c){var d=this._msTouches;OpenLayers.Event.observe(a,"MSPointerUp",function(a){for(var b=0,g=d.length;b<g;++b)if(d[b].pointerId==a.pointerId){d.splice(b,1);break}a.touches=
 d.slice();c(a)})},CLASS_NAME:"OpenLayers.Events"});OpenLayers.Events.buttonclick=OpenLayers.Class({target:null,events:"mousedown mouseup click dblclick touchstart touchmove touchend keydown".split(" "),startRegEx:/^mousedown|touchstart$/,cancelRegEx:/^touchmove$/,completeRegEx:/^mouseup|touchend$/,initialize:function(a){this.target=a;for(a=this.events.length-1;0<=a;--a)this.target.register(this.events[a],this,this.buttonClick,{extension:!0})},destroy:function(){for(var a=this.events.length-1;0<=a;--a)this.target.unregister(this.events[a],this,this.buttonClick);
@@ -625,7 +734,17 @@ a&&c.minPx){var b=c.getResolution(),d=c.getMaxExtent({restricted:!0}),b=new Open
 d;++c){var e=b[c].firstChild||b[c],f=b[c].lastChild;f&&"iframe"===f.nodeName.toLowerCase()&&(e=f.parentNode);OpenLayers.Util.modifyDOMElement(e,null,null,null,null,null,null,a)}null!=this.map&&this.map.events.triggerEvent("changelayer",{layer:this,property:"opacity"})}},getZIndex:function(){return this.div.style.zIndex},setZIndex:function(a){this.div.style.zIndex=a},adjustBounds:function(a){if(this.gutter){var b=this.gutter*this.map.getResolution();a=new OpenLayers.Bounds(a.left-b,a.bottom-b,a.right+
 b,a.top+b)}this.wrapDateLine&&(b={rightTolerance:this.getResolution(),leftTolerance:this.getResolution()},a=a.wrapDateLine(this.maxExtent,b));return a},CLASS_NAME:"OpenLayers.Layer"});OpenLayers.StyleMap=OpenLayers.Class({styles:null,extendDefault:!0,initialize:function(a,b){this.styles={"default":new OpenLayers.Style(OpenLayers.Feature.Vector.style["default"]),select:new OpenLayers.Style(OpenLayers.Feature.Vector.style.select),temporary:new OpenLayers.Style(OpenLayers.Feature.Vector.style.temporary),"delete":new OpenLayers.Style(OpenLayers.Feature.Vector.style["delete"])};if(a instanceof OpenLayers.Style)this.styles["default"]=a,this.styles.select=a,this.styles.temporary=a,this.styles["delete"]=
 a;else if("object"==typeof a)for(var c in a)if(a[c]instanceof OpenLayers.Style)this.styles[c]=a[c];else if("object"==typeof a[c])this.styles[c]=new OpenLayers.Style(a[c]);else{this.styles["default"]=new OpenLayers.Style(a);this.styles.select=new OpenLayers.Style(a);this.styles.temporary=new OpenLayers.Style(a);this.styles["delete"]=new OpenLayers.Style(a);break}OpenLayers.Util.extend(this,b)},destroy:function(){for(var a in this.styles)this.styles[a].destroy();this.styles=null},createSymbolizer:function(a,
-b){a||(a=new OpenLayers.Feature.Vector);this.styles[b]||(b="default");a.renderIntent=b;var c={};this.extendDefault&&"default"!=b&&(c=this.styles["default"].createSymbolizer(a));return OpenLayers.Util.extend(c,this.styles[b].createSymbolizer(a))},addUniqueValueRules:function(a,b,c,d){var e=[],f;for(f in c)e.push(new OpenLayers.Rule({symbolizer:c[f],context:d,filter:new OpenLayers.Filter.Comparison({type:OpenLayers.Filter.Comparison.EQUAL_TO,property:b,value:f})}));this.styles[a].addRules(e)},CLASS_NAME:"OpenLayers.StyleMap"});
+b){a||(a=new OpenLayers.Feature.Vector);this.styles[b]||(b="default");a.renderIntent=b;var c={};this.extendDefault&&"default"!=b&&(c=this.styles["default"].createSymbolizer(a));return OpenLayers.Util.extend(c,this.styles[b].createSymbolizer(a))},
+addUniqueValueRules:function(a,b,c,d){
+	var e=[],f;
+	for(f in c)e.push(new OpenLayers.Rule({
+		symbolizer:c[f],context:d,filter:new OpenLayers.Filter.Comparison({
+			type:OpenLayers.Filter.Comparison.EQUAL_TO,property:b,value:f
+		})
+	}));
+		this.styles[a].addRules(e)
+	},CLASS_NAME:"OpenLayers.StyleMap"
+});
 OpenLayers.Layer.Vector=OpenLayers.Class(OpenLayers.Layer,{
 	isBaseLayer:!1,
 	isFixed:!1,
@@ -689,15 +808,50 @@ OpenLayers.Layer.Vector=OpenLayers.Class(OpenLayers.Layer,{
 		var b=this.div.style.display;
 		b!=this.renderer.root.style.display&&(this.renderer.root.style.display=b)
 	},
-	addFeatures:function(a,b){OpenLayers.Util.isArray(a)||(a=[a]);var c=!b||!b.silent;if(c){var d={features:a};if(!1===this.events.triggerEvent("beforefeaturesadded",d))return;a=d.features}for(var d=[],e=0,f=a.length;e<f;e++){this.renderer.locked=e!=a.length-1?!0:!1;var g=a[e];if(this.geometryType&&!(g.geometry instanceof this.geometryType))throw new TypeError("addFeatures: component should be an "+this.geometryType.prototype.CLASS_NAME);g.layer=this;!g.style&&this.style&&
-	(g.style=OpenLayers.Util.extend({},this.style));if(c){if(!1===this.events.triggerEvent("beforefeatureadded",{feature:g}))continue;this.preFeatureInsert(g)}d.push(g);this.features.push(g);this.drawFeature(g);c&&(this.events.triggerEvent("featureadded",{feature:g}),this.onFeatureInsert(g))}c&&this.events.triggerEvent("featuresadded",{features:d})},
+	addFeatures:function(a,b){
+		OpenLayers.Util.isArray(a)||(a=[a]);
+		var c=!b||!b.silent;
+		if(c){
+			var d={features:a};
+			if(!1===this.events.triggerEvent("beforefeaturesadded",d))
+				return;
+			a=d.features
+		}
+		for(var d=[],e=0,f=a.length;e<f;e++){
+			this.renderer.locked=e!=a.length-1?!0:!1;var g=a[e];
+			if(this.geometryType&&!(g.geometry instanceof this.geometryType))
+				throw new TypeError("addFeatures: component should be an "+this.geometryType.prototype.CLASS_NAME);
+			g.layer=this;
+			!g.style&&this.style&&(g.style=OpenLayers.Util.extend({},this.style));
+			if(c){
+				if(!1===this.events.triggerEvent("beforefeatureadded",{feature:g}))
+					continue;
+				this.preFeatureInsert(g)
+			}
+			d.push(g);
+			this.features.push(g);
+			this.drawFeature(g);
+			c&&(this.events.triggerEvent("featureadded",{feature:g}),this.onFeatureInsert(g))
+		}
+		c&&this.events.triggerEvent("featuresadded",{features:d})
+	},
 	removeFeatures:function(a,b){if(a&&0!==a.length){if(a===this.features)return this.removeAllFeatures(b);OpenLayers.Util.isArray(a)||(a=[a]);a===this.selectedFeatures&&
 	(a=a.slice());var c=!b||!b.silent;c&&this.events.triggerEvent("beforefeaturesremoved",{features:a});for(var d=a.length-1;0<=d;d--){this.renderer.locked=0!=d&&a[d-1].geometry?!0:!1;var e=a[d];delete this.unrenderedFeatures[e.id];c&&this.events.triggerEvent("beforefeatureremoved",{feature:e});this.features=OpenLayers.Util.removeItem(this.features,e);e.layer=null;e.geometry&&this.renderer.eraseFeatures(e);-1!=OpenLayers.Util.indexOf(this.selectedFeatures,e)&&OpenLayers.Util.removeItem(this.selectedFeatures,
 	e);c&&this.events.triggerEvent("featureremoved",{feature:e})}c&&this.events.triggerEvent("featuresremoved",{features:a})}},
 	removeAllFeatures:function(a){a=!a||!a.silent;var b=this.features;a&&this.events.triggerEvent("beforefeaturesremoved",{features:b});for(var c,d=b.length-1;0<=d;d--)c=b[d],a&&this.events.triggerEvent("beforefeatureremoved",{feature:c}),c.layer=null,a&&this.events.triggerEvent("featureremoved",{feature:c});this.renderer.clear();this.features=[];this.unrenderedFeatures={};this.selectedFeatures=
 	[];a&&this.events.triggerEvent("featuresremoved",{features:b})},
 	destroyFeatures:function(a,b){void 0==a&&(a=this.features);if(a){this.removeFeatures(a,b);for(var c=a.length-1;0<=c;c--)a[c].destroy()}},
-	drawFeature:function(a,b){if(this.drawn){if("object"!=typeof b){b||a.state!==OpenLayers.State.DELETE||(b="delete");var c=b||a.renderIntent;(b=a.style||this.style)||(b=this.styleMap.createSymbolizer(a,c))}c=this.renderer.drawFeature(a,b);!1===c||null===c?this.unrenderedFeatures[a.id]=a:delete this.unrenderedFeatures[a.id]}},
+	drawFeature:function(a,b){
+		if(this.drawn){
+			if("object"!=typeof b){
+				b||a.state!==OpenLayers.State.DELETE||(b="delete");
+				var c=b||a.renderIntent;
+				(b=a.style||this.style)||(b=this.styleMap.createSymbolizer(a,c))
+			}
+			c=this.renderer.drawFeature(a,b);
+			!1===c||null===c?this.unrenderedFeatures[a.id]=a:delete this.unrenderedFeatures[a.id]
+		}
+	},
 	eraseFeatures:function(a){this.renderer.eraseFeatures(a)},
 	getFeatureFromEvent:function(a){if(!this.renderer)throw Error("getFeatureFromEvent called on layer with no renderer. This usually means you destroyed a layer, but not some handler which is associated with it.");var b=null;(a=this.renderer.getFeatureIdFromEvent(a))&&(b="string"===typeof a?this.getFeatureById(a):a);return b},
 	getFeatureBy:function(a,b){for(var c=null,d=0,e=this.features.length;d<e;++d)if(this.features[d][a]==b){c=this.features[d];
@@ -778,10 +932,13 @@ b;)e=this.grid[c],f=e.pop(),this.destroyTile(f)},onMapResize:function(){this.sin
 arguments);this.tileOrigin||(this.tileOrigin=new OpenLayers.LonLat(this.maxExtent.left,this.maxExtent.bottom))},CLASS_NAME:"OpenLayers.Layer.XYZ"});OpenLayers.Layer.OSM=OpenLayers.Class(OpenLayers.Layer.XYZ,{name:"OpenStreetMap",url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png","http://b.tile.openstreetmap.org/${z}/${x}/${y}.png","http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"],attribution:"&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",sphericalMercator:!0,wrapDateLine:!0,tileOptions:null,initialize:function(a,b,c){OpenLayers.Layer.XYZ.prototype.initialize.apply(this,arguments);this.tileOptions=
 OpenLayers.Util.extend({crossOriginKeyword:"anonymous"},this.options&&this.options.tileOptions)},clone:function(a){null==a&&(a=new OpenLayers.Layer.OSM(this.name,this.url,this.getOptions()));return a=OpenLayers.Layer.XYZ.prototype.clone.apply(this,[a])},CLASS_NAME:"OpenLayers.Layer.OSM"});OpenLayers.Renderer.Canvas=OpenLayers.Class(OpenLayers.Renderer,{hitDetection:!0,hitOverflow:0,canvas:null,features:null,pendingRedraw:!1,cachedSymbolBounds:{},initialize:function(a,b){OpenLayers.Renderer.prototype.initialize.apply(this,arguments);this.root=document.createElement("canvas");this.container.appendChild(this.root);this.canvas=this.root.getContext("2d");this.features={};this.hitDetection&&(this.hitCanvas=document.createElement("canvas"),this.hitContext=this.hitCanvas.getContext("2d"))},
 setExtent:function(){OpenLayers.Renderer.prototype.setExtent.apply(this,arguments);return!1},eraseGeometry:function(a,b){this.eraseFeatures(this.features[b][0])},supported:function(){return OpenLayers.CANVAS_SUPPORTED},setSize:function(a){this.size=a.clone();var b=this.root;b.style.width=a.w+"px";b.style.height=a.h+"px";b.width=a.w;b.height=a.h;this.resolution=null;this.hitDetection&&(b=this.hitCanvas,b.style.width=a.w+"px",b.style.height=a.h+"px",b.width=a.w,b.height=a.h)},drawFeature:function(a,
-b){var c;if(a.geometry){b=this.applyDefaultSymbolizer(b||a.style);c=a.geometry.getBounds();var d;this.map.baseLayer&&this.map.baseLayer.wrapDateLine&&(d=this.map.getMaxExtent());d=c&&c.intersectsBounds(this.extent,{worldBounds:d});(c="none"!==b.display&&!!c&&d)?this.features[a.id]=[a,b]:delete this.features[a.id];this.pendingRedraw=!0}this.pendingRedraw&&!this.locked&&(this.redraw(),this.pendingRedraw=!1);return c},drawGeometry:function(a,b,c){var d=a.CLASS_NAME;if("OpenLayers.Geometry.Collection"==
-d||"OpenLayers.Geometry.MultiPoint"==d||"OpenLayers.Geometry.MultiLineString"==d||"OpenLayers.Geometry.MultiPolygon"==d)for(d=0;d<a.components.length;d++)this.drawGeometry(a.components[d],b,c);else switch(a.CLASS_NAME){case "OpenLayers.Geometry.Point":this.drawPoint(a,b,c);break;case "OpenLayers.Geometry.LineString":this.drawLineString(a,b,c);break;case "OpenLayers.Geometry.LinearRing":this.drawLinearRing(a,b,c);break;case "OpenLayers.Geometry.Polygon":this.drawPolygon(a,b,c)}},drawExternalGraphic:function(a,
+b){var c;if(a.geometry){b=this.applyDefaultSymbolizer(b||a.style);c=a.geometry.getBounds();var d;this.map.baseLayer&&this.map.baseLayer.wrapDateLine&&(d=this.map.getMaxExtent());d=c&&c.intersectsBounds(this.extent,{worldBounds:d});(c="none"!==b.display&&!!c&&d)?this.features[a.id]=[a,b]:delete this.features[a.id];this.pendingRedraw=!0}this.pendingRedraw&&!this.locked&&(this.redraw(),this.pendingRedraw=!1);return c},
+drawGeometry:function(a,b,c){
+	var d=a.CLASS_NAME;
+	if("OpenLayers.Geometry.Collection"==d||"OpenLayers.Geometry.MultiPoint"==d||"OpenLayers.Geometry.MultiLineString"==d||"OpenLayers.Geometry.MultiPolygon"==d)for(d=0;d<a.components.length;d++)this.drawGeometry(a.components[d],b,c);else switch(a.CLASS_NAME){case "OpenLayers.Geometry.Point":this.drawPoint(a,b,c);break;case "OpenLayers.Geometry.LineString":this.drawLineString(a,b,c);break;case "OpenLayers.Geometry.LinearRing":this.drawLinearRing(a,b,c);break;case "OpenLayers.Geometry.Polygon":this.drawPolygon(a,b,c)}},drawExternalGraphic:function(a,
 b,c){var d=new Image,e=b.title||b.graphicTitle;e&&(d.title=e);var f=b.graphicWidth||b.graphicHeight,g=b.graphicHeight||b.graphicWidth,f=f?f:2*b.pointRadius,g=g?g:2*b.pointRadius,h=void 0!=b.graphicXOffset?b.graphicXOffset:-(0.5*f),k=void 0!=b.graphicYOffset?b.graphicYOffset:-(0.5*g),l=b.graphicOpacity||b.fillOpacity;d.onload=OpenLayers.Function.bind(function(){if(this.features[c]){var b=this.getLocalXY(a),e=b[0],b=b[1];if(!isNaN(e)&&!isNaN(b)){var e=e+h|0,b=b+k|0,p=this.canvas;p.globalAlpha=l;var n=
-OpenLayers.Renderer.Canvas.drawImageScaleFactor||(OpenLayers.Renderer.Canvas.drawImageScaleFactor=/android 2.1/.test(navigator.userAgent.toLowerCase())?320/window.screen.width:1);p.drawImage(d,e*n,b*n,f*n,g*n);this.hitDetection&&(this.setHitContextStyle("fill",c),this.hitContext.fillRect(e,b,f,g))}}},this);d.src=b.externalGraphic},drawNamedSymbol:function(a,b,c){var d,e,f,g;f=Math.PI/180;var h=OpenLayers.Renderer.symbol[b.graphicName];if(!h)throw Error(b.graphicName+" is not a valid symbol name");
+OpenLayers.Renderer.Canvas.drawImageScaleFactor||(OpenLayers.Renderer.Canvas.drawImageScaleFactor=/android 2.1/.test(navigator.userAgent.toLowerCase())?320/window.screen.width:1);p.drawImage(d,e*n,b*n,f*n,g*n);this.hitDetection&&(this.setHitContextStyle("fill",c),this.hitContext.fillRect(e,b,f,g))}}},this);d.src=b.externalGraphic},
+drawNamedSymbol:function(a,b,c){var d,e,f,g;f=Math.PI/180;var h=OpenLayers.Renderer.symbol[b.graphicName];if(!h)throw Error(b.graphicName+" is not a valid symbol name");
 if(!(!h.length||2>h.length||(a=this.getLocalXY(a),e=a[0],g=a[1],isNaN(e)||isNaN(g)))){this.canvas.lineCap="round";this.canvas.lineJoin="round";this.hitDetection&&(this.hitContext.lineCap="round",this.hitContext.lineJoin="round");if(b.graphicName in this.cachedSymbolBounds)d=this.cachedSymbolBounds[b.graphicName];else{d=new OpenLayers.Bounds;for(a=0;a<h.length;a+=2)d.extend(new OpenLayers.LonLat(h[a],h[a+1]));this.cachedSymbolBounds[b.graphicName]=d}this.canvas.save();this.hitDetection&&this.hitContext.save();
 this.canvas.translate(e,g);this.hitDetection&&this.hitContext.translate(e,g);a=f*b.rotation;isNaN(a)||(this.canvas.rotate(a),this.hitDetection&&this.hitContext.rotate(a));f=2*b.pointRadius/Math.max(d.getWidth(),d.getHeight());this.canvas.scale(f,f);this.hitDetection&&this.hitContext.scale(f,f);a=d.getCenterLonLat().lon;d=d.getCenterLonLat().lat;this.canvas.translate(-a,-d);this.hitDetection&&this.hitContext.translate(-a,-d);g=b.strokeWidth;b.strokeWidth=g/f;if(!1!==b.fill){this.setCanvasStyle("fill",
 b);this.canvas.beginPath();for(a=0;a<h.length;a+=2)d=h[a],e=h[a+1],0==a&&this.canvas.moveTo(d,e),this.canvas.lineTo(d,e);this.canvas.closePath();this.canvas.fill();if(this.hitDetection){this.setHitContextStyle("fill",c,b);this.hitContext.beginPath();for(a=0;a<h.length;a+=2)d=h[a],e=h[a+1],0==a&&this.canvas.moveTo(d,e),this.hitContext.lineTo(d,e);this.hitContext.closePath();this.hitContext.fill()}}if(!1!==b.stroke){this.setCanvasStyle("stroke",b);this.canvas.beginPath();for(a=0;a<h.length;a+=2)d=h[a],
@@ -797,20 +954,137 @@ null==g&&(g=-0.5);d=this.canvas.measureText("Mg").height||this.canvas.measureTex
 null==h&&(h=-0.5);g=OpenLayers.Renderer.Canvas.LABEL_FACTOR[b.labelAlign[1]];null==g&&(g=-0.5);d=this.canvas.mozMeasureText("xx");c[1]+=d*(1+g*f);for(g=0;g<f;g++){var k=c[0]+h*this.canvas.mozMeasureText(e[g]),l=c[1]+g*d;this.canvas.translate(k,l);this.canvas.mozDrawText(e[g]);this.canvas.translate(-k,-l)}}this.setCanvasStyle("reset")},getLocalXY:function(a){var b=this.getResolution(),c=this.extent;return[(a.x-this.featureDx)/b+-c.left/b,c.top/b-a.y/b]},clear:function(){var a=this.root.height,b=this.root.width;
 this.canvas.clearRect(0,0,b,a);this.features={};this.hitDetection&&this.hitContext.clearRect(0,0,b,a)},getFeatureIdFromEvent:function(a){var b;if(this.hitDetection&&"none"!==this.root.style.display&&!this.map.dragging&&(a=a.xy,a=this.hitContext.getImageData(a.x|0,a.y|0,1,1).data,255===a[3]&&(a=a[2]+256*(a[1]+256*a[0])))){a="OpenLayers_Feature_Vector_"+(a-1+this.hitOverflow);try{b=this.features[a][0]}catch(c){}}return b},eraseFeatures:function(a){OpenLayers.Util.isArray(a)||(a=[a]);for(var b=0;b<a.length;++b)delete this.features[a[b].id];
 this.redraw()},redraw:function(){if(!this.locked){var a=this.root.height,b=this.root.width;this.canvas.clearRect(0,0,b,a);this.hitDetection&&this.hitContext.clearRect(0,0,b,a);var a=[],c,d,e=this.map.baseLayer&&this.map.baseLayer.wrapDateLine&&this.map.getMaxExtent(),f;for(f in this.features)this.features.hasOwnProperty(f)&&(b=this.features[f][0],c=b.geometry,this.calculateFeatureDx(c.getBounds(),e),d=this.features[f][1],this.drawGeometry(c,d,b.id),d.label&&a.push([b,d]));b=0;for(c=a.length;b<c;++b)f=
-a[b],this.drawText(f[0].geometry.getCentroid(),f[1])}},CLASS_NAME:"OpenLayers.Renderer.Canvas"});OpenLayers.Renderer.Canvas.LABEL_ALIGN={l:"left",r:"right",t:"top",b:"bottom"};OpenLayers.Renderer.Canvas.LABEL_FACTOR={l:0,r:-1,t:0,b:-1};OpenLayers.Renderer.Canvas.drawImageScaleFactor=null;OpenLayers.Renderer.SVG=OpenLayers.Class(OpenLayers.Renderer.Elements,{xmlns:"http://www.w3.org/2000/svg",xlinkns:"http://www.w3.org/1999/xlink",MAX_PIXEL:15E3,translationParameters:null,symbolMetrics:null,initialize:function(a){this.supported()&&(OpenLayers.Renderer.Elements.prototype.initialize.apply(this,arguments),this.translationParameters={x:0,y:0},this.symbolMetrics={})},supported:function(){return document.implementation&&(document.implementation.hasFeature("org.w3c.svg","1.0")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#SVG",
-"1.1")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure","1.1"))},inValidRange:function(a,b,c){a+=c?0:this.translationParameters.x;b+=c?0:this.translationParameters.y;return a>=-this.MAX_PIXEL&&a<=this.MAX_PIXEL&&b>=-this.MAX_PIXEL&&b<=this.MAX_PIXEL},setExtent:function(a,b){var c=OpenLayers.Renderer.Elements.prototype.setExtent.apply(this,arguments),d=this.getResolution(),e=-a.left/d,d=a.top/d;if(b)return this.left=e,this.top=d,this.rendererRoot.setAttributeNS(null,
-"viewBox","0 0 "+this.size.w+" "+this.size.h),this.translate(this.xOffset,0),!0;(e=this.translate(e-this.left+this.xOffset,d-this.top))||this.setExtent(a,!0);return c&&e},translate:function(a,b){if(this.inValidRange(a,b,!0)){var c="";if(a||b)c="translate("+a+","+b+")";this.root.setAttributeNS(null,"transform",c);this.translationParameters={x:a,y:b};return!0}return!1},setSize:function(a){OpenLayers.Renderer.prototype.setSize.apply(this,arguments);this.rendererRoot.setAttributeNS(null,"width",this.size.w);
-this.rendererRoot.setAttributeNS(null,"height",this.size.h)},getNodeType:function(a,b){var c=null;switch(a.CLASS_NAME){case "OpenLayers.Geometry.Point":c=b.externalGraphic?"image":this.isComplexSymbol(b.graphicName)?"svg":"circle";break;case "OpenLayers.Geometry.Rectangle":c="rect";break;case "OpenLayers.Geometry.LineString":c="polyline";break;case "OpenLayers.Geometry.LinearRing":c="polygon";break;case "OpenLayers.Geometry.Polygon":case "OpenLayers.Geometry.Curve":c="path"}return c},setStyle:function(a,
-b,c){b=b||a._style;c=c||a._options;var d=b.title||b.graphicTitle;if(d){a.setAttributeNS(null,"title",d);var e=a.getElementsByTagName("title");0<e.length?e[0].firstChild.textContent=d:(e=this.nodeFactory(null,"title"),e.textContent=d,a.appendChild(e))}var e=parseFloat(a.getAttributeNS(null,"r")),d=1,f;if("OpenLayers.Geometry.Point"==a._geometryClass&&e){a.style.visibility="";if(!1===b.graphic)a.style.visibility="hidden";else if(b.externalGraphic){f=this.getPosition(a);b.graphicWidth&&b.graphicHeight&&
-a.setAttributeNS(null,"preserveAspectRatio","none");var e=b.graphicWidth||b.graphicHeight,g=b.graphicHeight||b.graphicWidth,e=e?e:2*b.pointRadius,g=g?g:2*b.pointRadius,h=void 0!=b.graphicYOffset?b.graphicYOffset:-(0.5*g),k=b.graphicOpacity||b.fillOpacity;a.setAttributeNS(null,"x",(f.x+(void 0!=b.graphicXOffset?b.graphicXOffset:-(0.5*e))).toFixed());a.setAttributeNS(null,"y",(f.y+h).toFixed());a.setAttributeNS(null,"width",e);a.setAttributeNS(null,"height",g);a.setAttributeNS(this.xlinkns,"xlink:href",
-b.externalGraphic);a.setAttributeNS(null,"style","opacity: "+k);a.onclick=OpenLayers.Event.preventDefault}else if(this.isComplexSymbol(b.graphicName)){var e=3*b.pointRadius,g=2*e,l=this.importSymbol(b.graphicName);f=this.getPosition(a);d=3*this.symbolMetrics[l.id][0]/g;h=a.parentNode;k=a.nextSibling;h&&h.removeChild(a);a.firstChild&&a.removeChild(a.firstChild);a.appendChild(l.firstChild.cloneNode(!0));a.setAttributeNS(null,"viewBox",l.getAttributeNS(null,"viewBox"));a.setAttributeNS(null,"width",
-g);a.setAttributeNS(null,"height",g);a.setAttributeNS(null,"x",f.x-e);a.setAttributeNS(null,"y",f.y-e);k?h.insertBefore(a,k):h&&h.appendChild(a)}else a.setAttributeNS(null,"r",b.pointRadius);e=b.rotation;void 0===e&&void 0===a._rotation||!f||(a._rotation=e,e|=0,"svg"!==a.nodeName?a.setAttributeNS(null,"transform","rotate("+e+" "+f.x+" "+f.y+")"):(f=this.symbolMetrics[l.id],a.firstChild.setAttributeNS(null,"transform","rotate("+e+" "+f[1]+" "+f[2]+")")))}c.isFilled?(a.setAttributeNS(null,"fill",b.fillColor),
-a.setAttributeNS(null,"fill-opacity",b.fillOpacity)):a.setAttributeNS(null,"fill","none");c.isStroked?(a.setAttributeNS(null,"stroke",b.strokeColor),a.setAttributeNS(null,"stroke-opacity",b.strokeOpacity),a.setAttributeNS(null,"stroke-width",b.strokeWidth*d),a.setAttributeNS(null,"stroke-linecap",b.strokeLinecap||"round"),a.setAttributeNS(null,"stroke-linejoin","round"),b.strokeDashstyle&&a.setAttributeNS(null,"stroke-dasharray",this.dashStyle(b,d))):a.setAttributeNS(null,"stroke","none");b.pointerEvents&&
-a.setAttributeNS(null,"pointer-events",b.pointerEvents);null!=b.cursor&&a.setAttributeNS(null,"cursor",b.cursor);return a},dashStyle:function(a,b){var c=a.strokeWidth*b,d=a.strokeDashstyle;switch(d){case "solid":return"none";case "dot":return[1,4*c].join();case "dash":return[4*c,4*c].join();case "dashdot":return[4*c,4*c,1,4*c].join();case "longdash":return[8*c,4*c].join();case "longdashdot":return[8*c,4*c,1,4*c].join();default:return OpenLayers.String.trim(d).replace(/\s+/g,",")}},createNode:function(a,
-b){var c=document.createElementNS(this.xmlns,a);b&&c.setAttributeNS(null,"id",b);return c},nodeTypeCompare:function(a,b){return b==a.nodeName},createRenderRoot:function(){var a=this.nodeFactory(this.container.id+"_svgRoot","svg");a.style.display="block";return a},createRoot:function(a){return this.nodeFactory(this.container.id+a,"g")},createDefs:function(){var a=this.nodeFactory(this.container.id+"_defs","defs");this.rendererRoot.appendChild(a);return a},drawPoint:function(a,b){return this.drawCircle(a,
-b,1)},drawCircle:function(a,b,c){var d=this.getResolution(),e=(b.x-this.featureDx)/d+this.left;b=this.top-b.y/d;return this.inValidRange(e,b)?(a.setAttributeNS(null,"cx",e),a.setAttributeNS(null,"cy",b),a.setAttributeNS(null,"r",c),a):!1},drawLineString:function(a,b){var c=this.getComponentsString(b.components);return c.path?(a.setAttributeNS(null,"points",c.path),c.complete?a:null):!1},drawLinearRing:function(a,b){var c=this.getComponentsString(b.components);return c.path?(a.setAttributeNS(null,
-"points",c.path),c.complete?a:null):!1},drawPolygon:function(a,b){for(var c="",d=!0,e=!0,f,g,h=0,k=b.components.length;h<k;h++)c+=" M",f=this.getComponentsString(b.components[h].components," "),(g=f.path)?(c+=" "+g,e=f.complete&&e):d=!1;return d?(a.setAttributeNS(null,"d",c+" z"),a.setAttributeNS(null,"fill-rule","evenodd"),e?a:null):!1},drawRectangle:function(a,b){var c=this.getResolution(),d=(b.x-this.featureDx)/c+this.left,e=this.top-b.y/c;return this.inValidRange(d,e)?(a.setAttributeNS(null,"x",
-d),a.setAttributeNS(null,"y",e),a.setAttributeNS(null,"width",b.width/c),a.setAttributeNS(null,"height",b.height/c),a):!1},drawText:function(a,b,c){var d=!!b.labelOutlineWidth;if(d){var e=OpenLayers.Util.extend({},b);e.fontColor=e.labelOutlineColor;e.fontStrokeColor=e.labelOutlineColor;e.fontStrokeWidth=b.labelOutlineWidth;b.labelOutlineOpacity&&(e.fontOpacity=b.labelOutlineOpacity);delete e.labelOutlineWidth;this.drawText(a,e,c)}var f=this.getResolution(),e=(c.x-this.featureDx)/f+this.left,g=c.y/
+a[b],this.drawText(f[0].geometry.getCentroid(),f[1])}},CLASS_NAME:"OpenLayers.Renderer.Canvas"});
+OpenLayers.Renderer.Canvas.LABEL_ALIGN={l:"left",r:"right",t:"top",b:"bottom"};
+OpenLayers.Renderer.Canvas.LABEL_FACTOR={l:0,r:-1,t:0,b:-1};
+OpenLayers.Renderer.Canvas.drawImageScaleFactor=null;
+OpenLayers.Renderer.SVG=OpenLayers.Class(OpenLayers.Renderer.Elements,{
+	xmlns:"http://www.w3.org/2000/svg",
+	xlinkns:"http://www.w3.org/1999/xlink",MAX_PIXEL:15E3,
+	translationParameters:null,
+	symbolMetrics:null,
+	initialize:function(a){
+		this.supported()&&(OpenLayers.Renderer.Elements.prototype.initialize.apply(this,arguments),this.translationParameters={x:0,y:0},this.symbolMetrics={})
+	},
+	supported:function(){
+		return document.implementation&&(document.implementation.hasFeature("org.w3c.svg","1.0")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#SVG","1.1")||document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure","1.1"))
+	},
+	inValidRange:function(a,b,c){
+		a+=c?0:this.translationParameters.x;b+=c?0:this.translationParameters.y;
+		return a>=-this.MAX_PIXEL&&a<=this.MAX_PIXEL&&b>=-this.MAX_PIXEL&&b<=this.MAX_PIXEL
+	},
+	setExtent:function(a,b){
+		var c=OpenLayers.Renderer.Elements.prototype.setExtent.apply(this,arguments),d=this.getResolution(),e=-a.left/d,d=a.top/d;if(b)return this.left=e,this.top=d,this.rendererRoot.setAttributeNS(null,"viewBox","0 0 "+this.size.w+" "+this.size.h),this.translate(this.xOffset,0),!0;(e=this.translate(e-this.left+this.xOffset,d-this.top))||this.setExtent(a,!0);return c&&e
+	},
+	translate:function(a,b){
+		if(this.inValidRange(a,b,!0)){var c="";if(a||b)c="translate("+a+","+b+")";this.root.setAttributeNS(null,"transform",c);this.translationParameters={x:a,y:b};return!0}return!1
+	},
+	setSize:function(a){
+		OpenLayers.Renderer.prototype.setSize.apply(this,arguments);
+		this.rendererRoot.setAttributeNS(null,"width",this.size.w);
+		this.rendererRoot.setAttributeNS(null,"height",this.size.h)
+	},
+	getNodeType:function(a,b){
+		var c=null;
+		switch(a.CLASS_NAME){
+			case "OpenLayers.Geometry.Point":c=b.externalGraphic?"image":this.isComplexSymbol(b.graphicName)?"svg":"circle";
+			break;
+			case "OpenLayers.Geometry.Rectangle":c="rect";break;
+			case "OpenLayers.Geometry.LineString":c="polyline";break;
+			case "OpenLayers.Geometry.LinearRing":c="polygon";
+			break;
+			case "OpenLayers.Geometry.Polygon":
+			case "OpenLayers.Geometry.Curve":c="path"
+		}
+		return c
+	},
+	setStyle:function(a,b,c){
+		b=b||a._style;
+		c=c||a._options;
+		var d=b.title||b.graphicTitle;
+		if(d){
+			a.setAttributeNS(null,"title",d);
+			var e=a.getElementsByTagName("title");
+			0<e.length?e[0].firstChild.textContent=d:(e=this.nodeFactory(null,"title"),e.textContent=d,a.appendChild(e))
+		}
+		var e=parseFloat(a.getAttributeNS(null,"r")),d=1,f;
+		if("OpenLayers.Geometry.Point"==a._geometryClass&&e){
+			a.style.visibility="";
+			if(!1===b.graphic)a.style.visibility="hidden";
+			else if(b.externalGraphic){
+				f=this.getPosition(a);
+				b.graphicWidth&&b.graphicHeight&&a.setAttributeNS(null,"preserveAspectRatio","none");
+				var e=b.graphicWidth||b.graphicHeight,g=b.graphicHeight||b.graphicWidth,e=e?e:2*b.pointRadius,g=g?g:2*b.pointRadius,h=void 0!=b.graphicYOffset?b.graphicYOffset:-(0.5*g),k=b.graphicOpacity||b.fillOpacity;a.setAttributeNS(null,"x",(f.x+(void 0!=b.graphicXOffset?b.graphicXOffset:-(0.5*e))).toFixed());
+				a.setAttributeNS(null,"y",(f.y+h).toFixed());
+				a.setAttributeNS(null,"width",29);
+				a.setAttributeNS(null,"height",34);
+				a.setAttributeNS(this.xlinkns,"xlink:href",b.externalGraphic);
+				a.setAttributeNS(null,"style","opacity: "+k);
+				if (b.graphicClass)
+					a.setAttributeNS(null,"class",b.graphicClass+" hide-icon");
+				a.onclick=OpenLayers.Event.preventDefault
+			}else if(this.isComplexSymbol(b.graphicName)){
+				var e=3*b.pointRadius,g=2*e,l=this.importSymbol(b.graphicName);
+				f=this.getPosition(a);
+				d=3*this.symbolMetrics[l.id][0]/g;
+				h=a.parentNode;
+				k=a.nextSibling;
+				h&&h.removeChild(a);
+				a.firstChild&&a.removeChild(a.firstChild);a.appendChild(l.firstChild.cloneNode(!0));
+				a.setAttributeNS(null,"viewBox",l.getAttributeNS(null,"viewBox"));
+				a.setAttributeNS(null,"width",g);
+				a.setAttributeNS(null,"height",g);
+				a.setAttributeNS(null,"x",f.x-e);
+				a.setAttributeNS(null,"y",f.y-e);
+				a.setAttributeNS(null,"class",'hola');
+				k?h.insertBefore(a,k):h&&h.appendChild(a)
+			}
+			else a.setAttributeNS(null,"r",b.pointRadius);
+				e=b.rotation;
+				void 0===e&&void 0===a._rotation||!f||(a._rotation=e,e|=0,"svg"!==a.nodeName?a.setAttributeNS(null,"transform","rotate("+e+" "+f.x+" "+f.y+")"):(f=this.symbolMetrics[l.id],a.firstChild.setAttributeNS(null,"transform","rotate("+e+" "+f[1]+" "+f[2]+")")))
+		}
+		c.isFilled?(a.setAttributeNS(null,"fill",b.fillColor),a.setAttributeNS(null,"fill-opacity",b.fillOpacity)):a.setAttributeNS(null,"fill","none");
+		c.isStroked?(a.setAttributeNS(null,"stroke",b.strokeColor),a.setAttributeNS(null,"stroke-opacity",b.strokeOpacity),a.setAttributeNS(null,"stroke-width",b.strokeWidth*d),a.setAttributeNS(null,"stroke-linecap",b.strokeLinecap||"round"),a.setAttributeNS(null,"stroke-linejoin","round"),b.strokeDashstyle&&a.setAttributeNS(null,"stroke-dasharray",this.dashStyle(b,d))):a.setAttributeNS(null,"stroke","none");
+		b.pointerEvents&&a.setAttributeNS(null,"pointer-events",b.pointerEvents);
+		null!=b.cursor&&a.setAttributeNS(null,"cursor",b.cursor);
+		return a
+	},
+	dashStyle:function(a,b){
+		var c=a.strokeWidth*b,d=a.strokeDashstyle;
+		switch(d){
+		case "solid":return"none";
+		case "dot":return[1,4*c].join();
+		case "dash":return[4*c,4*c].join();
+		case "dashdot":return[4*c,4*c,1,4*c].join();
+		case "longdash":return[8*c,4*c].join();
+		case "longdashdot":return[8*c,4*c,1,4*c].join();
+		default:return OpenLayers.String.trim(d).replace(/\s+/g,",")
+		}
+	},
+	createNode:function(a,b){
+		var c=document.createElementNS(this.xmlns,a);
+		b&&c.setAttributeNS(null,"id",b);
+		return c
+	},
+	nodeTypeCompare:function(a,b){return b==a.nodeName},
+	createRenderRoot:function(){
+		var a=this.nodeFactory(this.container.id+"_svgRoot","svg");a.style.display="block";return a
+	},
+	createRoot:function(a){return this.nodeFactory(this.container.id+a,"g")},
+	createDefs:function(){
+		var a=this.nodeFactory(this.container.id+"_defs","defs");
+		this.rendererRoot.appendChild(a);return a
+	},
+	drawPoint:function(a,b){
+		return this.drawCircle(a,b,1)
+	},
+	drawCircle:function(a,b,c){
+		var d=this.getResolution(),e=(b.x-this.featureDx)/d+this.left;b=this.top-b.y/d;return this.inValidRange(e,b)?(a.setAttributeNS(null,"cx",e),a.setAttributeNS(null,"cy",b),a.setAttributeNS(null,"r",c),a):!1},drawLineString:function(a,b){var c=this.getComponentsString(b.components);return c.path?(a.setAttributeNS(null,"points",c.path),c.complete?a:null):!1
+	},
+	drawLinearRing:function(a,b){
+		var c=this.getComponentsString(b.components);return c.path?(a.setAttributeNS(null,"points",c.path),c.complete?a:null):!1
+	},
+	drawPolygon:function(a,b){for(var c="",d=!0,e=!0,f,g,h=0,k=b.components.length;h<k;h++)c+=" M",f=this.getComponentsString(b.components[h].components," "),(g=f.path)?(c+=" "+g,e=f.complete&&e):d=!1;return d?(a.setAttributeNS(null,"d",c+" z"),a.setAttributeNS(null,"fill-rule","evenodd"),e?a:null):!1},drawRectangle:function(a,b){var c=this.getResolution(),d=(b.x-this.featureDx)/c+this.left,e=this.top-b.y/c;return this.inValidRange(d,e)?(a.setAttributeNS(null,"x",d),a.setAttributeNS(null,"y",e),a.setAttributeNS(null,"width",b.width/c),a.setAttributeNS(null,"height",b.height/c),a):!1},drawText:function(a,b,c){var d=!!b.labelOutlineWidth;if(d){var e=OpenLayers.Util.extend({},b);e.fontColor=e.labelOutlineColor;e.fontStrokeColor=e.labelOutlineColor;e.fontStrokeWidth=b.labelOutlineWidth;b.labelOutlineOpacity&&(e.fontOpacity=b.labelOutlineOpacity);delete e.labelOutlineWidth;this.drawText(a,e,c)}var f=this.getResolution(),e=(c.x-this.featureDx)/f+this.left,g=c.y/
 f-this.top,d=d?this.LABEL_OUTLINE_SUFFIX:this.LABEL_ID_SUFFIX,f=this.nodeFactory(a+d,"text");f.setAttributeNS(null,"x",e);f.setAttributeNS(null,"y",-g);b.fontColor&&f.setAttributeNS(null,"fill",b.fontColor);b.fontStrokeColor&&f.setAttributeNS(null,"stroke",b.fontStrokeColor);b.fontStrokeWidth&&f.setAttributeNS(null,"stroke-width",b.fontStrokeWidth);b.fontOpacity&&f.setAttributeNS(null,"opacity",b.fontOpacity);b.fontFamily&&f.setAttributeNS(null,"font-family",b.fontFamily);b.fontSize&&f.setAttributeNS(null,
 "font-size",b.fontSize);b.fontWeight&&f.setAttributeNS(null,"font-weight",b.fontWeight);b.fontStyle&&f.setAttributeNS(null,"font-style",b.fontStyle);!0===b.labelSelect?(f.setAttributeNS(null,"pointer-events","visible"),f._featureId=a):f.setAttributeNS(null,"pointer-events","none");g=b.labelAlign||OpenLayers.Renderer.defaultSymbolizer.labelAlign;f.setAttributeNS(null,"text-anchor",OpenLayers.Renderer.SVG.LABEL_ALIGN[g[0]]||"middle");!0===OpenLayers.IS_GECKO&&f.setAttributeNS(null,"dominant-baseline",
 OpenLayers.Renderer.SVG.LABEL_ALIGN[g[1]]||"central");for(var h=b.label.split("\n"),k=h.length;f.childNodes.length>k;)f.removeChild(f.lastChild);for(var l=0;l<k;l++){var m=this.nodeFactory(a+d+"_tspan_"+l,"tspan");!0===b.labelSelect&&(m._featureId=a,m._geometry=c,m._geometryClass=c.CLASS_NAME);!1===OpenLayers.IS_GECKO&&m.setAttributeNS(null,"baseline-shift",OpenLayers.Renderer.SVG.LABEL_VSHIFT[g[1]]||"-35%");m.setAttribute("x",e);if(0==l){var r=OpenLayers.Renderer.SVG.LABEL_VFACTOR[g[1]];null==r&&
@@ -880,7 +1154,12 @@ var h={},k=e.getElementsByTagName("value");k.length&&(h.value=this.getChildValue
 null}return d},write:function(a){OpenLayers.Util.isArray(a)||(a=[a]);for(var b=this.createElementNS(this.kmlns,"kml"),c=this.createFolderXML(),d=0,e=a.length;d<e;++d)c.appendChild(this.createPlacemarkXML(a[d]));b.appendChild(c);return OpenLayers.Format.XML.prototype.write.apply(this,[b])},createFolderXML:function(){var a=this.createElementNS(this.kmlns,"Folder");if(this.foldersName){var b=this.createElementNS(this.kmlns,"name"),c=this.createTextNode(this.foldersName);b.appendChild(c);a.appendChild(b)}this.foldersDesc&&
 (b=this.createElementNS(this.kmlns,"description"),c=this.createTextNode(this.foldersDesc),b.appendChild(c),a.appendChild(b));return a},createPlacemarkXML:function(a){var b=this.createElementNS(this.kmlns,"name"),c=a.style&&a.style.label?a.style.label:a.id;b.appendChild(this.createTextNode(a.attributes.name||c));var d=this.createElementNS(this.kmlns,"description");d.appendChild(this.createTextNode(a.attributes.description||this.placemarksDesc));c=this.createElementNS(this.kmlns,"Placemark");null!=
 a.fid&&c.setAttribute("id",a.fid);c.appendChild(b);c.appendChild(d);b=this.buildGeometryNode(a.geometry);c.appendChild(b);a.attributes&&(a=this.buildExtendedData(a.attributes))&&c.appendChild(a);return c},buildGeometryNode:function(a){var b=a.CLASS_NAME,b=b.substring(b.lastIndexOf(".")+1),b=this.buildGeometry[b.toLowerCase()],c=null;b&&(c=b.apply(this,[a]));return c},buildGeometry:{point:function(a){var b=this.createElementNS(this.kmlns,"Point");b.appendChild(this.buildCoordinatesNode(a));return b},
-multipoint:function(a){return this.buildGeometry.collection.apply(this,[a])},linestring:function(a){var b=this.createElementNS(this.kmlns,"LineString");b.appendChild(this.buildCoordinatesNode(a));return b},multilinestring:function(a){return this.buildGeometry.collection.apply(this,[a])},linearring:function(a){var b=this.createElementNS(this.kmlns,"LinearRing");b.appendChild(this.buildCoordinatesNode(a));return b},polygon:function(a){var b=this.createElementNS(this.kmlns,"Polygon");a=a.components;
+multipoint:function(a){return this.buildGeometry.collection.apply(this,[a])},linestring:function(a){var b=this.createElementNS(this.kmlns,"LineString");b.appendChild(this.buildCoordinatesNode(a));return b},multilinestring:function(a){return this.buildGeometry.collection.apply(this,[a])},
+linearring:function(a){
+	var b=this.createElementNS(this.kmlns,"LinearRing");
+	b.appendChild(this.buildCoordinatesNode(a));
+	return b
+},polygon:function(a){var b=this.createElementNS(this.kmlns,"Polygon");a=a.components;
 for(var c,d,e=0,f=a.length;e<f;++e)c=0==e?"outerBoundaryIs":"innerBoundaryIs",c=this.createElementNS(this.kmlns,c),d=this.buildGeometry.linearring.apply(this,[a[e]]),c.appendChild(d),b.appendChild(c);return b},multipolygon:function(a){return this.buildGeometry.collection.apply(this,[a])},collection:function(a){for(var b=this.createElementNS(this.kmlns,"MultiGeometry"),c,d=0,e=a.components.length;d<e;++d)(c=this.buildGeometryNode.apply(this,[a.components[d]]))&&b.appendChild(c);return b}},buildCoordinatesNode:function(a){var b=
 this.createElementNS(this.kmlns,"coordinates"),c;if(c=a.components){for(var d=c.length,e=Array(d),f=0;f<d;++f)a=c[f],e[f]=this.buildCoordinates(a);c=e.join(" ")}else c=this.buildCoordinates(a);c=this.createTextNode(c);b.appendChild(c);return b},buildCoordinates:function(a){this.internalProjection&&this.externalProjection&&(a=a.clone(),a.transform(this.internalProjection,this.externalProjection));return a.x+","+a.y},buildExtendedData:function(a){var b=this.createElementNS(this.kmlns,"ExtendedData"),
 c;for(c in a)if(a[c]&&"name"!=c&&"description"!=c&&"styleUrl"!=c){var d=this.createElementNS(this.kmlns,"Data");d.setAttribute("name",c);var e=this.createElementNS(this.kmlns,"value");if("object"==typeof a[c]){if(a[c].value&&e.appendChild(this.createTextNode(a[c].value)),a[c].displayName){var f=this.createElementNS(this.kmlns,"displayName");f.appendChild(this.getXMLDoc().createCDATASection(a[c].displayName));d.appendChild(f)}}else e.appendChild(this.createTextNode(a[c]));d.appendChild(e);b.appendChild(d)}return this.isSimpleContent(b)?

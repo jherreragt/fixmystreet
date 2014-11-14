@@ -3,6 +3,10 @@ use base 'FixMyStreet::Cobrand::Default';
 
 use strict;
 use warnings;
+use JSON;
+use HTTP::Request::Common;
+use Data::Dumper;
+use LWP::UserAgent;
 #use Params::Util qw<_HASH _HASH0 _HASHLIKE>;
 
 sub process_extras {
@@ -122,9 +126,16 @@ sub pin_colour {
 		
 		if ( $categories && $categories->{$category_name}) {
 			my $pin = 'group-'.$categories->{$category_name};
+			$c->log->debug('ESTADO: '. $p->state);
 			if ($p->is_fixed){
 				$pin .= '-resuelto';
 			}
+			else{
+				if ($p->state eq 'in progress'){
+					$pin .= '-proceso';
+				}
+			}
+			$c->log->debug('PIN: '. $pin);
 			return $pin;
 		} else {
 			return 'yellow';
@@ -140,5 +151,79 @@ sub users_can_hide { 1 }
 sub language_override { 'es' }
 
 sub site_title { return 'PorMiBarrio'; }
+
+sub on_map_default_max_pin_age {
+    return '3 month';
+}
+
+sub geocode_postcode {
+    my ( $self, $s, $c ) = @_;
+    $c->log->debug(qq/GEOPOSTCODE/);
+    #$response->{error} = ( { address => 'Direccion', latitude => 'latitud', longitude => 'longi' } ); 
+    my $response = {};
+    my @addresses;
+    my $req;
+    my $last = 0;
+
+    my @term_arr = split(',', $s);
+
+    $c->log->debug(@term_arr);
+    
+    if (@term_arr){
+    	$c->log->debug(qq/GEOPOSTCODE ENTRA/);
+    	my $ua = LWP::UserAgent->new;
+	    if ( scalar @term_arr < 2 ){
+	    	$c->log->debug(qq/GEOPOSTCODE MENOR/);
+	    	$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/calles?nombre='.$s);
+	    }
+	    else{
+	    	if ( scalar @term_arr < 3){
+	    			$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/cruces/'.$term_arr[0].'/?nombre='.$term_arr[1]);
+	    	}
+	    	else{
+	    		if ($term_arr[1] =~ /^\d+$/){
+	    			$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/direccion/'.$term_arr[0].'/'.$term_arr[1]);
+	    		}
+	    		else{
+	    			$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/esquina/'.$term_arr[0].'/'.$term_arr[1]);
+	    		}
+	    		$last = 1;
+	    	}
+	    	$c->log->debug(qq/GEOPOSTCODE MAYOR/);
+	    }
+	    $c->log->debug(Dumper($req));
+	    my $res = $ua->request( $req );
+	    $c->log->debug(Dumper($res->decoded_content));
+	    if ( $res->is_success ) {
+
+	    	$c->log->debug(qq/GEOPOSTCODE SUCCESS/);
+	    	
+	    	if ( $last ){
+	    		my $addr_content = JSON->new->utf8->allow_nonref->decode($res->decoded_content);
+	    		$c->log->debug(Dumper($addr_content->{geom}->{coordinates}));
+	    		#transformar coordenadas
+		    	$response->{latitude} = $addr_content->{geom}->{coordinates}[0];
+		    	$response->{longitude} = $addr_content->{geom}->{coordinates}[1];
+		    }
+		    else {
+		    	my $addr_content = JSON->new->utf8->allow_nonref->decode($res->decoded_content);
+		    	$c->log->debug(qq/GEOPOSTCODE ADDR/);
+		    	$c->log->debug(Dumper($addr_content));
+		    	$c->log->debug(ref $addr_content);
+		    	my $addr;
+		        foreach ( @{$addr_content} ) {
+		        	push @addresses, { address => $_->{nombre}, latitude => $_->{codigo}, longitude => '' };
+		        }
+		    }
+	    } 
+	    else {
+	    	$c->log->debug(qq/GEOPOSTCODE FAIL/);
+	    }
+	}
+    $c->log->debug(qq/GEOPOSTCODE FIN/);
+    #$response->{latitude} = '1';
+    $response->{error} = \@addresses; 
+    return $response;
+}
 
 1;

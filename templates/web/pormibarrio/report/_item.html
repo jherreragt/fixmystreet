@@ -1,4 +1,4 @@
-<a class="text" href="[% c.uri_for('/report', problem.id ) %]">
+<a class="text report-link" id="Id-[% problem.id %]" href="[% c.uri_for('/report', problem.id ) %]" onmouseover="bigPIN(this)" onMouseOut="smallPIN(this)">
 	<div class="it-r" id="problem-list-[% problem.id %]">
 		<div class="r-icon r-category-group-[% problem.category_group(c) %]"></div>
 		<div class="it-r-info">	
