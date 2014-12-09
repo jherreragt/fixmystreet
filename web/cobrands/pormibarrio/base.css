@@ -251,12 +251,44 @@ footer{margin-top:1em}
 #fms_pan_zoom_panup,#fms_pan_zoom_pandown,#fms_pan_zoom_panleft,#fms_pan_zoom_panright,#fms_pan_zoom_zoomin,#fms_pan_zoom_zoomout{width:36px !important;height:36px !important;text-indent:-999999px;opacity:0.85;background:url("/cobrands/fixmystreet/images/sprite.png") no-repeat;filter:none !important}
 #fms_pan_zoom_panup:hover,#fms_pan_zoom_pandown:hover,#fms_pan_zoom_panleft:hover,#fms_pan_zoom_panright:hover,#fms_pan_zoom_zoomin:hover,#fms_pan_zoom_zoomout:hover{opacity:1}
 #fms_pan_zoom_zoomworld{display:none !important;visibility:none !important}
-#fms_pan_zoom_panup{background-position:-42px -222px;right:30px !important;left:auto !important;top:0 !important}
-#fms_pan_zoom_pandown{background-position:-42px -282px;right:30px !important;left:auto !important;top:72px !important}
-#fms_pan_zoom_panleft{background-position:-12px -252px;width:48px !important;right:48px !important;left:auto !important;top:36px !important}
-#fms_pan_zoom_panright{background-position:-60px -252px;width:48px !important;right:0 !important;left:auto !important;top:36px !important}
-#fms_pan_zoom_zoomin{background-position:-152px -223px;height:44px !important;left:0 !important;top:0 !important}
-#fms_pan_zoom_zoomout{background-position:-152px -259px;height:44px !important;left:0 !important;top:44px !important}
+#fms_pan_zoom_panup{
+	background-position:-42px -222px;
+	right:30px !important;
+	left:auto !important;
+	top:50px !important
+}
+#fms_pan_zoom_pandown{
+	background-position:-42px -282px;
+	right:30px !important;
+	left:auto !important;
+	top:122px !important
+}
+#fms_pan_zoom_panleft{
+	background-position:-12px -252px;
+	width:48px !important;
+	right:48px !important;
+	left:auto !important;
+	top:86px !important
+}
+#fms_pan_zoom_panright{
+	background-position:-60px -252px;
+	width:48px !important;
+	right:0 !important;
+	left:auto !important;
+	top:86px !important
+}
+#fms_pan_zoom_zoomin{
+	background-position:-152px -223px;
+	height:44px !important;
+	left:0 !important;
+	top:50px !important
+}
+#fms_pan_zoom_zoomout{
+	background-position:-152px -259px;
+	height:44px !important;
+	left:0 !important;
+	top:94px !important
+}
 #sub_map_links{position:absolute;left:0;right:0;bottom:0;z-index:1100;background:#333;background:rgba(0,0,0,0.7);margin:0}
 #sub_map_links a{display:-moz-inline-stack;display:inline-block;vertical-align:middle;*vertical-align:auto;zoom:1;*display:inline;font-size:0.6875em;color:#fff;padding:0.6em 3em 0.5em 1em;background-repeat:no-repeat}
 #sub_map_links a#hide_pins_link{background-image:url("/cobrands/fixmystreet/images/sprite.png");background-position:right -3976px}

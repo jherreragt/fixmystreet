@@ -14,6 +14,7 @@ use FixMyStreet::Geocode::Bing;
 use FixMyStreet::Geocode::Google;
 use FixMyStreet::Geocode::OSM;
 use FixMyStreet::Geocode::Zurich;
+use Data::Dumper;
 
 # lookup STRING CONTEXT
 # Given a user-inputted string, try and convert it into co-ordinates using either
@@ -22,7 +23,7 @@ use FixMyStreet::Geocode::Zurich;
 # used by cobranded versions of the site to diambiguate locations.
 sub lookup {
     my ($s, $c) = @_;
-    my $data = $c->cobrand->geocode_postcode($s);
+    my $data = $c->cobrand->geocode_postcode($s, $c);
     $data = string($s, $c)
         unless $data->{error} || defined $data->{latitude};
     $data->{error} = _('Sorry, we could not find that location.')

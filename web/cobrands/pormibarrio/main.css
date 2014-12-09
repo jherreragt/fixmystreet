@@ -228,6 +228,7 @@ div.s-calles{
 	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	position: absolute;
 	z-index: 2;
+	max-width: 75%;
 }
 
 div.s-calles-nav{
@@ -247,6 +248,18 @@ div.s-calles .pull-left input{
 	margin-bottom: 0;
 	border-radius: 0;
 	padding-left: 62px;
+}
+
+div.s-calles .pull-left{
+	border-bottom: none;
+}
+
+div.s-calles .pull-right{
+	border-bottom: none;
+}
+
+#calle{
+	background: url(images/icon-search.png) 25px 18px no-repeat;
 }
 
 div.s-calles input:focus{
@@ -457,7 +470,7 @@ nav.first-navigation:hover li a span{
 nav.first-navigation li.home a{
 	width:100%;
 	background:url(images/por-mi-barrio-sm.png) no-repeat top center;
-	margin-top:46px;
+	margin-top:66px;
 	text-indent:-9999em;
 	text-align:center;
 	padding:0;
@@ -484,7 +497,7 @@ nav.first-navigation:hover li.home a span{
 }
 
 li.reportar{
-	margin-top:60px;
+	margin-top:30px;
 }
 
 li.reportar a{
@@ -607,7 +620,7 @@ div.sub{
 	position:absolute;
 	width:440px;
 	height:100%;
-	top:0;
+	top:54px;
 	left:81px;
 	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -662,7 +675,7 @@ div.it-r{
 }
 
 div.c-t {
-    padding: 55px 40px 25px;
+    padding: 16px 40px 25px;
 }
 
 div.it-r:hover, div.rl div.active{
@@ -1612,6 +1625,14 @@ span.name{
 }
 
 /*PROFILE----------------------------------------------------------------*/
+
+.icon {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	fill: currentColor;
+}
+
 div.user-profile{
 	z-index:11
 
@@ -1775,62 +1796,6 @@ div.respuesta p a:hover{
 	text-decoration:none
 }
 
-
-/*MEDIAQUERIES------------------------------------------------------------*/
-@media (max-width: 967px) {
-	/*INTRO*/
-	div.c-intro{
-		padding-left:20px;
-		padding-right:20px;
-	}
-	
-	div.c-intro p{
-		width:auto		
-	}
-	
-	div.step{
-		float:none;
-		margin:0 auto 4rem;		
-	}
-	
-	div.c-buttons-intro{
-		margin-top:3rem;		
-	}
-
-}
-
-@media (max-width: 540px) {
-	/*INTRO*/
-	.btn-intro{
-		float:none;
-		margin:15px auto;
-		clear:both;
-		display:block;
-		width:60%		
-	}
-	
-	.footer{
-		position:relative;
-		height:auto;
-		margin-top:40px		
-	}
-	
-	body.intro{
-		margin-bottom:25px		
-	}
-	
-	
-}
-
-@media (max-width: 480px) {
-	/*INTRO*/
-	.btn-intro{
-		width:100%		
-	}
-	
-}
-
-
 /*TOOLTIPS y PINS*/
 
 .tooltip{
@@ -1920,48 +1885,11 @@ a.navbar-brand, li.reportar-small {
 	padding-right:0;	
 }
 
-
-
-
 /*MEDIAQUERIES------------------------------------------------------------*/
 
-/*@media (max-width: 1200px) {
-	div.container-report{
-		margin-left:0		
-	}
-
-	div.report{
-		width:469px;
-		border-radius:0;
-		top:32.5%;
-		margin-left:0;
-		left:81px;
-		-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	}
-	
-	div.report-medium{
-		left:183px;	
-		-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	}
-	
-	div.report-medium-expand{
-		left:603px;	
-		-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		
-	}
-	
-	div.report-medium-con{
-		left:501px;	
-		-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		
-	}
-
-}*/
-
+div.content-vertical{
+	font-size: 12px;
+}
 
 @media (max-width: 967px) {
 	
@@ -1969,6 +1897,7 @@ a.navbar-brand, li.reportar-small {
 	div.c-intro{
 		padding-left:20px;
 		padding-right:20px;
+		padding-top:12rem;
 	}
 	
 	div.c-intro p{
@@ -1987,6 +1916,35 @@ a.navbar-brand, li.reportar-small {
 }
 
 @media (max-width: 860px) {
+	div.top-container {
+		height: 55px;
+		top: 90px;
+	}
+	
+	#info-user{
+		display:none;	
+	}
+	
+	div.s-calles {
+		padding-left: 0;
+		width:100% !important;
+		max-width: 100%;
+	}
+	
+	div.s-calles .pull-left {
+		width: 75%;
+	}
+	
+	.btn-search {
+		margin-top: 9px;
+		margin-right:20px;
+	}
+	
+	ul.l-calles {
+		padding-left: 0;
+	}
+
+	/*menu*/
 	.navbar-toggle{
 		display:block;
 		float:left;
@@ -2015,8 +1973,17 @@ a.navbar-brand, li.reportar-small {
 		text-indent:inherit!important		
 	}
 	
+	nav.first-navigation{
+		overflow: visible;
+		background: #1e2e3d;
+	}
+	
+	nav.first-navigation li {
+		border-bottom: none;
+	}
+
 	nav.first-navigation:hover ul.help-info li a{
-		padding-left:55px;!important
+		padding-left:55px;
 	}
 	
 	li.data a, li.my-society a, li.avina a{
@@ -2084,8 +2051,8 @@ a.navbar-brand, li.reportar-small {
 	
 	li.reportar-small{
 		position: absolute;
-		right: 23px;
-		top: 19px;
+		right: 0;
+		top: 0;
 		margin-top:0;
 		text-indent:-9999em;
 		display:block;
@@ -2108,7 +2075,7 @@ a.navbar-brand, li.reportar-small {
 	div.sub{
 		opacity:1;
 		width:100%;
-		margin-top:80px;
+		padding-top:80px;
 		left:0;		
 	}
 	
@@ -2151,18 +2118,81 @@ a.navbar-brand, li.reportar-small {
 		position:relative;
 		height:auto;
 		margin-top:40px		
-	}
-	
-	body.intro{
-		margin-bottom:25px		
-	}
-	
-	
+	}	
 }
 
 @media (max-width: 480px) {
 	/*INTRO*/
 	.btn-intro{
 		width:100%		
-	}	
+	}
+	/* - */
+	nav.first-navigation, nav.first-navigation:hover {
+		height: 60px;
+		padding-top: 8px;
+	}
+	
+	nav.first-navigation li.reportar-small a, nav.first-navigation:hover li.reportar-small a {
+		width: 70px;
+		height: 60px!important;
+	}
+	
+	nav.first-navigation li.reportar-small a .icon {
+		top: 10px;
+		left: 7px;
+		width: 60px;
+		height: 41px;
+	}
+	
+	.navbar-toggle {
+		margin: 0;
+	}
+	
+	.navbar-toggle .icon-bar {
+		width: 31px;
+		height: 4px;
+		margin-bottom: 6px;
+	}
+	
+	.navbar-brand {
+		width: 140px;
+		margin: 0rem auto 0;
+		height: 52px;
+	}
+	/* search */
+	div.top-container {
+		top: 60px;
+	}
+
+	div.s-calles .pull-left {
+		width: 60%;
+	}
+	
+	div.s-calles .form-group {
+		margin-bottom: 0;
+	}
+	
+	/* reportar */
+	div.report {
+		margin-top: 90px;
+	}
+	/* profile */
+	div.sub {
+		padding-top: 60px;
+	}
+	
+	.btn-comentar {
+		padding: 6px 10px;
+		font-size: 0.750em;
+	}
+	
+	div.edit-profile .btn-social {
+		font-size: 0.938em;
+	}
+	
+	div.it-r div.it-r-info {
+		width: 65%;
+	}
+	
 }
+

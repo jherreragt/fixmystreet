@@ -181,7 +181,7 @@ sub geocode_postcode {
 	    			$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/cruces/'.$term_arr[0].'/?nombre='.$term_arr[1]);
 	    	}
 	    	else{
-	    		if ($term_arr[1] =~ /^\d+$/){
+	    		if ($term_arr[2] eq 'door'){
 	    			$req = HTTP::Request->new( GET => 'http://www.montevideo.gub.uy/ubicacionesRestProd/direccion/'.$term_arr[0].'/'.$term_arr[1]);
 	    		}
 	    		else{
@@ -189,7 +189,7 @@ sub geocode_postcode {
 	    		}
 	    		$last = 1;
 	    	}
-	    	$c->log->debug(qq/GEOPOSTCODE MAYOR/);
+	    	$c->log->debug('GEOPOSTCODE MAYOR: '.$term_arr[2]);
 	    }
 	    $c->log->debug(Dumper($req));
 	    my $res = $ua->request( $req );

@@ -34,6 +34,20 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		opacity: 1,
 	});
 
+	$('div.scrolled-95').slimScroll({
+		position: 'right',
+		height: '95%',
+		railVisible: true,
+		alwaysVisible: true,
+		railOpacity:1,
+		distance:10,
+		railColor: '',
+		color: '#ACACAC',
+		size:'9px',
+		borderRadius:4,
+		opacity: 1,
+	});
+
 	$('div.scrolled-100').slimScroll({
 		position: 'right',
 		height: '100%',
@@ -110,6 +124,10 @@ $( document ).ready(function() {
 	$('.reports-back').click(function(e){
 		e.preventDefault();
 		$('#side').hide();
+	});
+	$('.btn-search').click(function(e){
+		e.preventDefault();
+		streetLocateSubmit('none');
 	});
 });
 
@@ -230,7 +248,8 @@ function searchLocationAjax(event, obj){
 							$(items).appendTo("ul.l-calles");
 						}
 						else{
-							$.getJSON( "ajax/geocode?term="+code.val()+','+obj.value, function( data ) {
+							$('#esquina').css("background", "url(/cobrands/pormibarrio/images/Loading.gif) 25px 18px no-repeat");
+							$.getJSON( "/ajax/geocode?term="+code.val()+','+obj.value, function( data ) {
 								//vaciamos el array
 								listaCalles[1] = [];
 								listaCalles[1][0] = obj.value;
@@ -240,6 +259,7 @@ function searchLocationAjax(event, obj){
 							  	});
 								$('ul.l-calles').empty();
 								$(items).appendTo("ul.l-calles");
+								$('#esquina').css("background", "url(/cobrands/pormibarrio/images/icon-search.png) 25px 18px no-repeat");
 							});
 						}
 					}
@@ -247,10 +267,8 @@ function searchLocationAjax(event, obj){
 			}
 			else {
 				if ( ( listaCalles[0] != undefined ) && ( listaCalles[0].length > 1 ) && (listaCalles[0][0] == obj.value.substring(0, listaCalles[0][0].length) ) ){
-					console.log(listaCalles[0]);
 					//quitamos el primer termino
 					listaCalles[0].shift();
-					console.log(listaCalles[0]);
 					$.each( listaCalles[0], function( addr_key, addr_obj ) {
 						if ( addr_obj.address.indexOf( obj.value.toUpperCase() ) >= 0){
 							items += "<li id='" + addr_obj.lat + "' class='pick-street' onclick='assignStreetValue(this)' >" + addr_obj.address + "</li>";
@@ -261,12 +279,12 @@ function searchLocationAjax(event, obj){
 				  	});
 				  	//agregamoe el término al comienzo
 				  	listaCalles[0].splice(0, 0, obj.value);
-				  	console.log(listaCalles[0]);
 					$('ul.l-calles').empty();
 					$(items).appendTo("ul.l-calles");
 				}
 				else {
-					$.getJSON( "ajax/geocode?term="+obj.value, function( data ) {
+					$('#calle').css("background", "url(/cobrands/pormibarrio/images/Loading.gif) 25px 18px no-repeat");
+					$.getJSON( "/ajax/geocode?term="+obj.value, function( data ) {
 						listaCalles[0] = [];
 						listaCalles[0][0] = obj.value;
 					  	$.each( data.locations, function( key, obj ) {
@@ -275,6 +293,7 @@ function searchLocationAjax(event, obj){
 					  	});
 						$('ul.l-calles').empty();
 						$(items).appendTo("ul.l-calles");
+						$('#calle').css("background", "url(/cobrands/pormibarrio/images/icon-search.png) 25px 18px no-repeat");
 					});
 				}
 			}
@@ -292,35 +311,49 @@ function streetLocate(obj){
 	$('input#esquina').val($(obj).text());
 	$('input#second-street-code').val(obj.id);
 	$('ul.l-calles').empty();
-	var url = "ajax/geocode?term="+ $('input#main-street-code').val() +','+obj.id+', final';
-	$.getJSON( url, function( data ) {
-		var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
-		var lonlat = new OpenLayers.LonLat(latlon[1], latlon[0]);
-		lonlat.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
-		//setTimeout(function(){fixmystreet.map.zoomTo(8)},500);
-		fixmystreet.map.panTo(lonlat);
-		setTimeout(function(){fixmystreet.map.zoomTo(3)},500);
-		//console.log(utm2LatLong(data.latitude, data.longitude, '21H'));
-		//var pix = new OpenLayers.Pixel(-56.20021377039099, -34.90939293505055)
-		//var latlon = fixmystreet.map.getLonLatFromViewPortPx(pix)
-		//fixmystreet.map.panTo(latlon)
-	});
-}
-function streetLocateSubmit(obj){
-	if ( $('input#main-street-code').val() && $('input#second-street-code').val() ){
-		var url = "ajax/geocode?term="+ $('input#main-street-code').val() +','+$('input#second-street-code').val()+', final';
-		$.getJSON( url, function( data ) {
-			var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
-			var lonlat = new OpenLayers.LonLat(latlon[1], latlon[0]);
-			lonlat.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
-			fixmystreet.map.panTo(lonlat);
-			});
+	if ( isNaN(obj.innerHTML) ){
+		var url = "/ajax/geocode?term="+ $('input#main-street-code').val() +','+obj.id+',corner';
 	}
 	else {
-		if ( !$('input#main-street-code').val() )
-			$('input#main-street-code').addClass('street-error');
-		if ( !$('input#second-street-code').val() )
-			$('input#main-street-code').addClass('street-error');
+		var url = "/ajax/geocode?term="+ $('input#main-street-code').val() +','+obj.id+',door';
+	}
+	streetLocateSubmit(url);
+}
+function streetLocateSubmit(url){
+	if ( $('input#main-street-code').val() && $('input#second-street-code').val() ){
+		if (url == 'none')
+			url = "/ajax/geocode?term="+ $('input#main-street-code').val() +','+$('input#second-street-code').val()+', final';
+		if (typeof fixmystreet != "undefined"){
+			setTimeout(function(){fixmystreet.map.zoomTo(2)},500);
+			$.getJSON( url, function( data ) {
+				var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
+				var lonlat = new OpenLayers.LonLat(latlon[1], latlon[0]);
+				lonlat.transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
+				fixmystreet.map.panTo(lonlat);
+				setTimeout(function(){fixmystreet.map.zoomTo(3)},500);
+			});
+		}
+		else{
+			$.getJSON( url, function( data ) {
+				var latlon = utm2LatLong(data.latitude, data.longitude, '21H');
+				console.log(latlon);
+				window.location.href = "/around?latitude="+latlon[0]+";longitude="+latlon[1]+"&zoom=3";
+			});
+		}
+
+	}
+	else {
+		$('ul.l-calles').empty();
+		if ( !$('input#main-street-code').val() ){
+			$('input#calle').addClass('street-error');
+			items = "<li class='pick-street-error'>Debe ingresar una calle primero</li>";
+			$(items).appendTo("ul.l-calles");
+		}
+		if ( !$('input#second-street-code').val() ){
+			$('input#esquina').addClass('street-error');
+			items = "<li class='pick-street-error'>Debe ingresar una una esquina o número</li>";
+			$(items).appendTo("ul.l-calles");
+		}
 	}
 }
 

@@ -310,7 +310,7 @@ sub location_autocomplete : Path('/ajax/geocode') {
     }
     # we want the match even if there's no ambiguity, so recommendation doesn't
     # disappear when it's the last choice being offered in the autocomplete.
-    $c->stash->{allow_single_geocode_match_strings} = 1;
+    #$c->stash->{allow_single_geocode_match_strings} = 1;
     return $self->_geocode( $c, $c->req->param('term') );
 }
 
@@ -333,7 +333,6 @@ sub _geocode : Private {
         FixMyStreet::Geocode::lookup( $c->req->param('term'), $c );
 
     my ($response, @addresses, @locations);
-
     if ( $lat && $long ) {
         $response = { latitude => $lat, longitude => $long };
     } else {
