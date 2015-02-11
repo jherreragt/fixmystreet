@@ -42,12 +42,14 @@ $(function(){
     // Form validation
 
     // FIXME - needs to use translated string
-    jQuery.validator.addMethod('validCategory', function(value, element) {
-        return this.optional(element) || value != '-- Pick a category --'; }, translation_strings.category );
+    if(typeof jQuery.validator != 'undefined'){
+        jQuery.validator.addMethod('validCategory', function(value, element) {
+            return this.optional(element) || value != '-- Pick a category --'; }, translation_strings.category );
 
-    jQuery.validator.addMethod('validName', function(value, element) {
-        var validNamePat = /\ba\s*n+on+((y|o)mo?u?s)?(ly)?\b/i;
-        return this.optional(element) || value.length > 5 && value.match( /\S/ ) && value.match( /\s/ ) && !value.match( validNamePat ); }, translation_strings.category );
+        jQuery.validator.addMethod('validName', function(value, element) {
+            var validNamePat = /\ba\s*n+on+((y|o)mo?u?s)?(ly)?\b/i;
+            return this.optional(element) || value.length > 5 && value.match( /\S/ ) && value.match( /\s/ ) && !value.match( validNamePat ); }, translation_strings.category );
+    }
 
     var form_submitted = 0;
     var submitted = false;

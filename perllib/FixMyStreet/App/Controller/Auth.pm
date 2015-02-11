@@ -103,7 +103,7 @@ sub email_sign_in : Private {
     my $raw_email = lc( $c->req->param('email') || '' );
 
     my $email_checker = Email::Valid->new(
-        -mxcheck  => 1,
+        #-mxcheck  => 1,
         -tldcheck => 1,
         -fqdn     => 1,
     );
@@ -115,11 +115,22 @@ sub email_sign_in : Private {
           $raw_email ? $email_checker->details : 'missing';
         return;
     }
-
+    
     my $user_params = {};
-    $user_params->{password} = $c->req->param('password_register')
-        if $c->req->param('password_register');
+    $user_params->{email} = $good_email if $good_email;
+    $user_params->{name} = $c->req->param('name') if $c->req->param('name');
+    $user_params->{password} = $c->req->param('password_register') if $c->req->param('password_register');
+    $user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');
     my $user = $c->model('DB::User')->new( $user_params );
+
+    $c->stash->{field_errors} ||= {};
+    $c->stash->{user} = $user;
+	my %field_errors = $c->cobrand->user_check_for_errors( $c );
+
+	if ( scalar keys %field_errors ){
+		$c->stash->{field_errors} = \%field_errors;
+		return;
+	}
 
     my $token_obj = $c->model('DB::Token')    #
       ->create(
@@ -130,6 +141,7 @@ sub email_sign_in : Private {
                 r => $c->req->param('r'),
                 name => $c->req->param('name'),
                 password => $user->password,
+                identity_document => $c->req->param('identity_document'),
             }
         }
       );
@@ -137,6 +149,151 @@ sub email_sign_in : Private {
     $c->stash->{token} = $token_obj->token;
     $c->send_email( 'login.txt', { to => $good_email } );
     $c->stash->{template} = 'auth/token.html';
+}
+
+=head2 social_signup
+
+Asks the user to confirm data returned from facebook/twitter and signs up the user.
+TODO: user to-be information is received in the session. i'm sure there is a better way to do this :(
+
+=cut
+
+sub social_signup : Path('/auth/social_signup') : Args(0) {
+	my ( $self, $c ) = @_;
+
+	my $name = $c->req->param('name') if $c->req->param('name');
+	my $email = $c->req->param('email') if $c->req->param('email');
+	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
+	my $password = $c->req->param('password') if $c->req->param('password');
+	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
+	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
+	my $picture_url = $c->req->param('picture_url') if $c->req->param('picture_url');
+	
+	my $new_user = $c->model('DB::User')->new({ 
+		name => $name,
+		email => $email,
+		identity_document => $identity_document,
+		facebook_id => $facebook_id,
+		twitter_id => $twitter_id,
+		picture_url => $picture_url,
+	});
+
+	$c->stash->{user} = $new_user;
+		
+	$c->stash->{field_errors} ||= {};	
+	my %field_errors = $c->cobrand->user_check_for_errors( $c );
+
+	if ( !scalar keys %field_errors ) {
+		my $user = $c->model('DB::User')->find_or_create({ email => $new_user->email });
+		
+		if ( $user ) {
+			my $token_data = {
+				id => $user->id, 
+				facebook_id => $new_user->facebook_id,
+				twitter_id => $new_user->twitter_id,
+				name => $new_user->name,
+				email => $new_user->email,
+				#password => $password,
+				identity_document => $new_user->identity_document,
+				picture_url => $new_user->picture_url,
+			};
+			if ( $password ) {
+				$token_data->{password} = $password;
+			}
+
+			my $token_social_sign_up = $c->model("DB::Token")->create( {
+				scope => 'email_sign_in/social',
+				data => {
+					%$token_data,
+					return_url => $c->session->{oauth}{return_url},
+					detach_to => $c->session->{oauth}{detach_to},
+					detach_args => $c->session->{oauth}{detach_args},
+				}
+			} );
+		
+			$c->stash->{token} = $token_social_sign_up->token;
+			$c->send_email( 'login.txt', { to => $new_user->email } );
+			$c->stash->{template} = 'auth/token.html';
+		}
+	} else {
+		$c->stash->{field_errors} = \%field_errors;
+	}
+}
+
+=head2 token
+
+Handle the 'email_sign_in' tokens. Find the account for the email address
+(creating if needed), authenticate the user and delete the token.
+
+=cut
+
+sub token : Path('/M') : Args(1) {
+    my ( $self, $c, $url_token ) = @_;
+
+	# Sign out in case we are another user
+	$c->logout();
+
+    # retrieve the token
+    my $token_obj = $url_token
+      ? $c->model('DB::Token')->find( {
+          scope => 'email_sign_in', token => $url_token
+        } )
+      : undef;
+
+	if ( $token_obj ) {
+		# find or create the user related to the token.
+		my $data = $token_obj->data;
+		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
+		$user->name( $data->{name} ) if $data->{name};
+		$user->password( $data->{password}, 1 ) if $data->{password};
+		$user->identity_document( $data->{identity_document}, 1 ) if $data->{identity_document};
+		$user->phone( $data->{phone}, 1 ) if $data->{phone};
+		$user->update;
+
+		$c->authenticate( { email => $user->email }, 'no_password' );
+		$c->set_session_cookie_expire(0);
+
+		$token_obj->delete;
+
+		# send the user to their page
+		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
+    
+	} else {
+		# retrieve the social token or return
+		my $token_obj = $url_token
+		  ? $c->model('DB::Token')->find( {
+			  scope => 'email_sign_in/social', token => $url_token
+			} )
+		  : undef;
+
+		if ( !$token_obj ) {
+			$c->stash->{token_not_found} = 1;
+			return;
+		}
+			
+		my $data = $token_obj->data;
+		
+		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
+		$user->name( $data->{name} );
+		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
+		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
+		$user->identity_document( $data->{identity_document} );
+		$user->password( $data->{password} ) if $data->{password};
+		$user->picture_url( $data->{picture_url} );
+		$user->update;
+			
+		$c->authenticate( { email => $data->{email} }, 'no_password' );
+		$c->set_session_cookie_expire(0);
+
+		$token_obj->delete;
+
+		## send the user to their page
+		if ( $data->{detach_to} ) {
+			$c->detach( $data->{detach_to}, $data->{detach_args} );
+		} else {
+			$c->detach( 'redirect_on_signin', [ $data->{return_url} ] );
+		}
+	}
 }
 
 =head2 facebook_sign_in
@@ -331,149 +488,6 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
 		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
-	}
-}
-
-=head2 social_signup
-
-Asks the user to confirm data returned from facebook/twitter and signs up the user.
-TODO: user to-be information is received in the session. i'm sure there is a better way to do this :(
-
-=cut
-
-sub social_signup : Path('/auth/social_signup') : Args(0) {
-	my ( $self, $c ) = @_;
-
-	my $name = $c->req->param('name') if $c->req->param('name');
-	my $email = $c->req->param('email') if $c->req->param('email');
-	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
-	my $password = $c->req->param('password') if $c->req->param('password');
-	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
-	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
-	my $picture_url = $c->req->param('picture_url') if $c->req->param('picture_url');
-	
-	my $new_user = $c->model('DB::User')->new({ 
-		name => $name,
-		email => $email,
-		identity_document => $identity_document,
-		facebook_id => $facebook_id,
-		twitter_id => $twitter_id,
-		picture_url => $picture_url,
-	});
-
-	$c->stash->{user} = $new_user;
-		
-	$c->stash->{field_errors} ||= {};	
-	my %field_errors = $c->cobrand->user_check_for_errors( $c );
-
-	if ( !scalar keys %field_errors ) {
-		my $user = $c->model('DB::User')->find_or_create({ email => $new_user->email });
-		
-		if ( $user ) {
-			my $token_data = {
-				id => $user->id, 
-				facebook_id => $new_user->facebook_id,
-				twitter_id => $new_user->twitter_id,
-				name => $new_user->name,
-				email => $new_user->email,
-				#password => $password,
-				identity_document => $new_user->identity_document,
-				picture_url => $new_user->picture_url,
-			};
-			if ( $password ) {
-				$token_data->{password} = $password;
-			}
-
-			my $token_social_sign_up = $c->model("DB::Token")->create( {
-				scope => 'email_sign_in/social',
-				data => {
-					%$token_data,
-					return_url => $c->session->{oauth}{return_url},
-					detach_to => $c->session->{oauth}{detach_to},
-					detach_args => $c->session->{oauth}{detach_args},
-				}
-			} );
-		
-			$c->stash->{token} = $token_social_sign_up->token;
-			$c->send_email( 'login.txt', { to => $new_user->email } );
-			$c->stash->{template} = 'auth/token.html';
-		}
-	} else {
-		$c->stash->{field_errors} = \%field_errors;
-	}
-}
-
-=head2 token
-
-Handle the 'email_sign_in' tokens. Find the account for the email address
-(creating if needed), authenticate the user and delete the token.
-
-=cut
-
-sub token : Path('/M') : Args(1) {
-    my ( $self, $c, $url_token ) = @_;
-
-	# Sign out in case we are another user
-	$c->logout();
-
-    # retrieve the token
-    my $token_obj = $url_token
-      ? $c->model('DB::Token')->find( {
-          scope => 'email_sign_in', token => $url_token
-        } )
-      : undef;
-
-	if ( $token_obj ) {
-		# find or create the user related to the token.
-		my $data = $token_obj->data;
-		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
-		$user->name( $data->{name} ) if $data->{name};
-		$user->password( $data->{password}, 1 ) if $data->{password};
-		$user->update;
-
-		$c->authenticate( { email => $user->email }, 'no_password' );
-		$c->set_session_cookie_expire(0);
-
-		$token_obj->delete;
-
-		# send the user to their page
-		$c->detach( 'redirect_on_signin', [ $data->{r} ] );
-    
-	} else {
-		# retrieve the social token or return
-		my $token_obj = $url_token
-		  ? $c->model('DB::Token')->find( {
-			  scope => 'email_sign_in/social', token => $url_token
-			} )
-		  : undef;
-
-		if ( !$token_obj ) {
-			$c->stash->{token_not_found} = 1;
-			return;
-		}
-			
-		my $data = $token_obj->data;
-		
-		my $user = $c->model('DB::User')->find_or_create( { email => $data->{email} } );
-		$user->name( $data->{name} );
-		$user->facebook_id( $data->{facebook_id} ) if $data->{facebook_id};
-		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
-		$user->identity_document( $data->{identity_document} );
-		$user->password( $data->{password} ) if $data->{password};
-		$user->picture_url( $data->{picture_url} );
-		$user->update;
-			
-		$c->authenticate( { email => $data->{email} }, 'no_password' );
-		$c->set_session_cookie_expire(0);
-
-		$token_obj->delete;
-
-		## send the user to their page
-		if ( $data->{detach_to} ) {
-			$c->detach( $data->{detach_to}, $data->{detach_args} );
-		} else {
-			$c->detach( 'redirect_on_signin', [ $data->{return_url} ] );
-		}
 	}
 }
 
