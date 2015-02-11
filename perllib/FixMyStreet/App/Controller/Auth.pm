@@ -103,7 +103,7 @@ sub email_sign_in : Private {
     my $raw_email = lc( $c->req->param('email') || '' );
 
     my $email_checker = Email::Valid->new(
-        #-mxcheck  => 1,
+        -mxcheck  => 1,
         -tldcheck => 1,
         -fqdn     => 1,
     );
@@ -125,12 +125,12 @@ sub email_sign_in : Private {
 
     $c->stash->{field_errors} ||= {};
     $c->stash->{user} = $user;
-	my %field_errors = $c->cobrand->user_check_for_errors( $c );
-
-	if ( scalar keys %field_errors ){
-		$c->stash->{field_errors} = \%field_errors;
-		return;
-	}
+    
+    my %field_errors = $c->cobrand->user_check_for_errors( $c );
+    if ( scalar keys %field_errors ){
+	$c->stash->{field_errors} = \%field_errors;
+	return;
+    }
 
     my $token_obj = $c->model('DB::Token')    #
       ->create(
