@@ -112,7 +112,7 @@ $( document ).ready(function() {
 	});
 	$('.registrate-back').click(function(e){
 		e.preventDefault();
-		var sesCont = $('.bloque-sesion .form-group').first();
+		var sesCont = $('.bloque-sesion .form-group')[1];
 		$('#form_email').prependTo(sesCont);
 		$('div.bloque-registro').slideUp();
 		$('div.bloque-sesion').slideDown();	
@@ -128,6 +128,27 @@ $( document ).ready(function() {
 	$('.btn-search').click(function(e){
 		e.preventDefault();
 		streetLocateSubmit('none');
+	});
+	//ACTIVAR SEGUIR REPORTE Y REPORTAR ABUSO
+	$( ".follow-report" ).click(function() {
+	  $( this ).toggleClass( "follow-report-active" );
+	  $( '.reportar-abuso' ).removeClass( "reportar-abuso-active" );
+	  $( '.follow-report-content' ).slideToggle();
+	  $( '.reportar-abuso-content' ).slideUp();
+	});
+	
+	$( ".reportar-abuso" ).click(function() {
+	  $( this ).toggleClass( "reportar-abuso-active" );
+	  $( '.follow-report' ).removeClass( "follow-report-active" );
+	  $( '.reportar-abuso-content' ).slideToggle();
+	  $( '.follow-report-content' ).slideUp();
+	});
+
+	$( ".reportar-hide" ).click(function() {
+	  $( this ).toggleClass( "reportar-hide-active" );
+	  $( '.follow-report' ).removeClass( "follow-report-active" );
+	  $( '.reportar-hide-content' ).slideToggle();
+	  $( '.follow-report-content' ).slideUp();
 	});
 });
 

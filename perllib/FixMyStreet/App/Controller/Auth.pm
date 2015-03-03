@@ -111,8 +111,7 @@ sub email_sign_in : Private {
     my $good_email = $email_checker->address($raw_email);
     if ( !$good_email ) {
         $c->stash->{email} = $raw_email;
-        $c->stash->{email_error} =
-          $raw_email ? $email_checker->details : 'missing';
+        $c->stash->{email_error} = $raw_email ? $email_checker->details : 'missing';
         return;
     }
     
@@ -121,6 +120,7 @@ sub email_sign_in : Private {
     $user_params->{name} = $c->req->param('name') if $c->req->param('name');
     $user_params->{password} = $c->req->param('password_register') if $c->req->param('password_register');
     $user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');
+    $user_params->{phone} = $c->req->param('phone') if $c->req->param('phone');
     my $user = $c->model('DB::User')->new( $user_params );
 
     $c->stash->{field_errors} ||= {};
@@ -141,6 +141,7 @@ sub email_sign_in : Private {
                 r => $c->req->param('r'),
                 name => $c->req->param('name'),
                 password => $user->password,
+                phone =>  $c->req->param('phone'),
                 identity_document => $c->req->param('identity_document'),
             }
         }
@@ -165,6 +166,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my $email = $c->req->param('email') if $c->req->param('email');
 	my $identity_document = $c->req->param('identity_document') if $c->req->param('identity_document');
 	my $password = $c->req->param('password') if $c->req->param('password');
+	my $phone = $c->req->param('phone') if $c->req->param('phone');
 	my $facebook_id = $c->req->param('facebook_id') if $c->req->param('facebook_id');
 	my $twitter_id = $c->req->param('twitter_id') if $c->req->param('twitter_id');
 	my $picture_url = $c->req->param('picture_url') if $c->req->param('picture_url');
@@ -173,6 +175,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 		name => $name,
 		email => $email,
 		identity_document => $identity_document,
+		phone => $phone,
 		facebook_id => $facebook_id,
 		twitter_id => $twitter_id,
 		picture_url => $picture_url,
@@ -194,6 +197,7 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 				name => $new_user->name,
 				email => $new_user->email,
 				#password => $password,
+				phone => $new_user->phone,
 				identity_document => $new_user->identity_document,
 				picture_url => $new_user->picture_url,
 			};
@@ -279,6 +283,7 @@ sub token : Path('/M') : Args(1) {
 		$user->twitter_id( $data->{twitter_id} ) if $data->{twitter_id};
 		$user->identity_document( $data->{identity_document} );
 		$user->password( $data->{password} ) if $data->{password};
+		$user->phone( $data->{phone} ) if $data->{phone};
 		$user->picture_url( $data->{picture_url} );
 		$user->update;
 			

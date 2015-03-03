@@ -51,6 +51,9 @@ a.btn, a.btn:visited{
 	overflow: auto;
 }
 
+.container.slimed{
+	overflow: hidden;
+}
 .overlay{
 	position: absolute;
 	width: 100%;
@@ -1177,20 +1180,36 @@ div.actions li a {
     padding: 0 0 5px 27px;
 }
 
-a.follow-report{
-	background:url(images/icon-follow.png) no-repeat left top
+.follow-report{
+	background:url(images/icon-follow.png) no-repeat left top;
+	color: #7d7d7d;
+	font-size: 15px;
+	padding: 0 0 5px 27px;
+	border:none;
 }
 
-a.follow-report:active{
+.follow-report:focus{
+	outline:none;
+}
+
+.follow-report-active{
 	background:url(images/icon-follow-active.png) no-repeat left top;
 	color:#1fb384!important;
 }
 
-a.reportar-abuso{
-	background: url(images/icon-abuse.png) no-repeat left top
+.reportar-abuso, .reportar-hide{
+	background: url(images/icon-abuse.png) no-repeat left top;
+	color: #7d7d7d;
+	font-size: 15px;
+	padding: 0 0 5px 27px;
+	border:none;
 }
 
-a.reportar-abuso:active{
+.reportar-abuso:focus, .reportar-hide:focus{
+	outline:none;
+}
+
+.reportar-abuso-active, .reportar-hide-active{
 	background: url(images/icon-abuse-active.png) no-repeat left top;
 	color:#fc4349!important
 }
@@ -1199,10 +1218,22 @@ div.actions ul li a:hover{
 	text-decoration:none;
 }
 
+.follow-report-content, .reportar-abuso-content, .reportar-hide-content{
+	padding: 20px 40px;
+	border: #ebebeb solid 1px;
+	border-radius: 3px;
+	margin: 20px 0;
+	display:none;
+	width: 100%;
+}
+
+.follow-report-content p, .reportar-abuso-content p{
+	padding-bottom:10px;
+}
+
 div.share {
-    clear: both;
-    float: left;
-    margin-top: 10px;
+    float: right;
+    margin-top: 3px;
 }
 
 div.actions li.share {
@@ -1253,8 +1284,13 @@ div.c-form-report div.ir{
 }
 
 .form-group{
+	/*margin-bottom:30px;*/
+	/*border-bottom: #223241 solid 1px;*/
+	position: relative;
+}
+
+.mas-padding{
 	margin-bottom:30px;
-	border-bottom: #223241 solid 1px;
 }
 
 .form-group label{
@@ -1478,6 +1514,7 @@ a.green:hover{
 /*LOGIN-------------------------------------------------------------------------*/
 div.login{
 	background:rgba(19,30,41,0.96);
+	color: #7D7D7D;
 }
 
 div.login div.ir{
@@ -1508,8 +1545,6 @@ font-size: 1em;
 }
 
 div.social-buttons{
-	border-bottom:#223241 solid 1px;
-	padding-bottom:20px;
 	margin-bottom:25px
 }
 

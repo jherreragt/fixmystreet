@@ -20,27 +20,62 @@
 		<!--REPORT-->
 		<div class="report">
 			<div id="update-display" class="info-report scrolled-report">
-			
                 [% INCLUDE 'report/_main.html' %]
                 [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
                 <div class="actions">
                     <ul class="actions">
-                        <li>
-                            <a class="follow-report" target="_blank" href="[% c.uri_for( '/alert/subscribe', { id => problem.id } ) %]">[% loc('Get updates' ) %]</a>
-                        </li>
+                        <li><button type="button" class="follow-report">[% loc('Get updates' ) %]</button></li>
                         [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
                             <li>
-                                <a class="reportar-abuso" target="_blank" href="/report/delete/[% problem.id %]">Ocultar</a>
+                                <button type="button" class="reportar-hide">[% loc('Hide' ) %]</button>
                             </li>
                         [% ELSE %]
                             <li>
-                                <a class="reportar-abuso" target="_blank" href="[% c.uri_for( '/contact', { id => problem.id } ) %]">[% loc('Report abuse' ) %]</a>
+                                <button type="button" class="reportar-abuso">[% loc('Report abuse' ) %]</button>
                             </li>
                         [% END %]
-                        <li class="share">
-                            <div class="addthis_sharing_toolbox"></div>
-                        </li>
                     </ul>
+                    <div class="share">
+                        <div class="addthis_sharing_toolbox"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="follow-report-content user-info">
+                        <form action="[% c.uri_for( '/alert/subscribe' ) %]" method="post" id="email_alert_box">
+                            <p>[% loc('Receive email when updates are left on this problem.' ) %]</p>
+                            <div class="form-group">
+                                <input class="form-control"type="email" name="rznvy" id="alert_rznvy" value="[% email | html %]" size="30" placeholder="[% loc('Email') %]">
+                                <input type="hidden" name="id" value="[% problem.id %]">
+                                <input type="hidden" name="type" value="updates">
+                                <button class="btn btn-sky btn-small btn-comentar" type="submit">[% loc('Subscribe') %]</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div style="" class="reportar-abuso-content user-info">
+                        [% INCLUDE 'errors.html' %]
+                        <form method="post" action="/contact/submit" class="validate">
+                            <p>[% loc('You are reporting the following problem report for being abusive, containing personal information, or similar:') %]</p>
+                            <input type="hidden" name="id" value="[% problem.id %]">
+                            <div class="form-group">
+                                <input type="text" class="required form-control" name="name" id="form_name" value="[% form_name | html %]" size="30" placeholder="[% loc('Name') %]">
+                                [% IF field_errors.name %]
+                                   <div class="error-m">[% field_errors.name %]</div>
+                                [% END %]
+                                <input type="text" class="required email form-control" name="em" id="form_email" value="[% em | html %]" size="30" placeholder="[% loc('Email') %]">
+                                [% IF field_errors.em %]
+                                   <div class="form-error">[% field_errors.em %]</div>
+                                [% END %]
+                                <input type="text" class="required form-control" name="subject" id="form_subject" value="[% subject | html %]" size="30" placeholder="[% loc('Subject') %]">
+                                [% IF field_errors.subject %]
+                                   <div class="form-error">[% field_errors.subject %]</div>
+                                [% END %]
+                                <textarea class="required form-control" name="message" id="form_message" rows="4" style="height:auto;">[% message | html %]</textarea>
+                                [% IF field_errors.message %]
+                                   <div class="form-error">[% field_errors.message %]</div>
+                                [% END %]
+                                <button class="btn btn-sky btn-small btn-comentar" type="submit">[% loc('Post') %]</button>
+                            </div>                                        
+                        </form>
+                    </div>
                 </div><!--end actions -->   
                 <div class="comments">
                     <h3>Comentarios</h3>

@@ -29,6 +29,10 @@
 						[% IF field_errors.identity_document  %]
 							<p class="error-m">[% field_errors.identity_document %]</p>
 						[% END %]
+						<input type="text" name="phone" value="[% user.phone | html %]" placeholder="[% loc('phone') %] *" class="[% IF field_errors.phone  %]error[% END %]">
+						[% IF field_errors.phone  %]
+							<p class="error-m">[% field_errors.phone %]</p>
+						[% END %]
 							<input type="password" name="password" value="" placeholder="[% loc('Your password') %]" class="[% IF field_errors.password  %]error[% END %]">
 						[% IF field_errors.password  %]
 							<p class="error-m">[% field_errors.password %]</p>
