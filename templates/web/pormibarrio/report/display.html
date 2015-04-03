@@ -50,6 +50,11 @@
                             </div>
                         </form>
                     </div>
+                    <div class="reportar-hide-content user-info">
+                        <form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
+                            <button type="submit" id="key-tool-report-abuse" class="btn btn-sky btn-small btn-comentar" value="Remove from site">
+                        </form>
+                    </div>
                     <div style="" class="reportar-abuso-content user-info">
                         [% INCLUDE 'errors.html' %]
                         <form method="post" action="/contact/submit" class="validate">
@@ -60,7 +65,7 @@
                                 [% IF field_errors.name %]
                                    <div class="error-m">[% field_errors.name %]</div>
                                 [% END %]
-                                <input type="text" class="required email form-control" name="em" id="form_email" value="[% em | html %]" size="30" placeholder="[% loc('Email') %]">
+                                <input type="text" class="required email form-control" name="em" id="email" value="[% em | html %]" size="30" placeholder="[% loc('Email') %]">
                                 [% IF field_errors.em %]
                                    <div class="form-error">[% field_errors.em %]</div>
                                 [% END %]
@@ -84,22 +89,8 @@
                     <script>$('#new-report-link').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
                 [% END %]
                     [% INCLUDE 'report/updates.html' %]
-                    <div class="comment-user">
-                            <div class="user-avatar current-user-avatar">
-                                <!--avatar dinámico -->
-                                <!--<img alt="" src="/cobrands/pormibarrio/images/no_pic.png">-->
-                                [% IF c.user.picture_url %]
-                                    <img alt="" id="current_user_avatar">
-                                    <script>
-                                        $("#current_user_avatar").error(function() { $( this ).attr("src", "/cobrands/pormibarrio/images/no_pic.png"); }).
-                                            attr( "src", "[% c.user.picture_url %]" );
-                                    </script>
-                                [% ELSE %]
-                                    <img alt="" src="/cobrands/pormibarrio/images/no_pic.png">                              
-                                [% END %]
-                            </div>
-                            <div class="user-info comments-user-info">
-                            [% INCLUDE 'report/update-form.html' %]
+                    <div class="comment-user comment">
+                        [% INCLUDE 'report/update-form.html' %]
                     </div>
                 </div>
 
@@ -124,7 +115,6 @@
 </div><!--end c-report-->
 <script>
 	/*$('#update-display').slimScroll({ scrollTo: 100 });*/
-	
 	[% IF scroll_to %]
 		$().ready(function() { 
 			$('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); 

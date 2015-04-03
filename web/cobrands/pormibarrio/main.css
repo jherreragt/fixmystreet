@@ -103,8 +103,8 @@ div#fms_pan_zoom.pan-horizontal div{
 }
 
 .content-vertical{
-	padding-top: 120px;
-	padding-left: 20px;
+	margin-top: 116px;
+	/*padding-left: 20px;*/
 	padding-right: 20px;
 }
 .content-aside{
@@ -241,7 +241,8 @@ div.s-calles-nav{
 }
 
 div.s-calles .pull-left{
-	width:80%;
+	width:78%;
+	margin-right: 2%;
 }
 
 div.s-calles .pull-left input{
@@ -620,7 +621,7 @@ li.s-help a{
 
 /*THIRD LEVEL--------------------------------------------------------------*/
 div.sub{
-	position:absolute;
+	position:fixed;
 	width:440px;
 	height:100%;
 	top:54px;
@@ -834,10 +835,10 @@ div.container-report{
 div.report{
 	border-radius: 5px;
     height: 100%;
+    top:20%;
     left: 290px;
     margin-left: -290px;
     position: absolute;
-    top: 10%;
     width: 580px;
     opacity:1;
 	overflow:hidden;
@@ -1050,11 +1051,12 @@ div.user-avatar{
 	float:left;
 	width:60px;
 	height:60px;
+	border-radius: 100px;
 	margin-right:20px;	
 }
 
 div.current-user-avatar{
-	margin: 0 20px 0 40px;
+	/*margin: 0 20px 0 40px;*/
 }
 
 div.user-avatar img{
@@ -1063,7 +1065,7 @@ div.user-avatar img{
 	border-radius:100px;
 }
 
-div.user-info form textarea, div.user-info .form-control {
+div.user-info textarea, div.user-info .form-control {
     background-color: #fafafa;
     border: 1px solid #d3d3d3;
     border-radius: 5px;
@@ -1119,11 +1121,11 @@ div.user-comment .btn-disabled{
 	background-color:#58bef7;	
 }
 
-div.user-info form textarea::-webkit-input-placeholder { color: #7d7d7d; font-style:italic}
+div.user-info textarea::-webkit-input-placeholder { color: #7d7d7d; font-style:italic}
 
 div.user-info h4{
 	font-size:1.375em;
-	color:#000;
+	color: #464646;;
 	font-weight:normal;
 	margin:5px 0 0 0	
 }
@@ -1148,10 +1150,11 @@ p.status-report-im {
 	padding: 0 0 20px 40px
 }
 div.comments-user-info {
-    margin-top: 20px;
-    overflow: auto;
-    padding-bottom: 50px;
-    max-width: 60%;
+    float: left;
+	width: 84%;
+	padding-bottom: 50px;
+	margin-top: 3px;
+	overflow: auto;
 }
 
 div.imm-comment{
@@ -1355,6 +1358,18 @@ div.drag{
 
 div.drag span{
 	font-size:1em;	
+}
+
+#InputFile{
+	display:none;
+}
+
+.upload-img {
+	background: url(images/icon-camera.png) no-repeat left 2px;
+	color: #7d7d7d;
+	font-size: 15px;
+	padding: 0 0 5px 27px;
+	border: none;
 }
 
 .help-block{
@@ -1768,16 +1783,15 @@ div.como-funciona dd a:hover{
 /*RESPUESTAS DE COMO FUNCIONA-----------------------------------------------*/
 div.c-respuestas{
 	left:490px;
-	top:0;
+	top:55px;
 	padding:0;
 	/*background:rgba(255, 255, 255, 0.9);*/
 	z-index:400;
-	position:absolute;
+	position:fixed;
 }
 
 .content-vertical div.c-respuestas{
 	left:0;
-	padding-top: 120px;
 }
 
 div.c-respuestas span{
@@ -2094,10 +2108,12 @@ div.content-vertical{
 	}
 	
 	nav.first-navigation li.reportar-small a, nav.first-navigation:hover li.reportar-small a{
-		width:65px;
-		padding:15px 0 0 0!important;
-		border-radius:5px;
-		height:55px!important
+		width: 110px;
+		padding: 15px 0px 0px !important;
+		border-radius: 0px;
+		height: 90px !important;
+		position: relative;
+		background: none repeat scroll 0% 0% #FC4349;
 	}
 	
 	nav.first-navigation li a, nav.first-navigation:hover li a{
@@ -2110,7 +2126,7 @@ div.content-vertical{
 	div.sub{
 		opacity:1;
 		width:100%;
-		padding-top:80px;
+		/*padding-top:80px;*/
 		left:0;		
 	}
 	
@@ -2134,7 +2150,7 @@ div.content-vertical{
 	
 	.container{
 		padding-left:0;
-		padding-right:0		
+		padding-right:0;
 	}
 	
 }
@@ -2173,6 +2189,7 @@ div.content-vertical{
 	}
 	
 	nav.first-navigation li.reportar-small a .icon {
+		position: absolute;
 		top: 10px;
 		left: 7px;
 		width: 60px;
@@ -2213,7 +2230,9 @@ div.content-vertical{
 	}
 	/* profile */
 	div.sub {
-		padding-top: 60px;
+		margin-top: 60px;
+		height: 76%;
+		margin-bottom: 20px;
 	}
 	
 	.btn-comentar {

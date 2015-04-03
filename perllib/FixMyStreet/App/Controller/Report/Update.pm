@@ -124,10 +124,10 @@ sub process_user : Private {
 
     # Extract all the params to a hash to make them easier to work with
     my %params = map { $_ => scalar $c->req->param($_) }
-      ( 'form_rznvy', 'name', 'password_register', 'fms_extra_title' );
+      ( 'form_email', 'name', 'password_register', 'fms_extra_title' );
 
     # cleanup the email address
-    my $email = $params{form_rznvy} ? lc $params{form_rznvy} : '';
+    my $email = $params{form_email} ? lc $params{form_email} : '';
     $email =~ s{\s+}{}g;
 
     $update->user( $c->model('DB::User')->find_or_new( { email => $email } ) )

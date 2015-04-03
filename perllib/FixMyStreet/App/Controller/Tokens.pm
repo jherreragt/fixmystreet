@@ -194,7 +194,8 @@ sub confirm_alert : Path('/A') {
     $c->set_session_cookie_expire(0);
 
     $c->forward('/alert/confirm');
-
+    #We don't want the user to be logged in
+    $c->logout();
     return 1;
 }
 

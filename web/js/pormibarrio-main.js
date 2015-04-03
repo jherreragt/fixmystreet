@@ -6,14 +6,14 @@
 //WIDTH SEARCH
 var anchoVentana = $( window ).width();
 var anchoUser = $("#info-user").width();
-var anchoCalles = anchoVentana - anchoUser - 80;
+var anchoCalles = anchoVentana - anchoUser;
 var listaCalles =  [];
 $("#s-calles").width(anchoCalles);
 	
 //QUITAR BORDE AL ULTIMO BLOQUE DE COMENTARIO
 $('.leave-comment').prev().css('border', 'none');
 $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px');
-	
+
 //SCROLL EN EL LISTADO DE REPORTES		
 	var types = ['DOMMouseScroll', 'mousewheel', 'MozMousePixelScroll', 'wheel'];	
 		
@@ -23,6 +23,20 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 	$('div.scrolled').slimScroll({
 		position: 'right',
 		height: '80%',
+		railVisible: true,
+		alwaysVisible: true,
+		railOpacity:1,
+		distance:10,
+		railColor: '',
+		color: '#ACACAC',
+		size:'9px',
+		borderRadius:4,
+		opacity: 1,
+	});
+
+	$('div.scrolled-88').slimScroll({
+		position: 'right',
+		height: '88%',
 		railVisible: true,
 		alwaysVisible: true,
 		railOpacity:1,
@@ -66,7 +80,7 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 //SCROLL AL INGRESAR UN REPORTE
 	$('div.scrolled-reportar').slimScroll({
 		position: 'right',
-		height: '100%',
+		height: '95%',
 		railVisible: true,
 		alwaysVisible: true,
 		railOpacity:1,
@@ -79,10 +93,17 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 	});
 
 
-//SCROLL EN EL REPORTE
+
+		
+$( document ).ready(function() {
+	//SCROLL EN EL REPORTE
+	height_val = '95%';
+	if ($('.content').hasClass('content-vertical')){
+		var height_val = '80%';
+	}
 	$('div.scrolled-report').slimScroll({
 		position: 'right',
-		height: '100%',
+		height: height_val,
 		railVisible: true,
 		alwaysVisible: true,
 		railOpacity:1,
@@ -93,16 +114,14 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		borderRadius:4,
 		opacity: 1,
 	});
-		
-
-//MOSTRAR EL FORM DE REGISTRO
-//SCROLL EN FAQ
-$( document ).ready(function() {
+	
+	//SCROLL EN FAQ
 	$('a.pregunta').click(function(){
 		var ref = this.href.split('#');
 		console.log(ref[1]);
 		$('div.scrolled-100').slimScroll({ scrollTo: $('#' + ref[1]).offset().top });
 	});
+	//MOSTRAR EL FORM DE REGISTRO
 	$('.registrate').click(function(e){
 		e.preventDefault();
 		var regCont = $('.bloque-registro .form-group').first();
@@ -133,8 +152,10 @@ $( document ).ready(function() {
 	$( ".follow-report" ).click(function() {
 	  $( this ).toggleClass( "follow-report-active" );
 	  $( '.reportar-abuso' ).removeClass( "reportar-abuso-active" );
+	  $( '.reportar-hide' ).removeClass( "reportar-abuso-active" );
 	  $( '.follow-report-content' ).slideToggle();
 	  $( '.reportar-abuso-content' ).slideUp();
+	  $( '.reportar-hide-content' ).slideUp();
 	});
 	
 	$( ".reportar-abuso" ).click(function() {
@@ -150,6 +171,27 @@ $( document ).ready(function() {
 	  $( '.reportar-hide-content' ).slideToggle();
 	  $( '.follow-report-content' ).slideUp();
 	});
+	//CORRER MAPA EN REPORTES
+	if (fixmystreet.page == 'report'){
+		if ($('.content').hasClass('content-horizontal')){
+			fixmystreet.map.pan(-150,0);
+		}
+		if ($('.content').hasClass('content-vertical')){
+			fixmystreet.map.pan(150,70);
+		}
+		if ($(".Id-").length){
+			$('.Id-')[1].setAttributeNS(null, 'width', 67);
+			$('.Id-')[1].setAttributeNS(null, 'height', 69);
+		}
+	}
+	//CARGAR IMAGEN
+	$('.InputButton').bind("click" , function () {
+        $('#InputFile').click();
+    });
+	
+	$('.upload-img').bind("click" , function () {
+        $('#InputFile').click();
+    });
 });
 
 /* FUNCIONES DE CAMBIO DE PIN PARA REPORTES EN MAPA */
@@ -493,17 +535,19 @@ $(window).resize(function() {
 	if ( $(window).width() < 780){
 		if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
 			$('#side').hide();
-			$('#fms_pan_zoom').css('top', "6.75em");
 		}
+		$('#fms_pan_zoom').css('top', "6.75em");
 		$('.content').addClass('content-vertical');
 		$('.content').removeClass('content-horizontal');
 		$('div.como-funciona a').click(function(){
 			$('#faq-list').hide();
 			$('.first-navigation').hide();
+			$('.top-container').hide();
 		})
 		$('div.c-respuestas span').click(function(){
 			$('#faq-list').show();
 			$('.first-navigation').show();
+			$('.top-container').show();
 		})
 	}
 	if ( $(window).width() >= 780){
@@ -516,8 +560,40 @@ $(window).resize(function() {
 		$('div.como-funciona a').unbind("click");
 		$('#faq-list').show();
 		$('.first-navigation').show();
+		$('.top-container').show();
 	}
 });
+
+if ( $(window).width() < 780){
+	if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
+		$('#side').hide();
+	}
+	$('#fms_pan_zoom').css('top', "6.75em");
+	$('.content').addClass('content-vertical');
+	$('.content').removeClass('content-horizontal');
+	$('div.como-funciona a').click(function(){
+		$('#faq-list').hide();
+		$('.first-navigation').hide();
+		$('.top-container').hide();
+	})
+	$('div.c-respuestas span').click(function(){
+		$('#faq-list').show();
+		$('.first-navigation').show();
+		$('.top-container').show();
+	})
+}
+if ( $(window).width() >= 780){
+	if ( typeof fixmystreet !== 'undefined' && fixmystreet.page == 'around' && (fixmystreet.zoom == 4 || fixmystreet.zoom == 3)){
+		$('#side').show();
+		$('#fms_pan_zoom').css('top', "1.75em");
+	}
+	$('.content').removeClass('content-vertical');
+	$('.content').addClass('content-horizontal');
+	$('div.como-funciona a').unbind("click");
+	$('#faq-list').show();
+	$('.first-navigation').show();
+	$('.top-container').show();
+}
 
 //CATEGORIAS POR GRUPO
 function form_category_group_onchange() {

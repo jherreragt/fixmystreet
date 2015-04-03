@@ -21,6 +21,7 @@ sub process_extras {
     }
 }
 
+
 =head2 user_check_for_errors
 
 Perform validation for new users. Takes Catalyst context object as an argument
@@ -31,33 +32,23 @@ sub user_check_for_errors {
     my $self = shift;
     my $c = shift;
 
-	my $identity_document = $c->stash->{user}->identity_document;
-
-    my %errors = ();
-
-    if ( $identity_document ) {
-		if ( !$self->validate_identity_document( $c, $identity_document ) ) {
-			$errors{identity_document} = _('Please enter a valid ID');
-		}
-	} else {
-        $errors{identity_document} = _('Please enter your ID');
-    }
-
     return (
         %{ $c->stash->{field_errors} },
         %{ $c->stash->{user}->check_for_errors },
-        %errors,
     );
 }
 
+sub validate_document {1}
+
 sub validate_identity_document {
 	my $self = shift;
-	my $c = shift;
 	my $identity_document = shift;
+	
+	#my $identity_document = $c->stash->{user}->identity_document;
 	
 	if ( $identity_document ) {	
 		$identity_document = Utils::trim_text( $identity_document );
-		$identity_document =~ s/\.//g;
+		$identity_document =~ s/\.|\ //g;
 		
 		my @parts = split /-/, $identity_document;
 		
@@ -68,13 +59,14 @@ sub validate_identity_document {
 			my @identity_document_array = split("", $identity_document);
 			my $result = 0;
 
-			print(scalar $c);
 			for ( my $pos = 0; $pos < scalar @magic && $pos < scalar @identity_document_array; $pos++ ) {
 					$result += $magic[$pos] * $identity_document_array[$pos];
 			}
 
 			my $verification = $result % 10;
-			return $verification eq $parts[1];
+			if ( $verification eq $parts[1] ){
+				return $identity_document;
+			}
 		}
 	}
 	

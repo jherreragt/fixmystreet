@@ -43,11 +43,9 @@ sub general : Path : Args(0) {
     $c->detach('facebook_sign_in') if $req->param('facebook_sign_in');
     $c->detach('twitter_sign_in') if $req->param('twitter_sign_in');
 
-    $c->detach('email_sign_in') if $req->param('email_sign_in')
-        || $c->req->param('name') || $c->req->param('password_register');
+    $c->detach('email_sign_in') if $req->param('email_sign_in') || $c->req->param('name') || $c->req->param('password_register');
 
-       $c->forward( 'sign_in' )
-    && $c->detach( 'redirect_on_signin', [ $req->param('r') ] );
+    $c->forward( 'sign_in' ) && $c->detach( 'redirect_on_signin', [ $req->param('r') ] );
 
 }
 
@@ -69,9 +67,7 @@ sub sign_in : Private {
     # Sign out just in case
     $c->logout();
 
-    if (   $email
-        && $password
-        && $c->authenticate( { email => $email, password => $password } ) )
+    if ( $email && $password && $c->authenticate( { email => $email, password => $password } ) )
     {
         # unless user asked to be remembered limit the session to browser
         $c->set_session_cookie_expire(0)
@@ -100,12 +96,12 @@ sub email_sign_in : Private {
     my ( $self, $c ) = @_;
 
     # check that the email is valid - otherwise flag an error
-    my $raw_email = lc( $c->req->param('email') || '' );
+    my $raw_email = lc( $c->req->param('form_email') || '' );
 
     my $email_checker = Email::Valid->new(
-        -mxcheck  => 1,
-        -tldcheck => 1,
-        -fqdn     => 1,
+        #-mxcheck  => 1,
+        #-tldcheck => 1,
+        #-fqdn     => 1,
     );
 
     my $good_email = $email_checker->address($raw_email);
@@ -119,18 +115,37 @@ sub email_sign_in : Private {
     $user_params->{email} = $good_email if $good_email;
     $user_params->{name} = $c->req->param('name') if $c->req->param('name');
     $user_params->{password} = $c->req->param('password_register') if $c->req->param('password_register');
-    $user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');
+	$user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');;
     $user_params->{phone} = $c->req->param('phone') if $c->req->param('phone');
     my $user = $c->model('DB::User')->new( $user_params );
 
     $c->stash->{field_errors} ||= {};
     $c->stash->{user} = $user;
-    
-    my %field_errors = $c->cobrand->user_check_for_errors( $c );
-    if ( scalar keys %field_errors ){
-	$c->stash->{field_errors} = \%field_errors;
-	return;
-    }
+	my %field_errors = $c->cobrand->user_check_for_errors( $c );
+
+	#Added identity document, to be validated only if $c->cobrand->validate_document is set
+    my $identity_document = '';
+   	if ( $c->cobrand->validate_document ){
+		if ($c->req->param('identity_document')){
+			$c->log->debug('DOCUMENTO: '.$c->req->param('identity_document'));
+			$identity_document = $c->cobrand->validate_identity_document( $c->req->param('identity_document') );
+			if (!$identity_document){
+				$c->log->debug('DOCUMENTO: Please enter a valid ID');
+		        $c->stash->{field_errors}{identity_document} = _('Please enter a valid ID');
+		        return;
+			}
+		} 
+		else {
+			$c->log->debug('DOCUMENTO: Please enter your ID');
+        	$c->stash->{field_errors}{identity_document} = _('Please enter your ID');
+        	return;
+    	}
+	}
+
+	if ( scalar keys %field_errors ){
+		$c->stash->{field_errors} = \%field_errors;
+		return;
+	}
 
     my $token_obj = $c->model('DB::Token')    #
       ->create(
@@ -142,7 +157,7 @@ sub email_sign_in : Private {
                 name => $c->req->param('name'),
                 password => $user->password,
                 phone =>  $c->req->param('phone'),
-                identity_document => $c->req->param('identity_document'),
+                identity_document => $identity_document,
             }
         }
       );
@@ -323,7 +338,8 @@ sub facebook_sign_in : Private {
 	);
 	
 	##there is no verifier code passed so let's create authorization URL and redirect to it
-	
+	$c->log->debug('PARAMETER R: '.$c->req->param('r'));
+	$c->log->debug('PARAMETER DETACH: '.$c->stash->{detach_to});
 	my $url = $fb->get_authorization_url(
 		scope => ['email'], ###pass scope/Extended Permissions params as an array telling facebook how you want to use this access
 		display => 'page' ## how to display authorization page, other options popup "to display as popup window" and wab "for mobile apps"
@@ -359,52 +375,59 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 
 		$c->stash->{message} = 'No es posible iniciar la sesi&oacute;n en Facebook. Por favor vuelva a intetarlo m&aacute;s tarde.';
 		$c->stash->{template} = 'errors/generic.html';
-	} else {
-	my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
-	my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
-	my $facebook_callback_url = $c->uri_for('/auth/Facebook');
-    
-	my $fb = Net::Facebook::Oauth2->new(
-		application_id => $facebook_app_id,  ##get this from your facebook developers platform
-		application_secret => $facebook_app_secret, ##get this from your facebook developers platform
-		callback => $facebook_callback_url,  ##Callback URL, facebook will redirect users after authintication
-	);
-	
-	# you need to pass the verifier code to get access_token	
-	my $access_token = $fb->get_access_token( code => $params->{code} );
-	
-	# save this token in session
-	$c->session->{oauth} =  {
-		token => $access_token,
-		return_url => $c->session->{oauth}{return_url},
-		detach_to => $c->session->{oauth}{detach_to},
-		detach_args => $c->session->{oauth}{detach_args},
-	};
-	
-	my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
+	} 
+	else {
+		my $facebook_app_id = mySociety::Config::get('FACEBOOK_APP_ID', undef);
+		my $facebook_app_secret = mySociety::Config::get('FACEBOOK_APP_SECRET', undef);
+		my $facebook_callback_url = $c->uri_for('/auth/Facebook');
+	    
+		my $fb = Net::Facebook::Oauth2->new(
+			application_id => $facebook_app_id,  ##get this from your facebook developers platform
+			application_secret => $facebook_app_secret, ##get this from your facebook developers platform
+			callback => $facebook_callback_url,  ##Callback URL, facebook will redirect users after authintication
+		);
 		
-	my $name = $info->{'name'};
-	my $email = $info->{'email'};
-	my $uid = $info->{'id'};
-
-	my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
-	
-	if (!$user) {		
-		my $new_user = $c->model('DB::User')->new({ 
-			name => $name,
-			email => $email,
-			facebook_id => $uid,
-			picture_url => 'http://graph.facebook.com/'.$uid.'/picture?type=square',
-		});
+		# you need to pass the verifier code to get access_token	
+		my $access_token = $fb->get_access_token( code => $params->{code} );
+		
+		# save this token in session
+		$c->session->{oauth} =  {
+			token => $access_token,
+			return_url => $c->session->{oauth}{return_url},
+			detach_to => $c->session->{oauth}{detach_to},
+			detach_args => $c->session->{oauth}{detach_args},
+		};
+		
+		my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 			
-		$c->stash->{user} = $new_user;		
-		$c->stash->{template} = 'auth/social_signup.html';
-	} else {
-		#Autenthicate user with immedate expire
-		$c->authenticate( { email => $user->email }, 'no_password' );
-		$c->set_session_cookie_expire(0);
-		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
-	}
+		my $name = $info->{'name'};
+		my $email = $info->{'email'};
+		my $uid = $info->{'id'};
+		$c->log->debug('PATH /auth/Facebook: '.$uid);
+		my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
+		
+		if (!$user) {		
+			my $new_user = $c->model('DB::User')->new({ 
+				name => $name,
+				email => $email,
+				facebook_id => $uid,
+				picture_url => 'http://graph.facebook.com/'.$uid.'/picture?type=square',
+			});
+			$c->log->debug('PATH /auth/Facebook NEW USER'.$uid);	
+			$c->stash->{user} = $new_user;		
+			$c->stash->{template} = 'auth/social_signup.html';
+		} else {
+			$c->log->debug('PATH /auth/Facebook OLD USER'.$c->session->{oauth}{detach_to});
+			#Autenthicate user with immedate expire
+			$c->authenticate( { email => $user->email }, 'no_password' );
+			$c->set_session_cookie_expire(0);
+			if ($c->session->{oauth}{detach_to}){
+				$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+			}
+			else{
+				$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+			}
+		}
 	}
 }
 
@@ -492,7 +515,12 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		#Autenthicate user with immedate expire
 		$c->authenticate( { email => $user->email }, 'no_password' );
 		$c->set_session_cookie_expire(0);
-		$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+		if ($c->session->{oauth}{detach_to}){
+			$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+		}
+		else{
+			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+		}
 	}
 }
 
