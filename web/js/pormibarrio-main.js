@@ -172,7 +172,7 @@ $( document ).ready(function() {
 	  $( '.follow-report-content' ).slideUp();
 	});
 	//CORRER MAPA EN REPORTES
-	if (fixmystreet.page == 'report'){
+	if (typeof fixmystreet != 'undefined' && fixmystreet.page == 'report'){
 		if ($('.content').hasClass('content-horizontal')){
 			fixmystreet.map.pan(-150,0);
 		}
