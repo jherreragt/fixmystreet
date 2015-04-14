@@ -91,15 +91,13 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		borderRadius:4,
 		opacity: 1,
 	});
-
-
-
 		
 $( document ).ready(function() {
 	//SCROLL EN EL REPORTE
 	height_val = '95%';
 	if ($('.content').hasClass('content-vertical')){
 		var height_val = '80%';
+
 	}
 	$('div.scrolled-report').slimScroll({
 		position: 'right',
@@ -115,7 +113,6 @@ $( document ).ready(function() {
 		opacity: 1,
 	});
 	
-	//SCROLL EN FAQ
 	$('a.pregunta').click(function(){
 		var ref = this.href.split('#');
 		console.log(ref[1]);
@@ -152,7 +149,7 @@ $( document ).ready(function() {
 	$( ".follow-report" ).click(function() {
 	  $( this ).toggleClass( "follow-report-active" );
 	  $( '.reportar-abuso' ).removeClass( "reportar-abuso-active" );
-	  $( '.reportar-hide' ).removeClass( "reportar-abuso-active" );
+	  $( '.reportar-hide' ).removeClass( "reportar-hide-active" );
 	  $( '.follow-report-content' ).slideToggle();
 	  $( '.reportar-abuso-content' ).slideUp();
 	  $( '.reportar-hide-content' ).slideUp();
@@ -191,6 +188,75 @@ $( document ).ready(function() {
 	
 	$('.upload-img').bind("click" , function () {
         $('#InputFile').click();
+    });
+
+    //CHANGE PASSWORD
+	$( "#change-passwd-btn" ).click(function() {
+		$( this ).toggleClass( "reportar-abuso-active" );
+		if ($( this ).hasClass("reportar-abuso-active")){
+			$('#my-change-passwd').insertAfter('#change-passwd-btn');
+		}
+		$( '#my-change-passwd' ).slideToggle();
+	});
+
+	//EDICION DE PERFIL
+    $('#profile-edit').click(function() {
+        $('#my').hide();
+        $('#user-profile').show();
+    });
+    $('#edit-profile-cancel').click(function(e) {
+    	e.preventDefault();
+        document.location.href = '/my';
+    });
+    
+    //FILTRO REPORTES EN PERFIL
+    if ($('.content').hasClass('content-vertical')){
+		$('#user-reports').hide();
+		$('#tus-reportes').removeClass('.btn-filtro-active');
+		$('#top-profile').height('100%');
+		$('#user-reports').height('100%');
+		$('#user-interactions').height('100%');
+
+		$('.profile-back-reports').click(function(e){
+			e.preventDefault();
+			$('#top-profile').slideToggle();
+			$( '#user-reports' ).slideDown();
+		});
+
+		$('.profile-back-interactions').click(function(e){
+			e.preventDefault();
+			$('#top-profile').slideToggle();
+			$( '#user-interactions' ).slideDown();
+		});
+	}
+    $( "#tus-reportes" ).click(function() {
+    	if ($('.content').hasClass('content-vertical')){
+    		$( '#user-reports' ).slideToggle();
+	  		$( '#top-profile' ).slideUp();
+    	}
+    	else {
+	        $( this ).addClass( "btn-filtro-active" );
+	        $( "#siguiendo" ).removeClass( "btn-filtro-active" );
+	        $('#user-interactions').hide();
+	        $('#user-reports').show();
+	    }
+    });
+    
+    $( "#siguiendo" ).click(function() {
+    	if ($('.content').hasClass('content-vertical')){
+    		$( '#user-interactions' ).slideToggle();
+	  		$( '#top-profile' ).slideUp();
+    	}
+        $( this ).addClass( "btn-filtro-active" );
+        $( "#tus-reportes" ).removeClass( "btn-filtro-active" );
+        $('#user-interactions').show();
+        $('#user-reports').hide();
+    });
+    $( ".btn-filter" ).click(function() {
+        $( ".btn-filter" ).removeClass( "btn-filtro-active" );
+        $( this ).addClass( "btn-filtro-active" );
+        $('.page-tabs').hide();
+        $('#my-'+this.id).show();
     });
 });
 

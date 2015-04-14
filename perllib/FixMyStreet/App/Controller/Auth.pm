@@ -11,7 +11,7 @@ use JSON;
 use Net::Facebook::Oauth2;
 use Net::Twitter::Lite::WithAPIv1_1;
 use Digest::HMAC_SHA1;
-
+use Data::Dumper;
 =head1 NAME
 
 FixMyStreet::App::Controller::Auth - Catalyst Controller
@@ -41,7 +41,7 @@ sub general : Path : Args(0) {
 
     # decide which action to take
     $c->detach('facebook_sign_in') if $req->param('facebook_sign_in');
-    $c->detach('twitter_sign_in') if $req->param('twitter_sign_in');
+    $c->detach('twitter_sign_in') if $req->param('twitter_sign_in') || $req->param('twitter_link');
 
     $c->detach('email_sign_in') if $req->param('email_sign_in') || $c->req->param('name') || $c->req->param('password_register');
 
@@ -96,7 +96,7 @@ sub email_sign_in : Private {
     my ( $self, $c ) = @_;
 
     # check that the email is valid - otherwise flag an error
-    my $raw_email = lc( $c->req->param('form_email') || '' );
+    my $raw_email = lc( $c->req->param('form_email') || $c->req->param('login_email') || '' );
 
     my $email_checker = Email::Valid->new(
         #-mxcheck  => 1,
@@ -110,14 +110,25 @@ sub email_sign_in : Private {
         $c->stash->{email_error} = $raw_email ? $email_checker->details : 'missing';
         return;
     }
-    
-    my $user_params = {};
-    $user_params->{email} = $good_email if $good_email;
-    $user_params->{name} = $c->req->param('name') if $c->req->param('name');
-    $user_params->{password} = $c->req->param('password_register') if $c->req->param('password_register');
-	$user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');;
-    $user_params->{phone} = $c->req->param('phone') if $c->req->param('phone');
-    my $user = $c->model('DB::User')->new( $user_params );
+    my $user;
+    #Allow send email to login
+    if ($c->req->param('login_email')){
+    	$user = $c->model('DB::User')->find({ email => $good_email });
+    	$c->log->debug(Dumper($user));
+    	if (!defined $user){
+    		$c->stash->{field_errors}{login_email} = _('Email is not registered');
+    		return;
+    	}
+    }
+    else{
+	    my $user_params = {};
+	    $user_params->{email} = $good_email if $good_email;
+	    $user_params->{name} = $c->req->param('name') if $c->req->param('name');
+	    $user_params->{password} = $c->req->param('password_register') if $c->req->param('password_register');
+		$user_params->{identity_document} = $c->req->param('identity_document') if $c->req->param('identity_document');;
+	    $user_params->{phone} = $c->req->param('phone') if $c->req->param('phone');
+	    $user = $c->model('DB::User')->new( $user_params );
+	}
 
     $c->stash->{field_errors} ||= {};
     $c->stash->{user} = $user;
@@ -126,17 +137,14 @@ sub email_sign_in : Private {
 	#Added identity document, to be validated only if $c->cobrand->validate_document is set
     my $identity_document = '';
    	if ( $c->cobrand->validate_document ){
-		if ($c->req->param('identity_document')){
-			$c->log->debug('DOCUMENTO: '.$c->req->param('identity_document'));
-			$identity_document = $c->cobrand->validate_identity_document( $c->req->param('identity_document') );
+		if ($user->identity_document){
+			$identity_document = $c->cobrand->validate_identity_document( $user->identity_document );
 			if (!$identity_document){
-				$c->log->debug('DOCUMENTO: Please enter a valid ID');
 		        $c->stash->{field_errors}{identity_document} = _('Please enter a valid ID');
 		        return;
 			}
 		} 
 		else {
-			$c->log->debug('DOCUMENTO: Please enter your ID');
         	$c->stash->{field_errors}{identity_document} = _('Please enter your ID');
         	return;
     	}
@@ -154,9 +162,9 @@ sub email_sign_in : Private {
             data  => {
                 email => $good_email,
                 r => $c->req->param('r'),
-                name => $c->req->param('name'),
+                name => $user->name,
                 password => $user->password,
-                phone =>  $c->req->param('phone'),
+                phone =>  $user->phone,
                 identity_document => $identity_document,
             }
         }
@@ -338,8 +346,6 @@ sub facebook_sign_in : Private {
 	);
 	
 	##there is no verifier code passed so let's create authorization URL and redirect to it
-	$c->log->debug('PARAMETER R: '.$c->req->param('r'));
-	$c->log->debug('PARAMETER DETACH: '.$c->stash->{detach_to});
 	my $url = $fb->get_authorization_url(
 		scope => ['email'], ###pass scope/Extended Permissions params as an array telling facebook how you want to use this access
 		display => 'page' ## how to display authorization page, other options popup "to display as popup window" and wab "for mobile apps"
@@ -349,7 +355,9 @@ sub facebook_sign_in : Private {
 	$oauth{'return_url'} = $c->req->param('r');
 	$oauth{'detach_to'} = $c->stash->{detach_to};
 	$oauth{'detach_args'} = $c->stash->{detach_args};
-		
+	#Sync accounts 
+	$oauth{'facebook_link'} = $c->req->param('facebook_link') if ( $c->req->param('facebook_link') );
+
 	###save this token in session
 	$c->session->{oauth} = \%oauth;
 	
@@ -391,41 +399,65 @@ sub facebook_callback: Path('/auth/Facebook') : Args(0) {
 		my $access_token = $fb->get_access_token( code => $params->{code} );
 		
 		# save this token in session
-		$c->session->{oauth} =  {
-			token => $access_token,
-			return_url => $c->session->{oauth}{return_url},
-			detach_to => $c->session->{oauth}{detach_to},
-			detach_args => $c->session->{oauth}{detach_args},
-		};
+		$c->session->{oauth}{token} =  $access_token;
 		
 		my $info = $fb->get('https://graph.facebook.com/me')->as_hash();
 			
 		my $name = $info->{'name'};
 		my $email = $info->{'email'};
 		my $uid = $info->{'id'};
-		$c->log->debug('PATH /auth/Facebook: '.$uid);
 		my $user = $c->model('DB::User')->find( { facebook_id => $uid } );
-		
-		if (!$user) {		
-			my $new_user = $c->model('DB::User')->new({ 
-				name => $name,
-				email => $email,
-				facebook_id => $uid,
-				picture_url => 'http://graph.facebook.com/'.$uid.'/picture?type=square',
-			});
-			$c->log->debug('PATH /auth/Facebook NEW USER'.$uid);	
-			$c->stash->{user} = $new_user;		
-			$c->stash->{template} = 'auth/social_signup.html';
-		} else {
-			$c->log->debug('PATH /auth/Facebook OLD USER'.$c->session->{oauth}{detach_to});
-			#Autenthicate user with immedate expire
-			$c->authenticate( { email => $user->email }, 'no_password' );
-			$c->set_session_cookie_expire(0);
-			if ($c->session->{oauth}{detach_to}){
-				$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+		$c->log->debug('FB CALLBACK FIND');
+		if (!$user) {
+			$c->log->debug('FB CALLBACK NO USER');
+			if( $c->session->{oauth}{facebook_link} and $c->user ){
+				$c->log->debug('FB CALLBACK ACTUALIZA');
+				#Actualizamos la foto en caso que se quiera
+				if ( !$c->session->{oauth}{not_update_photo} ){
+					$c->user->picture_url( 'http://graph.facebook.com/'.$uid.'/picture?type=square' );
+				}
+				$c->user->facebook_id($uid);
+				$c->user->update();
+				#Redirect to my
+				my $uri = $c->uri_for( '/my', { mf1 => 1 } );
+			    $c->res->redirect( $uri );
+			    $c->detach;
 			}
-			else{
-				$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+			else{	
+				$c->log->debug('FB CALLBACK NUEVO');
+				my $new_user = $c->model('DB::User')->new({ 
+					name => $name,
+					email => $email,
+					facebook_id => $uid,
+					picture_url => 'http://graph.facebook.com/'.$uid.'/picture?type=square',
+				});
+				$c->stash->{user} = $new_user;		
+				$c->stash->{template} = 'auth/social_signup.html';
+			}
+		} 
+		else {
+			$c->log->debug('FB CALLBACK USER');
+			if( $c->session->{oauth}{facebook_link} and $c->user ){
+				$c->log->debug('FB CALLBACK REDIRECT HAY OTRO USER');
+				my $uri = $c->uri_for( '/my', { mf2 => 1 } );
+			    $c->res->redirect( $uri );
+			    $c->detach;
+			}
+			else {
+				$c->log->debug('FB CALLBACK FUE PARA AUTENTICAR');
+				if ( $user->picture_url != 'http://graph.facebook.com/'.$uid.'/picture?type=square' and !$c->session->{oauth}{not_update_photo} ) {
+					$user->picture_url( 'http://graph.facebook.com/'.$uid.'/picture?type=square' );
+					$user->update();
+				}
+				#Autenthicate user with immedate expire
+				$c->authenticate( { email => $user->email }, 'no_password' );
+				$c->set_session_cookie_expire(0);
+				if ($c->session->{oauth}{detach_to}){
+					$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+				}
+				else{
+					$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+				}
 			}
 		}
 	}
@@ -439,7 +471,6 @@ Starts the Twitter authentication sequence.
 
 sub twitter_sign_in : Private {
 	my( $self, $c ) = @_;
-	
     my $twitter_key = mySociety::Config::get('TWITTER_KEY', undef);
     my $twitter_secret = mySociety::Config::get('TWITTER_SECRET', undef);
     my $twitter_callback_url = $c->uri_for('/auth/Twitter');
@@ -458,10 +489,11 @@ sub twitter_sign_in : Private {
 	$oauth{'detach_args'} = $c->stash->{detach_args};
 	$oauth{'token'} = $twitter->request_token;
 	$oauth{'token_secret'} = $twitter->request_token_secret;
-	
+	#Sync accounts 
+	$oauth{'twitter_link'} = $c->req->param('twitter_link') if ($c->req->param('twitter_link'));
+
 	###save this token in session
 	$c->session->{oauth} = \%oauth;
-
 	$c->res->redirect($url);
 }
 
@@ -473,7 +505,6 @@ Handles the Twitter callback request and completes the authentication sequence.
 
 sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 	my( $self, $c ) = @_;
-	
 	my $request_token = $c->req->param('oauth_token');
     my $verifier      = $c->req->param('oauth_verifier');
 
@@ -495,31 +526,52 @@ sub twitter_callback: Path('/auth/Twitter') : Args(0) {
 		$twitter->request_access_token(verifier => $verifier);
    
 	my $twitter_user = $twitter->show_user($uid);
-   
 	my $user = $c->model('DB::User')->find( { twitter_id => $uid } );
 	
-	if (!$user) {	
-		my $new_user = $c->model('DB::User')->new({ 
-			name => $name,
-			twitter_id => $uid,
-			picture_url => $twitter_user->{profile_image_url},
-		});
-		
-		$c->stash->{user} = $new_user;
-		$c->stash->{template} = 'auth/social_signup.html';
-	} else {
-		if ( $user->picture_url != $twitter_user->{profile_image_url} ) {
-			$user->picture_url( $twitter_user->{profile_image_url} );
-			$user->update();
-		}
-		#Autenthicate user with immedate expire
-		$c->authenticate( { email => $user->email }, 'no_password' );
-		$c->set_session_cookie_expire(0);
-		if ($c->session->{oauth}{detach_to}){
-			$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+	if (!$user) {
+		if( $oauth->{twitter_link} and $c->user ){
+			#Actualizamos la foto en caso que se quiera
+			if (!$oauth->{not_update_photo}){
+				$c->user->picture_url( $twitter_user->{profile_image_url} );
+			}
+			$c->user->twitter_id($uid);
+			$c->user->update();
+			#Redirect to my
+			my $uri = $c->uri_for( '/my', { mt1 => 1 } );
+		    $c->res->redirect( $uri );
+		    $c->detach;
 		}
 		else{
-			$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+			my $new_user = $c->model('DB::User')->new({ 
+				name => $name,
+				twitter_id => $uid,
+				picture_url => $twitter_user->{profile_image_url},
+			});
+			
+			$c->stash->{user} = $new_user;
+			$c->stash->{template} = 'auth/social_signup.html';
+		}
+	} 
+	else {
+		if( $oauth->{twitter_link} and $c->user ){
+			my $uri = $c->uri_for( '/my', { mt2 => 1 } );
+		    $c->res->redirect( $uri );
+		    $c->detach;
+		}
+		else {
+			if ( $user->picture_url != $twitter_user->{profile_image_url} and !$oauth->{not_update_photo} ) {
+				$user->picture_url( $twitter_user->{profile_image_url} );
+				$user->update();
+			}
+			#Autenthicate user with immedate expire
+			$c->authenticate( { email => $user->email }, 'no_password' );
+			$c->set_session_cookie_expire(0);
+			if ($c->session->{oauth}{detach_to}){
+				$c->detach($c->session->{oauth}{detach_to}, $c->session->{oauth}{detach_args});
+			}
+			else{
+				$c->detach( 'redirect_on_signin', [ $c->session->{oauth}{return_url} ] );
+			}
 		}
 	}
 }

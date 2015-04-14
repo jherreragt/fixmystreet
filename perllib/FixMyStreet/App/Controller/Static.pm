@@ -101,41 +101,38 @@ sub stats : Global : Args(0) {
             )
           ->all;
         @contacts = map { { $_->get_columns } } @contacts;
-        $c->log->debug('@CONTACTS');
-        $c->log->debug(Dumper(@contacts));
         my @contacts_group                #
           = $c                            #
           ->model('DB::ContactsGroup')    #
           ->search()
           ->all;
         @contacts_group = map { { $_->get_columns } } @contacts_group;
-        $c->log->debug('@CONTACTS_GROUP');
-        $c->log->debug(Dumper(@contacts_group));
-        my %problem_by_group;
+        my $problem_by_group = {};
         for my $contact (@contacts){
             for my $contact_group (@contacts_group){
                 if ( exists $contact->{group_id} and $contact->{group_id} eq $contact_group->{group_id} ){
-                    unless (exists $problem_by_group{$contact->{group_id}}) {
-                        $problem_by_group{$contact->{group_id}}{name} = $contact_group->{group_name};
-                        $problem_by_group{$contact->{group_id}}{total} = 0;
-                        $problem_by_group{$contact->{group_id}}{fixed} = 0;
-                        $problem_by_group{$contact->{group_id}}{in_progress} = 0;
-                        $problem_by_group{$contact->{group_id}}{confirmed} = 0;
+                    unless (exists $problem_by_group->{$contact->{group_id}}) {
+                        $problem_by_group->{$contact->{group_id}}{name} = $contact_group->{group_name};
+                        $problem_by_group->{$contact->{group_id}}{total} = 0;
+                        $problem_by_group->{$contact->{group_id}}{fixed} = 0;
+                        $problem_by_group->{$contact->{group_id}}{in_progress} = 0;
+                        $problem_by_group->{$contact->{group_id}}{confirmed} = 0;
                     }
-                    $problem_by_group{$contact->{group_id}}{$contact->{category}}{name} = $contact->{category};
-                    $problem_by_group{$contact->{group_id}}{$contact->{category}}{total} = 0;
-                    $problem_by_group{$contact->{group_id}}{$contact->{category}}{fixed} = 0;
-                    $problem_by_group{$contact->{group_id}}{$contact->{category}}{in_progress} = 0;
-                    $problem_by_group{$contact->{group_id}}{$contact->{category}}{confirmed} = 0;
+                    $problem_by_group->{$contact->{group_id}}{$contact->{category}}{name} = $contact->{category};
+                    $problem_by_group->{$contact->{group_id}}{$contact->{category}}{total} = 0;
+                    $problem_by_group->{$contact->{group_id}}{$contact->{category}}{fixed} = 0;
+                    $problem_by_group->{$contact->{group_id}}{$contact->{category}}{in_progress} = 0;
+                    $problem_by_group->{$contact->{group_id}}{$contact->{category}}{confirmed} = 0;
                 }
             }
         }
         $c->log->debug('%PROBLEM_BY_GROUP');
-        $c->log->debug(Dumper(%problem_by_group));
+        $c->log->debug(Dumper($problem_by_group));
 
         my $one_day = DateTime::Duration->new( days => 1 );
 
         my %select = (
+                state => [ FixMyStreet::DB::Result::Problem->visible_states() ],
                 select => [ 
                     'id', 'latitude', 'longitude', 'category', 'external_id', 
                     'created', 'confirmed', 'state', 'whensent', 'lastupdate' ],
@@ -155,21 +152,21 @@ sub stats : Global : Args(0) {
         $c->log->debug('PROBLEMS:');
         my $problem_csv = '"id","latitude","longitude","category","external_id","created","confirmed","whensent","lastupdate","state"\r\n';
         for my $problem (@problems){
-            while ( my $group_id = each %problem_by_group){
-                if ( exists %problem_by_group->{$group_id}->{$problem->{category}} ){
-                    %problem_by_group->{$group_id}->{$problem->{category}}{total}++;
-                    %problem_by_group->{$group_id}{total}++;
+            foreach my $group_id (keys $problem_by_group){
+                if ( exists $problem_by_group->{$group_id}->{$problem->{category}} ){
+                    $problem_by_group->{$group_id}->{$problem->{category}}{total}++;
+                    $problem_by_group->{$group_id}{total}++;
                     if ( $problem->{state} =~ /fixed/ ){
-                        %problem_by_group->{$group_id}{fixed}++;
-                        %problem_by_group->{$group_id}->{$problem->{category}}{fixed}++;
+                        $problem_by_group->{$group_id}{fixed}++;
+                        $problem_by_group->{$group_id}->{$problem->{category}}{fixed}++;
                     }
                     elsif ($problem->{state} eq 'in progress'){
-                        %problem_by_group->{$group_id}{in_progress}++;
-                        %problem_by_group->{$group_id}->{$problem->{category}}{in_progress}++;
+                        $problem_by_group->{$group_id}{in_progress}++;
+                        $problem_by_group->{$group_id}->{$problem->{category}}{in_progress}++;
                     }
                     else{
-                        %problem_by_group->{$group_id}{confirmed}++;
-                        %problem_by_group->{$group_id}->{$problem->{category}}{confirmed}++;
+                        $problem_by_group->{$group_id}{confirmed}++;
+                        $problem_by_group->{$group_id}->{$problem->{category}}{confirmed}++;
                     }
                     last;
                 }
@@ -185,8 +182,10 @@ sub stats : Global : Args(0) {
                 $problem->{lastupdate}.'","'.
                 $problem->{state}.'"\r\n';
         }
-        $c->log->debug($problem_csv);
-        $c->stash->{statics_json} = encode_json \%problem_by_group;
+        $c->log->debug(Dumper($problem_by_group));
+        my $problem_json = encode_json($problem_by_group);
+        $c->log->debug(Dumper($problem_json));
+        $c->stash->{statics_json} = $problem_json;
         $c->stash->{problem_csv} = "'".$problem_csv."'";
     }
 

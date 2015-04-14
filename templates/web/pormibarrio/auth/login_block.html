@@ -6,6 +6,10 @@
         </div>
         <div class="form-group">
             [% IF c.config.FACEBOOK_APP_ID || c.config.TWITTER_KEY %]
+            <div class="checkbox-group">
+                <input type="checkbox" id="not_update_photo" name="not_update_photo"></input>
+                <label class="inline">[% loc('Do not replace my image with social image') %]</label>
+            </div>
             <div class="social-buttons">
                 [% IF c.config.FACEBOOK_APP_ID %]
                     <button name="facebook_sign_in" id="facebook_sign_in" value="facebook_sign_in" class="btn btn-block btn-social btn-facebook">Accede con Facebook</button>
@@ -34,6 +38,14 @@
                 <label class="n inline" for="remember_me">[% loc('Keep me signed in on this computer') %]</label>
             </div>
             <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="[% loc('Access') %]">
+            <a class="green send-password" href="#">[% loc('Have tou forgotten your password?') %]</a>
+            <div id="send-password">
+                <input type="email" class="[% IF field_errors.email %] error [% END %]" name="login_email" id="login_email" placeholder="Correo electrónico *">
+                [% IF field_errors.login_email  %]
+                    <p class="error-m">[% field_errors.login_email %]</p>
+                [% END %]
+                <button class="btn btn-block btn-green" type="submit" id="new_password_mail" name="email_sign_in" value='1'>Envíame instrucciones</button>
+            </div>
             <p class="no-account">
                 ¿No utilizas redes sociales? No hay problema!<br>
                 <a class="green registrate" href="#">Regístrate aquí con tu mail</a>

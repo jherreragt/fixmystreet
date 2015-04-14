@@ -118,7 +118,6 @@ sub pin_colour {
 		
 		if ( $categories && $categories->{$category_name}) {
 			my $pin = 'group-'.$categories->{$category_name};
-			$c->log->debug('ESTADO: '. $p->state);
 			if ($p->is_fixed){
 				$pin .= '-resuelto';
 			}
@@ -127,7 +126,6 @@ sub pin_colour {
 					$pin .= '-proceso';
 				}
 			}
-			$c->log->debug('PIN: '. $pin);
 			return $pin;
 		} else {
 			return 'yellow';

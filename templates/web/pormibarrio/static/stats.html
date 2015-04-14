@@ -60,7 +60,7 @@
 
 		//Create CSV
 		$.each(group, function(subcatname, subcat){
-			if( $.isPlainObject(group) ){
+			if( $.isPlainObject(subcat) ){
 				var line = gid+','+subcat.name+','+subcat.total+','+subcat.fixed+','+subcat.in_progress+','+subcat.confirmed;
 				totals_csv += line + '\r\n';
 			}
