@@ -66,11 +66,15 @@
 			[% END %]
 		</div>
 		<textarea rows=4 name="update" id="form_update" placeholder="Escriba aquí su comentario *" class="[% IF field_errors.update %] error [% END %] required">[% update.text | html %]</textarea>
+		<div class="checkbox">
+			<input type="checkbox" id="terms-agree" value="">
+            <label class="inline">[% loc('Agreed') %]<a href="/privacy"> [% loc('Terms & Conditions') %]</a></label>
+		</div>
 		<!--Sign In-->
 		[% IF c.user_exists %]
 			<input type="hidden" name="name" id="form_name" value="[% update.name || c.user.name | html %]">
 			<input type="hidden" name="form_rznvy" id="form_rznvy" value="[% update.email || c.user.email | html %]">
-			<input class="btn btn-sky btn-small btn-comentar" type="submit" id="update_post" value="Comentar"/>
+			<input class="btn btn-sky btn-small btn-comentar" disabled="disabled" type="submit" id="update_post" value="Comentar"/>
 		[% ELSE %]
 			<button class="btn btn-sky btn-small btn-comentar btn-disabled" disabled="disabled" type="submit">Comentar</button>
 		[% END %]

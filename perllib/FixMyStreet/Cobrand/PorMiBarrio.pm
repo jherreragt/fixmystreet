@@ -38,6 +38,8 @@ sub user_check_for_errors {
     );
 }
 
+sub resend_in_reopen {1}
+
 sub validate_document {1}
 
 sub validate_identity_document {
@@ -143,7 +145,14 @@ sub language_override { 'es' }
 sub site_title { return 'PorMiBarrio'; }
 
 sub on_map_default_max_pin_age {
-    return '3 month';
+    return '6 month';
+}
+#this is a test
+sub problems_clause {
+	return {-NOT =>{-AND => [
+                    'confirmed' => { '<', \"current_timestamp-'3 month'::interval" },
+                    'state' => { 'like', 'fixed%' },
+                ]}};
 }
 
 sub geocode_postcode {

@@ -132,7 +132,7 @@ sub _recent {
 # Problems around a location
 
 sub around_map {
-    my ( $rs, $min_lat, $max_lat, $min_lon, $max_lon, $interval, $limit ) = @_;
+    my ( $rs, $c, $min_lat, $max_lat, $min_lon, $max_lon, $interval, $limit ) = @_;
     my $attr = {
         order_by => { -desc => 'created' },
     };
@@ -146,6 +146,11 @@ sub around_map {
     };
     $q->{'current_timestamp - lastupdate'} = { '<', \"'$interval'::interval" }
         if $interval;
+
+    $q = {
+        %{ $c->cobrand->problems_clause },
+        %$q
+    } if $c->cobrand->problems_clause;
 
     my @problems = mySociety::Locale::in_gb_locale { $rs->search( $q, $attr )->all };
     return \@problems;

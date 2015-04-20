@@ -93,13 +93,13 @@
                         [% IF upload_fileid || report.photo %]
                             [% IF upload_fileid %]
                                 <img align="right" src="/photo/[% upload_fileid %].temp.jpeg" alt="">
-                                <input type="hidden" name="upload_fileid" value="[% upload_fileid %]">
+                                <input type="hidden" name="photo" value="[% photo %]">
                             [% END %]
 
                             <p>[% loc('You have already attached a photo to this report, attaching another one will replace it.') %]</p>
 
                             [% IF report.photo %]
-                                <img align="right" src="/photo/[% report.id %].jpeg">
+                                <img align="right" src="/photo/[% report.photo %].jpeg">
                             [% END %]
                         [% END %]
 
@@ -132,14 +132,30 @@
                 <input class="" type="hidden" value="[% report.user.phone | html %]" name="phone" id="form_phone" placeholder="[% loc('Your phone number') %]">
                 [%# if there is nothing in the name field then set check box as default on form %]
                 <div class="checkbox-group">
-                    <input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
-                    <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+                    <div class="checkbox">
+                        <input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+                        <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="terms-agree" value="">
+                        <label class="inline">[% loc('Agreed') %]<a href="/privacy"> [% loc('Terms & Conditions') %]</a></label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <input class="btn btn-block btn-reportar" type="submit" id="submit_sign_in" name="submit_sign_in" value="Publicar">
                 </div>
             
             [% ELSE %]
+                <div class="checkbox-group">
+                    <div class="checkbox">
+                        <input type="checkbox" name="may_show_name" id="form_may_show_name" value="1"[% ' checked' IF report.anonymous==0 OR (c.cobrand.default_show_name AND report.anonymous=='') %]>
+                        <label class="inline" for="form_may_show_name">[% loc('Show my name publicly') %] </label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="terms-agree" value="">
+                        <label class="inline">[% loc('Agreed') %]<a href="/privacy">[% loc('Terms & Conditions') %]</a></label>
+                    </div>
+                </div>
                 <div class="form-group">
                     <input class="btn btn-block btn-reportar disabled" type="submit" id="submit_register" name="submit_register" value="Publicar" disabled>
                 </div>

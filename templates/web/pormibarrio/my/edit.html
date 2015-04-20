@@ -3,7 +3,7 @@
 UNLESS not_page %]
 <div class="reportes sub report-list user-profile" id="user-profile" style="[% style %]">
 	<div class="scrolled-95">
-		[% IF password_changed || messages %]
+		[% IF password_changed || messages && !not_page %]
 		<div id="messages">
 			[% messages %]
 			[% IF password_changed %]

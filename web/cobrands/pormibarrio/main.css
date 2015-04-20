@@ -531,16 +531,6 @@ li.reportes a:hover, li.help a:hover, li.doc-info a:hover{
 	border-left: solid 3px #495f73;
 }
 
-li.doc-info img{
-	max-width: none;
-	padding-left: 4px;
-}
-
-li.doc-info span{
-	padding-left: 20px;
-	position: absolute;
-}
-
 li.help a{
 	/* background:url(../images/icon-help.png) no-repeat 20px center; */
 }
@@ -658,10 +648,10 @@ li.s-help a{
 /*THIRD LEVEL--------------------------------------------------------------*/
 div.sub{
 	position:fixed;
-	width:440px;
+	width:420px;
 	height:100%;
 	top:54px;
-	left:81px;
+	left:70px;
 	-webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	transition:         all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	opacity:1;
@@ -731,7 +721,7 @@ div.r-icon{
 
 div.it-r-info{
 	float:left;
-	max-width: 78%;
+	max-width: 76%;
 }
 
 div.it-r h3{
@@ -2453,6 +2443,25 @@ div.content-vertical{
 }
 
 /*CHARTS*/
+#stats-menu{
+	position: absolute;
+	z-index: 1;
+	margin-right: 15px;
+	width: 44px;
+	height: 44px;
+	padding: 6px;
+	margin-top: 6px;
+	border-radius: 2px;
+}
+#stats-menu svg{
+	width: 30px;
+	height: 30px;
+}
+
+div#stats-menu:hover{
+	background-color: #1E2E3D;
+}
+
 #graphs{
 	margin-top: 20px;
 }
@@ -2476,12 +2485,17 @@ div.content-vertical{
 #chart-options{
 	display: inline-block;
 	width: 100%;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 	border-bottom: #ebebeb solid 1px;
 }
-#chart-options input, #chart-options label{
+#chart-options input, 
+#chart-options label{
 	display: inline-block;
-	max-width: 16%;
+	width: 17%;
+	min-height: 30px;
+	vertical-align: middle;
+	margin-bottom: 0;
+	margin-left: 3%;
 }
 
 #subcat-select{
@@ -2512,4 +2526,48 @@ div.content-vertical{
 	color: #3b8686;
 	border: solid #ebebeb 1px;
 	padding: 10px;
+}
+
+.btn-stats{
+	font-size:0.875em;
+	background:rgba(0,0,0,0.3);
+	padding:2px 10px;
+	font-weight:600;
+	border: none;
+	border-radius: 2px;
+	margin: 0px 4%;
+}
+
+.btn-stats:hover{
+	background:rgba(0,0,0,0.5);
+}
+
+.stats-form{
+	width: 100%;
+}
+
+.stats-form-first{
+	margin-bottom: 10px;
+	padding-bottom: 15px;
+	border-bottom: #ebebeb solid 1px;
+}
+input#getcounts{
+	width: 11%;
+	margin-left: 3%;
+}
+
+.graph-totals-values{
+	height: 300px;
+	width: 30%;
+	padding: 10% 4%;
+	float: left;
+}
+.graph-totals-values span{
+	width: 100%;
+	font-size: 1.3em;
+	float: left;
+}
+
+.graph-totals-values span.values-titles {
+	font-size: 1.8em;
 }

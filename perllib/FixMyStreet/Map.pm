@@ -90,7 +90,7 @@ sub _map_features {
     # list of problems around map can be limited, but should show all pins
     my $around_limit = $c->cobrand->on_map_list_limit || undef;
 
-    my @around_args = ( $min_lat, $max_lat, $min_lon, $max_lon, $interval );
+    my @around_args = ( $c, $min_lat, $max_lat, $min_lon, $max_lon, $interval );
     my $around_map      = $c->cobrand->problems->around_map( @around_args, undef );
     my $around_map_list = $around_limit
         ? $c->cobrand->problems->around_map( @around_args, $around_limit )

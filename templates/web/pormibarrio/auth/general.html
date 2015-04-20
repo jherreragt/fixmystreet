@@ -19,7 +19,9 @@
     <div class="sub">
         <div class="c-scroll">
             <div class="rl scrolled-reportar">
-                [% INCLUDE 'auth/login_block.html' %]
+                [% INCLUDE 'auth/login_block.html' 
+                    one_time_login = 1
+                %]
             </div>
         </div>
     </div> <!-- login -->

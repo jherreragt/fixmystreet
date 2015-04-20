@@ -76,6 +76,10 @@ sub update_problem : Private {
 
     if ( $update->mark_open && $update->user->id == $problem->user->id ) {
         $problem->state('confirmed');
+        #Pass problem whensent to undef so it can be resended
+        if ($c->cobrand->resend_in_reopen()){
+            $problem->whensent(undef);
+        }
     }
 
     if ( $c->cobrand->can_support_problems && $c->user && $c->user->from_body && $c->req->param('external_source_id') ) {

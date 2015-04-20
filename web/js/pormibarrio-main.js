@@ -6,7 +6,9 @@
 //WIDTH SEARCH
 var anchoVentana = $( window ).width();
 var anchoUser = $("#info-user").width();
-var anchoCalles = anchoVentana - anchoUser;
+var anchoButtons = $("#stats-menu").width();
+var anchoCalles = anchoVentana - anchoUser - anchoButtons;
+$("#stats-menu").css({right: anchoUser});
 var listaCalles =  [];
 $("#s-calles").width(anchoCalles);
 	
@@ -191,12 +193,9 @@ $( document ).ready(function() {
     });
 
     //CHANGE PASSWORD
-	$( "#change-passwd-btn" ).click(function() {
-		$( this ).toggleClass( "reportar-abuso-active" );
-		if ($( this ).hasClass("reportar-abuso-active")){
-			$('#my-change-passwd').insertAfter('#change-passwd-btn');
-		}
-		$( '#my-change-passwd' ).slideToggle();
+	$( "#change-passwd-btn" ).unbind('click').click(function() {
+	  $( this ).toggleClass( "reportar-abuso-active" );
+	  $( '#my-change-passwd' ).slideToggle();
 	});
 
 	//EDICION DE PERFIL
@@ -258,6 +257,23 @@ $( document ).ready(function() {
         $('.page-tabs').hide();
         $('#my-'+this.id).show();
     });
+    //send one time
+    $('.send-password').click(function(e){
+		e.preventDefault();
+		$('#send-password').slideToggle();
+	});
+	//Disable submits if terms agree
+    if ( $("#terms-agree").length ){
+    	$("input[type='submit']").attr("disabled", true);
+    	$("button[type='submit']").attr("disabled", true);
+    	$(".btn-social").attr("disabled", true);
+	}
+    //Terms and conditions
+    $("#terms-agree").click(function() {
+	  $("input[type='submit']").attr("disabled", !this.checked);
+	  $("button[type='submit']").attr("disabled", !this.checked);
+	  $(".btn-social").attr("disabled", !this.checked);
+	});
 });
 
 /* FUNCIONES DE CAMBIO DE PIN PARA REPORTES EN MAPA */

@@ -294,8 +294,6 @@ sub ajax : Path('/ajax') {
         }
     );
 
-	$c->log->info($body);
-
     $c->res->body($body);
 }
 
