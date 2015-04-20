@@ -267,6 +267,8 @@ $( document ).ready(function() {
     	$("input[type='submit']").attr("disabled", true);
     	$("button[type='submit']").attr("disabled", true);
     	$(".btn-social").attr("disabled", true);
+    	//But suscribe to problems
+    	$('#btn-suscribe').attr("disabled", false);
 	}
     //Terms and conditions
     $("#terms-agree").click(function() {
