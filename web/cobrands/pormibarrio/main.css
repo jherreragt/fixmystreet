@@ -1557,6 +1557,7 @@ a.green:hover{
 div.login{
 	background:rgba(19,30,41,0.96);
 	color: #7D7D7D;
+	float: left;
 }
 
 div.login div.ir{
@@ -2573,4 +2574,8 @@ input#getcounts{
 
 .graph-totals-values span.values-titles {
 	font-size: 1.8em;
+}
+
+.st0{
+	fill:#FFFFFF;
 }
