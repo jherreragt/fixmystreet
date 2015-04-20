@@ -64,7 +64,7 @@ sub stats : Global : Args(0) {
     my ( $self, $c ) = @_;
 
     my ( $start_date, $end_date, @errors );
-    my $parser = DateTime::Format::Strptime->new( pattern => '%d/%m/%Y' );
+    my $parser = DateTime::Format::Strptime->new( pattern => '%Y-%m-%d' );
     my $now_start = DateTime->now(formatter => $parser);
     my $now = DateTime->now(formatter => $parser);
 
@@ -82,7 +82,7 @@ sub stats : Global : Args(0) {
     }
     elsif ( $c->req->param('all') ){
         $end_date = $now;
-        $start_date = '1/8/2014';
+        $start_date = '2014-08-01';
     }
     else{
         if (!$c->req->param('end_date')){

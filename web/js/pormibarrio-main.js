@@ -7,7 +7,7 @@
 var anchoVentana = $( window ).width();
 var anchoUser = $("#info-user").width();
 var anchoButtons = $("#stats-menu").width();
-var anchoCalles = anchoVentana - anchoUser - anchoButtons;
+var anchoCalles = anchoVentana - anchoUser - anchoButtons - 20;
 $("#stats-menu").css({right: anchoUser});
 var listaCalles =  [];
 $("#s-calles").width(anchoCalles);
