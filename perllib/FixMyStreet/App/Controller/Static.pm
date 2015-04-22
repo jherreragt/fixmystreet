@@ -93,7 +93,7 @@ sub stats : Global : Args(0) {
         }
 
         if (!$c->req->param('start_date')){
-            $start_date = $now_start->subtract(months => 1);
+            $start_date = '2014-08-01';
         }
         else{
             $start_date = $parser->parse_datetime( $c->req->param('start_date') );
