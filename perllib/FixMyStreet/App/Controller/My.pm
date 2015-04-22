@@ -58,7 +58,7 @@ sub my : Path : Args(0) {
             title     => $problem->title,
         };
         my $state = $problem->is_fixed ? 'fixed' : $problem->state eq 'in progress' ? 'in_progress' : 'confirmed';
-        $c->log->debug('STATE: '.$state);
+
         push @{ $problems->{$state} }, $problem;
     }
     $c->stash->{problems} = $problems;
@@ -72,6 +72,32 @@ sub my : Path : Args(0) {
     my @updates = $rs->all;
     $c->stash->{updates} = \@updates;
 
+    #Get problems alert
+    my $alert_problems_ids = [];
+    $c->log->debug('VAN ALERTS');
+    $c->log->debug(ref($alert_problems_ids));
+    my @alerts = $c->user->alerts->search( {
+        alert_type   => 'new_updates',
+        whendisabled => undef,
+        confirmed    => 1
+        },{
+        order_by     => 'id'
+        } )->all;
+    @alerts = map { { $_->get_columns } } @alerts;
+    foreach ( @alerts ) {
+        if ($_->{parameter}){
+            push $alert_problems_ids, $_->{parameter};
+            $c->log->debug($_->{parameter});
+        }
+    }
+    $c->log->debug('VAN ALERTS ARRAY');
+    $c->log->debug(Dumper($alert_problems_ids));
+    $c->log->debug(ref($alert_problems_ids));
+    my @alert_problems = $c->model('DB::Problem')->search({
+        id => { -IN => $alert_problems_ids },
+        user_id => { '!=' => $c->user->id }
+        });
+    $c->stash->{alert_problems} = \@alert_problems;
 
     $c->stash->{page} = 'my';
     FixMyStreet::Map::display_map(

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fixmystreet\n"
 "Report-Msgid-Bugs-To: matthew@mysociety.org\n"
-"POT-Creation-Date: 2015-04-21 00:43-0300\n"
+"POT-Creation-Date: 2015-04-21 16:41-0300\n"
 "PO-Revision-Date: 2014-08-01 00:44-0300\n"
 "Last-Translator: Fernando Uval <fernando@datauy.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/fixmystreet/language/es/)\n"
@@ -773,7 +773,7 @@ msgstr "Comentarios"
 #: templates/web/pormibarrio/my/my.html:82
 #, fuzzy
 msgid "Completed"
-msgstr "Eliminado"
+msgstr "Finalizado"
 
 #: templates/web/default/admin/config_page.html:1
 msgid "Configuration"
@@ -1307,7 +1307,7 @@ msgid ""
 "alerts for all problems within a particular ward or council, or all problems\n"
 "within a certain distance of a particular location."
 msgstr ""
-"FixMyStreet dispone de varias fuentes RSS y alertas por email de los problemas locales, incluyendo\n"
+"Por Mi Barrio dispone de varias fuentes RSS y alertas por email de los problemas locales, incluyendo\n"
 "alertas para todos los problemas dentro de un barrio o Intendencia concreta, o para todos los problemas \n"
 "alrededor de una distancia determinada o zona en particular."
 
@@ -1500,16 +1500,16 @@ msgstr "Líneas de color gris son las Concejalías que ya no existen."
 msgid "Has this problem been fixed?"
 msgstr "¿Ha sido corregido este problema?"
 
-#: templates/web/pormibarrio/auth/login_block.html:42
-#, fuzzy
-msgid "Have tou forgotten your password?"
-msgstr "¿Olvidaste tu contraseña?"
-
 #: templates/web/default/questionnaire/index.html:74
 #: templates/web/fixmystreet/questionnaire/index.html:68
 #: templates/web/pormibarrio/questionnaire/index.html:68
 msgid "Have you ever reported a problem to a council before, or is this your first time?"
 msgstr "¿Alguna vez informó de un problema a la Intendencia antes, o es tu primera vez?"
+
+#: templates/web/pormibarrio/auth/login_block.html:42
+#, fuzzy
+msgid "Have you forgotten your password?"
+msgstr "¿Olvidaste tu contraseña?"
 
 #: templates/web/barnet/footer.html:24 templates/web/bromley/footer.html:25
 #: templates/web/bromley/header.html:81 templates/web/default/footer.html:15
@@ -1914,6 +1914,10 @@ msgstr "Alertas locales"
 msgid "Locate the problem on a map of the area"
 msgstr "Busque el problema en un mapa de la zona"
 
+#: templates/web/pormibarrio/auth/login_block.html:5
+msgid "Login or signup to help impoving our city"
+msgstr "Regístrate o ingresa para ayudar a mejorar tu ciudad"
+
 #: templates/web/pormibarrio/report/new/fill_in_details_form.html:163
 #: templates/web/pormibarrio/report/new/fill_in_details_form.html:164
 msgid "Login to your account to be able to send the report to your local government"
@@ -1922,7 +1926,7 @@ msgstr "Logueate a tu cuenta para poder enviar reportes a la IM"
 #: templates/web/pormibarrio/report/update-form.html:83
 #: templates/web/pormibarrio/report/update-form.html:84
 msgid "Login to your account to be able to send your update to your local government"
-msgstr "Logueate a tu cuenta para poder comenzar a enviar tu comentario a la IM"
+msgstr "Logueate a tu cuenta para poder enviar tu comentario a la IM"
 
 #: templates/web/default/js/translation_strings.html:43
 #: templates/web/oxfordshire/js/translation_strings.html:37
@@ -2709,7 +2713,7 @@ msgstr "Por favor, indica tu nombre."
 #: templates/web/pormibarrio/js/translation_strings.html:8
 #: templates/web/seesomething/js/translation_strings.html:4
 #, fuzzy
-msgid "Please enter your full name, councils need this information, if you do not wish your name to be shown on the site, untick the box below"
+msgid "Please enter your full name, councils need this information - if you do not wish your name to be shown on the site, untick the box below"
 msgstr "Por favor escriba su nombre completo, la Intendencia necesita esta información - si usted no desea que su nombre aparecerá en la página, desactive la casilla de abajo"
 
 #: perllib/FixMyStreet/App/Controller/Contact.pm:95
@@ -4790,7 +4794,7 @@ msgstr "Se ha asociado su cuenta de Twitter. Ahora puedes loguearte usando dicha
 #: templates/web/pormibarrio/my/my.html:23
 #, fuzzy
 msgid "Your changes have been saved"
-msgstr "Su contraseña ha cambiado."
+msgstr "Sus cambios se han guardado."
 
 #: perllib/FixMyStreet/App/Controller/My.pm:165
 msgid "Your document is not valid"

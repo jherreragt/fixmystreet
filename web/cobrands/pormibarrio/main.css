@@ -513,6 +513,9 @@ li.reportar{
 	/* margin-top:40px; */
 }
 
+li.stats{
+	display:none;		
+}
 
 li.reportar a{
 	/* background:#fc4349 url(../images/icon-report.png) no-repeat 20px center; */
@@ -2288,7 +2291,11 @@ div.content-vertical{
 	}
 	
 	li.reportar{
-		display:none		
+		display:none;	
+	}
+
+	li.stats{
+		display:block;		
 	}
 	
 	li.reportar-small{
@@ -2345,7 +2352,17 @@ div.content-vertical{
 		padding-left:0;
 		padding-right:0;
 	}
-	
+
+	.download-links {
+		margin: 0;
+	}
+	/*Graphs*/
+	.graph-totals-values span.values-titles{
+		font-size: 1.4em;
+	}
+	.graph-totals-values span{
+		font-size: 0.9em;
+	}
 }
 
 @media (max-width: 540px) {

@@ -111,7 +111,7 @@
 
             <div id="my-reports-unconfirmed" class="page-tabs my-report-tabs" style="display:none;">
                 <div class="rl scrolled">
-                    [%# FOREACH p = problems.unconfirmed;
+                    [% FOREACH p = problems.unconfirmed;
                         INCLUDE problem;
                     END %]
                 </div>
@@ -150,6 +150,11 @@
 
             </div>
             <div id="my-following" class="page-tabs my-social-tabs">
+                <div class="rl scrolled">
+                    [% FOREACH p = alert_problems;
+                        INCLUDE problem;
+                    END %]
+                </div>
             </div>
         </div>
     </div>

@@ -179,6 +179,7 @@ sub stats : Global : Args(0) {
             -AND => [
                 'confirmed' => { '>=', $start_date},
                 'confirmed' => { '<=', $end_date + $one_day },
+                'state'     => { '!=', 'hidden' }
             ],
         },
         \%select
