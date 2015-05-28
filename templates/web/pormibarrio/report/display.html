@@ -27,11 +27,11 @@
                         <li><button type="button" class="follow-report">[% loc('Get updates' ) %]</button></li>
                         [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
                             <li>
-                                <button type="button" class="reportar-hide">[% loc('Hide' ) %]</button>
+                                <button type="button" class="reportar-hide">Ocultar</button>
                             </li>
                         [% ELSE %]
                             <li>
-                                <button type="button" class="reportar-abuso">[% loc('Report abuse' ) %]</button>
+                                <button type="button" class="reportar-abuso">[% loc('Report abuse') %]</button>
                             </li>
                         [% END %]
                     </ul>
@@ -41,7 +41,7 @@
                     <div class="clearfix"></div>
                     <div class="follow-report-content user-info">
                         <form action="[% c.uri_for( '/alert/subscribe' ) %]" method="post" id="email_alert_box">
-                            <p>[% loc('Receive email when updates are left on this problem.' ) %]</p>
+                            <p>[% loc('Receive email when updates are left on this problem.') %]</p>
                             <div class="form-group">
                                 <input class="form-control"type="email" name="rznvy" id="alert_rznvy" value="[% email | html %]" size="30" placeholder="[% loc('Email') %]">
                                 <input type="hidden" name="id" value="[% problem.id %]">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="reportar-hide-content user-info">
                         <form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
-                            <button type="submit" id="key-tool-report-abuse" class="btn btn-sky btn-small btn-comentar" value="Remove from site">
+                            <button type="submit" id="key-tool-hide" class="btn btn-sky btn-small btn-comentar" value="Remove from site">[% loc('Confirm') %]</button>
                         </form>
                     </div>
                     <div style="" class="reportar-abuso-content user-info">
@@ -77,7 +77,7 @@
                                 [% IF field_errors.message %]
                                    <div class="form-error">[% field_errors.message %]</div>
                                 [% END %]
-                                <button class="btn btn-sky btn-small btn-comentar" type="submit">[% loc('Post') %]</button>
+                                <button class="btn btn-sky btn-small btn-comentar" id="key-tool-report-abuse" type="submit">[% loc('Post') %]</button>
                             </div>                                        
                         </form>
                     </div>

@@ -269,6 +269,8 @@ $( document ).ready(function() {
     	$(".btn-social").attr("disabled", true);
     	//But suscribe to problems
     	$('#btn-suscribe').attr("disabled", false);
+    	$('#key-tool-report-abuse').attr("disabled", false);
+    	$('#key-tool-hide').attr("disabled", false);
 	}
     //Terms and conditions
     $("#terms-agree").click(function() {
