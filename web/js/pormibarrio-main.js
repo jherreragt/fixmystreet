@@ -278,6 +278,24 @@ $( document ).ready(function() {
 	  $("button[type='submit']").attr("disabled", !this.checked);
 	  $(".btn-social").attr("disabled", !this.checked);
 	});
+	//DATE PICKERS
+	$( "#stats-start-date" ).datepicker({
+      defaultDate: "-1w",
+      changeMonth: true,
+      dateFormat: 'yy-mm-dd' ,
+      // This sets the other fields minDate to our date
+      onClose: function( selectedDate ) {
+        $( "#stats-end-date" ).datepicker( "option", "minDate", selectedDate );
+      }
+    });
+    $( "#stats-end-date" ).datepicker({
+     /// defaultDate: "+1w",
+      changeMonth: true,
+      dateFormat: 'yy-mm-dd' ,
+      onClose: function( selectedDate ) {
+        $( "#stats-start-date" ).datepicker( "option", "maxDate", selectedDate );
+      }
+    });
 });
 
 /* FUNCIONES DE CAMBIO DE PIN PARA REPORTES EN MAPA */
@@ -394,6 +412,7 @@ function searchLocationAjax(event, obj){
 						var code = $('input#main-street-code');
 						if ( !code.val() ){
 							items = "<li class='pick-street-error'>Debe ingresar una calle primero</li>";
+							$('ul.l-calles').empty();
 							$(items).appendTo("ul.l-calles");
 						}
 						else{
@@ -417,17 +436,15 @@ function searchLocationAjax(event, obj){
 			else {
 				if ( ( listaCalles[0] != undefined ) && ( listaCalles[0].length > 1 ) && (listaCalles[0][0] == obj.value.substring(0, listaCalles[0][0].length) ) ){
 					//quitamos el primer termino
-					listaCalles[0].shift();
+					newList = [listaCalles[0].shift()];
 					$.each( listaCalles[0], function( addr_key, addr_obj ) {
-						if ( addr_obj.address.indexOf( obj.value.toUpperCase() ) >= 0){
+						if (  addr_obj != undefined && addr_obj.address.indexOf( obj.value.toUpperCase() ) >= 0){
 							items += "<li id='" + addr_obj.lat + "' class='pick-street' onclick='assignStreetValue(this)' >" + addr_obj.address + "</li>";
-						}
-						else{
-							listaCalles[0].splice(addr_key, 1);
+							newList.push(addr_obj);
 						}
 				  	});
-				  	//agregamoe el término al comienzo
-				  	listaCalles[0].splice(0, 0, obj.value);
+				  	//agregamos la nueva lista
+				  	listaCalles[0] = newList;
 					$('ul.l-calles').empty();
 					$(items).appendTo("ul.l-calles");
 				}

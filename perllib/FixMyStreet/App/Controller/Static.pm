@@ -99,7 +99,7 @@ sub stats : Global : Args(0) {
             $start_date = $parser->parse_datetime( $c->req->param('start_date') );
         }
     }
-
+    $c->log->debug($end_date.'<--END TIME START-->'.$start_date);
     push @errors, _('Invalid start date') unless defined $start_date;
     push @errors, _('Invalid end date') unless defined $end_date;
 
@@ -161,8 +161,6 @@ sub stats : Global : Args(0) {
             }
         }
     }
-    $c->log->debug('%PROBLEM_BY_GROUP');
-    $c->log->debug(Dumper($problem_by_group));
 
     my $one_day = DateTime::Duration->new( days => 1 );
 
@@ -177,7 +175,7 @@ sub stats : Global : Args(0) {
     my @problems = $c->model('DB::Problem')->search(
         {
             -AND => [
-                'confirmed' => { '>=', $start_date},
+                'confirmed' => { '>=', $start_date },
                 'confirmed' => { '<=', $end_date + $one_day },
                 'state'     => { '!=', 'hidden' }
             ],
@@ -185,12 +183,13 @@ sub stats : Global : Args(0) {
         \%select
     );
     @problems = map { { $_->get_columns } } @problems;
-    $c->log->debug('PROBLEMS:');
     my $problem_csv = '"id","latitude","longitude","category","external_id","created","confirmed","whensent","lastupdate","state"\r\n';
     my $first = 1;
     my @months;
     my @evolution_totals;
     my $month_last;
+    my $problem;
+
     for my $problem (@problems){
         foreach my $group_id (keys $problem_by_group){
             if ( ref($problem_by_group->{$group_id}) eq 'HASH' and exists $problem_by_group->{$group_id}->{$problem->{category}} ){
@@ -200,12 +199,10 @@ sub stats : Global : Args(0) {
                 my @confirmed_date  = split('-', $problem->{confirmed});
                 my $month = $confirmed_date[0].'/'.$confirmed_date[1];
                 if ( $month eq $month_last ){
-                    $c->log->debug('Suma 1 a cat : '.$group_id.' en el mes '.$month);
                     #add one to the last value of the array
                     $problem_by_group->{$group_id}{evolution}->[-1]++;
                 }
                 else{
-                    $c->log->debug('CAMBIO DE MES: '.$month);
                     #create category
                     push @months, $month;
                     if ($first){
@@ -281,8 +278,15 @@ sub stats : Global : Args(0) {
             $problem->{lastupdate}.'","'.
             $problem->{state}.'"\r\n';
     }
-    $c->log->debug(Dumper($problem_by_group));
-    $c->log->debug(Dumper(@months));
+
+    my @start_date_arr = split('T', $start_date);
+    my $start_date_solo = $start_date_arr[0];
+    my @end_date_arr = split('T', $end_date);
+    my $end_date_solo = $end_date_arr[0];
+
+    $c->stash->{start_date_solo} = $start_date_solo;
+    $c->stash->{end_date_solo} = $end_date_solo;
+
     my $problem_json = encode_json($problem_by_group);
     my $months_json = encode_json(\@months);
     $c->stash->{months_json} = $months_json;
