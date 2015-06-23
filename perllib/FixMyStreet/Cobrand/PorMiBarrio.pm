@@ -44,6 +44,7 @@ sub validate_document {1}
 
 sub validate_identity_document {
 	my $self = shift;
+	my $c = shift;
 	my $identity_document = shift;
 	
 	#my $identity_document = $c->stash->{user}->identity_document;
@@ -56,16 +57,13 @@ sub validate_identity_document {
 		
 		if (scalar @parts eq 2) {
 			#1234567-X -> X = [(1x8) + (2x1) + (3x2) + (4x3) + (5x4) + (6x7) + (7x6)] mod 10 -> X = [ 8 +2 +6 +12 +20 +42 +42] mod 10 = 132 mod 10 = 2
-
-			my @magic = (8, 1, 2, 3, 4, 7, 6);
-			my @identity_document_array = split("", $identity_document);
+			my @magic = (4,3,6,7,8,9,2);
+			my @identity_document_array = reverse(split("", $parts[0]));
 			my $result = 0;
-
-			for ( my $pos = 0; $pos < scalar @magic && $pos < scalar @identity_document_array; $pos++ ) {
+			for ( my $pos = 0; $pos < scalar @identity_document_array; $pos++ ) {
 					$result += $magic[$pos] * $identity_document_array[$pos];
 			}
-
-			my $verification = $result % 10;
+			my $verification = 10 - $result % 10;
 			if ( $verification eq $parts[1] ){
 				return $identity_document;
 			}
