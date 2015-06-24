@@ -44,7 +44,6 @@ sub validate_document {1}
 
 sub validate_identity_document {
 	my $self = shift;
-	my $c = shift;
 	my $identity_document = shift;
 	
 	#my $identity_document = $c->stash->{user}->identity_document;
