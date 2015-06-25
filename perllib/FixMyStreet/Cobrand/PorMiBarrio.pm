@@ -87,7 +87,7 @@ sub report_check_for_errors {
     my %errors = ();
 
     if ( $identity_document ) {
-		if ( !$self->validate_identity_document( $c, $identity_document ) ) {
+		if ( !$self->validate_identity_document( $identity_document ) ) {
 			$errors{identity_document} = _('Please enter a valid ID');
 		}
 	} else {
