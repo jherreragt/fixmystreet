@@ -1,0 +1,31 @@
+[% IF c.cobrand.allow_photo_display(problem) && problem.photo %]
+    [% IF problem.get_photo_params.url_full %]<a href="[% problem.get_photo_params.url_full %]">[% END %]
+		<img alt="Photo of this report" [% IF problem.get_photo_params.height %]height="[% problem.get_photo_params.height %]" width="[% problem.get_photo_params.width %]"[% END %] src="[% problem.get_photo_params.url_full %]" class="img-top">
+    [%- IF problem.get_photo_params.url_full %]<!--<span>zoom</span>--></a>[% END %]
+[% END %]
+<div class="info-report">
+	<!--Intro Report-->
+	<div class="intro-report">
+		<a id="display_problem_close" class="btn btn-close-report" href="#">Cerrar</a>
+		<script>$('#display_problem_close').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
+		<h3>
+            [% problem.title | html %]
+            [% IF problem.is_fixed %]
+                <img alt="Resuelto" class="img-resuelto" src='/cobrands/pormibarrio/images/resuelto.png' />
+            [% END %]
+        </h3>
+		<address>[% problem.meta_line(c) | html %]</address>
+		<p>[% add_links( problem.detail ) | html %]</p>
+		<span class="sign"><!--[% problem.meta_line(c) | html %]--></span>
+	</div>
+</div>
+<div class="status-report">
+    <h4>Estado del reporte</h4>
+    <span class="status-report-im">Su reclamo en la IM: 
+    	[% IF problem.can_display_external_id %] 
+    		<a target="_blank" href="http://www.montevideo.gub.uy/tramites/aplicacion/consulta-de-reclamos?numReclamo=[% problem.can_display_external_id | html %]" > [% problem.can_display_external_id | html %] </a>
+    	[% ELSE %]
+    		No hemos podido ingresar el reclamo aún
+    	[% END %]
+    </span>
+</div>

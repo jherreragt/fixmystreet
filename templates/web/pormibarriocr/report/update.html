@@ -1,0 +1,26 @@
+[% IF loop.first %]
+<div class="comment-reports">
+[% END %]
+     <div class="comment comment-[% update.name %]">
+		<div class="user-avatar">
+			[% IF update.users.picture_url %]	
+				<img alt="" class="user_avatar_[% update.users.id %]"></div>
+				<script>
+					$(".user_avatar_[% update.users.id %]").error(function() { $(this).attr("src", "/cobrands/pormibarrio/images/no-profile-picture.jpg"); }).
+						attr( "src", "[% update.users.picture_url %]" );
+				</script>
+			[% ELSE %]
+				<img alt="" src="/cobrands/pormibarrio/images/no-profile-picture.jpg"></div>
+			[% END %]
+		<div class="user-info">
+			<h4>[% update.users.name %]</h4>
+			<span class="time-report">[% INCLUDE meta_line %]</span>
+		</div>
+		<div class="user-comment comment">
+			[% add_links( update.text ) | html_para %]
+			[% INCLUDE 'report/photo.html' object=update %]
+		</div>
+	</div>
+[% IF loop.last %]
+</div>
+[% END %]

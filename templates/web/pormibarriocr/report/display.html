@@ -1,0 +1,125 @@
+[% 
+    PROCESS "report/photo-js.html";
+    PROCESS "maps/${map.type}.html";
+
+    problem_title = 'Problema: ' _ problem.title_safe;
+    INCLUDE 'header.html'
+        title = problem_title
+        rss = [ 'Actualizaciones de este problema, PorMiBarrio', "/rss/$problem.id" ]
+        robots = 'index, nofollow'
+        bodyclass = 'mappage'
+        containerclass = 'problem-container';
+%]
+
+[% map_html %]
+
+</div>
+
+<div class="c-report">
+	<div class="container-report">
+		<!--REPORT-->
+		<div class="report">
+			<div id="update-display" class="info-report scrolled-report">
+                [% INCLUDE 'report/_main.html' %]
+                [% TRY %][% INCLUDE 'report/_message_manager.html' %][% CATCH file %][% END %]
+                <div class="actions">
+                    <ul class="actions">
+                        <li><button type="button" class="follow-report">[% loc('Get updates' ) %]</button></li>
+                        [% IF c.user_exists AND c.cobrand.users_can_hide AND ( c.user.belongs_to_body( c.cobrand.council_id ) OR c.user.id == problem.user_id ) %]
+                            <li>
+                                <button type="button" class="reportar-hide">Ocultar</button>
+                            </li>
+                        [% ELSE %]
+                            <li>
+                                <button type="button" class="reportar-abuso">[% loc('Report abuse') %]</button>
+                            </li>
+                        [% END %]
+                    </ul>
+                    <div class="share">
+                        <div class="addthis_sharing_toolbox"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="follow-report-content user-info">
+                        <form action="[% c.uri_for( '/alert/subscribe' ) %]" method="post" id="email_alert_box">
+                            <p>[% loc('Receive email when updates are left on this problem.') %]</p>
+                            <div class="form-group">
+                                <input class="form-control"type="email" name="rznvy" id="alert_rznvy" value="[% email | html %]" size="30" placeholder="[% loc('Email') %]">
+                                <input type="hidden" name="id" value="[% problem.id %]">
+                                <input type="hidden" name="type" value="updates">
+                                <button class="btn btn-sky btn-small btn-comentar" id="btn-suscribe" type="submit">[% loc('Subscribe') %]</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="reportar-hide-content user-info">
+                        <form method="post" action="/report/delete/[% problem.id %]" id="remove-from-site-form">
+                            <button type="submit" id="key-tool-hide" class="btn btn-sky btn-small btn-comentar" value="Remove from site">[% loc('Confirm') %]</button>
+                        </form>
+                    </div>
+                    <div style="" class="reportar-abuso-content user-info">
+                        [% INCLUDE 'errors.html' %]
+                        <form method="post" action="/contact/submit" class="validate">
+                            <p>[% loc('You are reporting the following problem report for being abusive, containing personal information, or similar:') %]</p>
+                            <input type="hidden" name="id" value="[% problem.id %]">
+                            <div class="form-group">
+                                <input type="text" class="required form-control" name="name" id="form_name" value="[% form_name | html %]" size="30" placeholder="[% loc('Name') %]">
+                                [% IF field_errors.name %]
+                                   <div class="error-m">[% field_errors.name %]</div>
+                                [% END %]
+                                <input type="text" class="required email form-control" name="em" id="email" value="[% em | html %]" size="30" placeholder="[% loc('Email') %]">
+                                [% IF field_errors.em %]
+                                   <div class="form-error">[% field_errors.em %]</div>
+                                [% END %]
+                                <input type="text" class="required form-control" name="subject" id="form_subject" value="[% subject | html %]" size="30" placeholder="[% loc('Subject') %]">
+                                [% IF field_errors.subject %]
+                                   <div class="form-error">[% field_errors.subject %]</div>
+                                [% END %]
+                                <textarea class="required form-control" name="message" id="form_message" rows="4" style="height:auto;">[% message | html %]</textarea>
+                                [% IF field_errors.message %]
+                                   <div class="form-error">[% field_errors.message %]</div>
+                                [% END %]
+                                <button class="btn btn-sky btn-small btn-comentar" id="key-tool-report-abuse" type="submit">[% loc('Post') %]</button>
+                            </div>                                        
+                        </form>
+                    </div>
+                </div><!--end actions -->   
+                <div class="comments">
+                    <h3>Comentarios</h3>
+                [% IF problem.is_fixed %]
+                    <p class="status-report-im">La IM no recibirá comentarios ya que el problema se encuentra finalizado. Puedes hacer un nuevo reclamo haciendo click <a href="" id="new-report-link">aquí</a>.</p>
+                    <script>$('#new-report-link').click(function(){ window.location.href = "/around?latitude="+fixmystreet.latitude+";longitude="+fixmystreet.longitude+"&zoom="+fixmystreet.zoom; return false; });</script>
+                [% END %]
+                    [% INCLUDE 'report/updates.html' %]
+                    <div class="comment-user comment">
+                        [% INCLUDE 'report/update-form.html' %]
+                    </div>
+                </div>
+
+                <script>
+                var imComments = $('.comment-IM');
+                if (imComments.length > 0){
+                    if ($('.status-report ul').length == 0){
+                        var statusList=document.createElement("ul");
+                        imComments.each(function() {
+                            statusList.innerHTML += '<li>' + $('.user-comment p', this).html() + '</li>';
+                            $('.user-avatar img', this).replaceWith('<img alt="" src="/cobrands/pormibarrio/images/user-imm.png">');
+                        });
+                        statusList.innerHTML += '</ul>';
+                        $('.status-report').append(statusList);
+                    }
+                }
+                </script>		
+			</div><!--end update-display-->
+            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53e182280cb1c22a"></script>
+		</div><!--end report-->
+	</div><!--end container report-->   
+</div><!--end c-report-->
+<script>
+	/*$('#update-display').slimScroll({ scrollTo: 100 });*/
+	[% IF scroll_to %]
+		$().ready(function() { 
+			$('#update-display').slimScroll({ scrollTo: $('[% scroll_to %]').offset().top }); 
+		});
+	[% END %]
+</script>
+
+[% INCLUDE 'footer.html' %]
