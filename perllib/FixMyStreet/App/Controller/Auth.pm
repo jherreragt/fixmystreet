@@ -161,8 +161,8 @@ sub email_sign_in : Private {
             scope => 'email_sign_in',
             data  => {
                 email => $good_email,
-                r => $c->req->param('r'),
-                name => $user->name,
+                r => scalar $c->req->param('r'),
+                name => scalar $user->name,
                 password => $user->password,
                 phone =>  $user->phone,
                 identity_document => $identity_document,
