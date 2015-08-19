@@ -80,6 +80,23 @@ function video(){
         $('.overlay').hide();
     })
 }
+function muni(){
+    var muni = $("#munisin").val();
+
+    switch(muni) {
+    case 'PALMARES':
+        window.location.href = "http://palmares.pormibarrio.cr";
+        break;
+    case 'CURRIDABAT':
+        window.location.href = "http://curridabat.pormibarrio.cr";
+        break;
+    case 'SAN JOSÉ':
+        window.location.href = "http://sanjose.pormibarrio.cr";
+        break;
+    default:
+        window.location.href = "http://pormibarrio.cr";
+    }
+}
 </script>
 [% END %]
 
@@ -93,6 +110,16 @@ function video(){
             vecinos y vecinas, manteniéndote al tanto del proceso de reparación. Lo llevamos adelante desde DATA 
             (una organización de la sociedad civil) usando la plataforma de servicios abiertos de la Intendencia 
             de Montevideo y con el apoyo de la Defensoría del Vecino.</p>
+            <div id="choose-muni">
+                <p>Elije tu municipalidad</p>
+                <input  id="munisin" name="munis" list="munis" placeholder="Elije tu municipalidad"/>
+                <datalist id="munis">
+                    <option value="PALMARES">
+                    <option value="CURRIDABAT">
+                    <option value="SAN JOSÉ">
+                </datalist>
+                <a href="#" onclick="muni()" class="btn btn-green btn-intro">Ir a la muni</a>
+            </div>
             <div class="c-buttons-intro">
                 <a href="#" onclick="video()" class="btn btn-reportar btn-intro">Como funciona</a>
                 <a href="#" onclick="locate()" class="btn btn-green btn-intro">Comenzar ahora</a>
@@ -103,14 +130,9 @@ function video(){
                     <h3>1.Reportá un problema en el mapa o 
                     sumate a uno ya creado.</h3>
                 </div>
-                <div class="step step-two">
-                    <img src="/cobrands/pormibarrio/images/intro-step-02.png" alt=""/>
-                    <h3>2. Por Mi Barrio lo ingresa al
-                    Sistema Único de Reclamos de la IMM.</h3>
-                </div>
                 <div class="step step-three">
                     <img src="/cobrands/pormibarrio/images/intro-step-03.png" alt=""/>
-                    <h3>3. Te enviamos información
+                    <h3>2. Te enviamos información
                     sobre el progreso, hasta su solución.</h3>
                 </div>
             </div>
@@ -120,9 +142,9 @@ function video(){
 
         <!--FOOTER-->
         <div class="footer-intro"> 
-            <img src="/cobrands/pormibarrio/images/data.png" alt="DATA"/>     
+            <img src="/cobrands/pormibarriocr/images/data.png" alt="DATA"/>
+            <img src="/cobrands/pormibarriocr/images/accesa110x93.png" alt="ACCESA"/>
             <a href="/faq" class="know-more">Conoce más sobre PorMiBarrio</a>
-            <p class="photo-credit">Fotografía: Gonzalo Díaz Fornaro</p>
         </div>
         
         <!--end footer-->
