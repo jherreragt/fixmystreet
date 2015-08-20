@@ -181,7 +181,14 @@ sub format_problem_for_display : Private {
         $c->res->body( $content );
         return 1;
     }
+    #stash contacts so they can be changed
+    my @contacts = $c->model('DB::Contact')->not_deleted->search( { body_id => [ $problem->bodies_str ] } )->all;
 
+    my @categories;
+    foreach my $contact (@contacts) {
+        push @categories, $contact->category;
+    }
+    $c->stash->{categories} = \@categories;
     return 1;
 }
 

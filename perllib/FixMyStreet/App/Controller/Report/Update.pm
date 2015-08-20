@@ -6,7 +6,7 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 use Path::Class;
 use Utils;
-
+use Data::Dumper;
 =head1 NAME
 
 FixMyStreet::App::Controller::Report::Update
@@ -21,7 +21,6 @@ sub report_update : Path : Args(0) {
     my ( $self, $c ) = @_;
 
 	$c->stash->{is_social_user} = $c->req->param('facebook_sign_in') || $c->req->param('twitter_sign_in');
-
     $c->forward( '/report/load_problem_or_display_error', [ $c->req->param('id') ] );
     $c->forward('process_update');
     $c->forward('process_user');
@@ -84,6 +83,17 @@ sub update_problem : Private {
 
     if ( $c->cobrand->can_support_problems && $c->user && $c->user->from_body && $c->req->param('external_source_id') ) {
         $problem->interest_count( \'interest_count + 1' );
+    }
+    #Update category, resend and log
+    if ($update->new_category){
+        $problem->category($update->new_category);
+        $c->model('DB::AdminLog')->create( {
+            admin_user => $c->user->email,
+            object_type => 'problem',
+            action => 'new_category last_sent: '.$problem->whensent,
+            object_id => $problem->id,
+        } );
+        $problem->whensent(undef);
     }
 
     $problem->lastupdate( \'ms_current_timestamp()' );
@@ -184,7 +194,7 @@ sub process_update : Private {
     }
 
     my %params =
-      map { $_ => scalar $c->req->param($_) } ( 'update', 'name', 'fixed', 'state', 'reopen' );
+      map { $_ => scalar $c->req->param($_) } ( 'update', 'name', 'fixed', 'state', 'reopen', 'new_category' );
 
     $params{update} =
       Utils::cleanup_text( $params{update}, { allow_multiline => 1 } );
@@ -246,6 +256,10 @@ sub process_update : Private {
         $extra->{first_name} = $c->stash->{ first_name };
         $extra->{last_name} = $c->stash->{ last_name };
         $update->extra( $extra );
+    }
+
+    if ( $params{new_category} && $c->user && $c->user->belongs_to_body( $update->problem->bodies_str ) ){
+        $update->new_category($params{new_category});
     }
 
     $c->stash->{update}        = $update;
@@ -337,7 +351,8 @@ sub save_update : Private {
 				cobrand      => $update->cobrand,
 				cobrand_data => $update->cobrand_data,
 				lang         => $update->lang,
-				anonymous    => $update->anonymous
+				anonymous    => $update->anonymous,
+                new_category => $update->new_category,
 			};
 
 			# If there was a photo add that too
