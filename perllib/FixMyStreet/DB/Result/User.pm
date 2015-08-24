@@ -40,6 +40,18 @@ __PACKAGE__->add_columns(
   { data_type => "bigint", is_nullable => 1 },
   "picture_url",
   { data_type => "text", is_nullable => 1 },
+  "created",
+  {
+    data_type     => "timestamp",
+    default_value => \"ms_current_timestamp()",
+    is_nullable   => 0,
+  },
+  "modified",
+  {
+    data_type     => "timestamp",
+    default_value => \"ms_current_timestamp()",
+    is_nullable   => 0,
+  },
 );
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("users_email_key", ["email"]);

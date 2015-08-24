@@ -209,6 +209,7 @@ sub edit : Path('edit'){
         return;
     }
     #Update user
+    $c->user->modified(\'ms_current_timestamp()');
     $c->user->update();
     $c->stash->{messages} = _('Your changes have been saved');
     return;

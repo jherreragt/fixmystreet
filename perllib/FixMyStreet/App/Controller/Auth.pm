@@ -210,15 +210,14 @@ sub social_signup : Path('/auth/social_signup') : Args(0) {
 	my %field_errors = $c->cobrand->user_check_for_errors( $c );
 
 	#Added identity document, to be validated only if $c->cobrand->validate_document is set
-    my $identity_document = '';
    	if ( $c->cobrand->validate_document ){
-		if ($new_user->identity_document){
+		if ( defined $identity_document && $new_user->identity_document){
 			$identity_document = $c->cobrand->validate_identity_document( $new_user->identity_document );
 			if (!$identity_document){
 		        $c->stash->{field_errors}{identity_document} = _('Please enter a valid ID');
 		        return;
 			}
-		} 
+		}
 		else {
         	$c->stash->{field_errors}{identity_document} = _('Please enter your ID');
         	return;
