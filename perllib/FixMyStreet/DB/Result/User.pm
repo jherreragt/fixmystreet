@@ -40,7 +40,7 @@ __PACKAGE__->add_columns(
   { data_type => "bigint", is_nullable => 1 },
   "picture_url",
   { data_type => "text", is_nullable => 1 },
-  "created",
+  "created_date",
   {
     data_type     => "timestamp",
     default_value => \"ms_current_timestamp()",
