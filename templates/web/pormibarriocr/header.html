@@ -23,16 +23,16 @@
         <meta property="og:image:width" content="500">
         <meta property="og:image:height" content="500">
 
-        <!-- Schema.org markup for Google+ --> 
-        <meta itemprop="name" content="Por Mi Barrio"> 
+        <!-- Schema.org markup for Google+ -->
+        <meta itemprop="name" content="Por Mi Barrio">
         <meta itemprop="description" content="Por Mi Barrio es una aplicación web creada por DATA que te permite hacer reclamos sobre tu ciudad, ingrsándolos directamente al Sistema Único de Reclamos de la Intendencia de Montevideo.">
         <!--<meta itemprop="image" content="[% c.cobrand.base_url %]/cobrands/pormibarrio/images/pormibarrio.png">-->
 
-        <!-- Twitter Card data --> 
-        <meta name="twitter:card" content="summary_large_image"> 
-        <meta name="twitter:site" content="@DATAuy"> 
-        <meta name="twitter:title" content="Por Mi Barrio"> 
-        <meta name="twitter:description" content="Por Mi Barrio es una aplicación web creada por DATA que te permite hacer reclamos sobre tu ciudad, ingrsándolos directamente al Sistema Único de Reclamos de la Intendencia de Montevideo."> 
+        <!-- Twitter Card data -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@DATAuy">
+        <meta name="twitter:title" content="Por Mi Barrio">
+        <meta name="twitter:description" content="Por Mi Barrio es una aplicación web creada por DATA que te permite hacer reclamos sobre tu ciudad, ingrsándolos directamente al Sistema Único de Reclamos de la Intendencia de Montevideo.">
         <meta name="twitter:creator" content="@DATAuy">
         <!-- Twitter summary card with large image must be at least 280x150px -->
 
@@ -158,7 +158,7 @@
 	   }(document, 'script', 'facebook-jssdk'));
 	</script>
 
-    
+
     <header id="site-header" role="banner"></header>
 
     [% pre_container_extra %]
@@ -185,14 +185,14 @@
                         <option value="7">COOPAVEGRA</option>
                     </select>
                     <select id="streetLocate-2" class="locate locateDetails">
-                        <option value="8">UNIVERSvalueAD NACIONAL ESTATAL A DISTANCIA (U.N.E.D)</option>
+                        <option value="8">UNIVERSIAD NACIONAL ESTATAL A DISTANCIA (U.N.E.D)</option>
                         <option value="9">ESCUELA SANTA MARIA GORETTI</option>
                         <option value="10">ESCUELA JACINTO AVILA ARAYA</option>
                         <option value="11">ESCUELA LOS PINOS</option>
                         <option value="12">CENTRO DE EDUCACION NUTRICIONAL LA GRANJA PALMARES</option>
                         <option value="13">ESCUELA ERMvalueA BLANCO GONZALEZ</option>
                         <option value="14">COLEGIO BILINGUE DE PALMARES</option>
-                        <option value="15">UNIVERSvalueAD DE COSTA RICA</option>
+                        <option value="15">UNIVERSIAD DE COSTA RICA</option>
                         <option value="16">ESCUELA MANUEL BERNARDO GOMEZ</option>
                         <option value="17">CENTRO INFANTIL ELIZA ALVAREZ VARGAS</option>
                         <option value="18">KINDER DE PALMARES</option>
@@ -227,7 +227,17 @@
                     </select>
                 </div>
             </div>
-            
+
+            <script type="text/javascript">
+              $("select.locateDetails").change(function(){
+                var strLocate = $(this).find("option:selected").text();
+                var valLocate = $(this).find("option:selected").val();
+                console.log("Locate selected  text  is-> " + strLocate);
+                console.log("Locate selected  value is-> " + valLocate);
+                //handle search based on located
+              });
+            </script>
+
             <!--lista CALLES-->
             <ul class="list-unstyled l-calles">
             </ul>
@@ -258,11 +268,11 @@
                                 });
                             </script>
                         [% ELSE %]
-                            <img class="img-circle" alt="" src="/cobrands/pormibarrio/images/no-profile-picture.jpg">                              
+                            <img class="img-circle" alt="" src="/cobrands/pormibarrio/images/no-profile-picture.jpg">
                         [% END %]
                         [% c.user.name | html %]
                     </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"> 
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <li>
                             <a class="user-profile" href="/my">
                                 <svg class="icon icon-icono4" viewBox="0 0 24 24">
@@ -275,7 +285,7 @@
                             <a class="user-sesion" href="/auth/sign_out">
                                 <svg class="icon icon-icono2" viewBox="0 0 24 24">
                                     <use xlink:href="#icon-icono2"></use>
-                                </svg> 
+                                </svg>
                                 Cerrar Sesión
                             </a>
                         </li>
@@ -294,8 +304,8 @@
                  [% END %]
             </div>
             <!--.end info user-->
-        </div>        
-        <!--.end top container--> 
+        </div>
+        <!--.end top container-->
         <!--FIRST LEVEL NAVIGATION-->
         <nav class="first-navigation">
             <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">

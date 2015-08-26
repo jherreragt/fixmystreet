@@ -457,7 +457,7 @@ function report_list(timeout, zoom){
 }
 
 function geolocate(timeout, zoom){
-	setTimeout(function(){location.href = '/around?latitude=-34.906557;longitude=-56.199769&zoom=' + zoom}, timeout);
+	setTimeout(function(){location.href = '/around?latitude=10.050;longitude=-84.433&zoom=' + zoom}, timeout);
 	if (geo_position_js.init()) {
 	    console.log('Va a init');
 	    geo_position_js.getCurrentPosition(function(pos) {

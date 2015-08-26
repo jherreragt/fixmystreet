@@ -795,56 +795,42 @@ div.it-r ul li.icon-tags span{
 
 
 /*Arbolado*/
-div.r-category-group-1, 
-div.r-category-group-39{
+div.r-category-group-1 {
 	background:url(images/r-arbolado.png) no-repeat left top;	
 }
-h3.r-category-group-1, 
-h3.r-category-group-39{
+h3.r-category-group-1{
 	color:#3b8686;
 }
 
-/*Saneamiento*/
-div.r-category-group-37{
-	background:url(images/r-saneamiento.png) no-repeat left top;	
-}
-h3.r-category-group-37{
-	color: #c3c7c8;	
-}
-
-/*Basura*/
-div.r-category-group-18,
-div.r-category-group-38,
-div.r-category-group-40 {
-	background:url(images/r-limpieza.png) no-repeat left top;	
-}
-h3.r-category-group-18,
-h3.r-category-group-38,
-h3.r-category-group-40{
-	color: #a40301;	
-}
-
-/*Barometrica*/
-div.r-barometrica, div.r-category-group-3 {
-	background:url(images/r-barometrica.png) no-repeat left top;	
-}
-h3.barometrica{
-	color:#d9cf48;
-}
-
 /*Viales*/
-div.r-category-group-6 {
+div.r-category-group-2 {
 	background:url(images/r-viales.png) no-repeat left top;	
 }
-h3.r-category-group-6{
+h3.r-category-group-2{
 	color:#f47229;
 }
 
-/*Desarrollo*/
-div.r-category-group-36{
+/*Comercio*/
+div.r-category-group-3 {
+	background:url(images/r-limpieza.png) no-repeat left top;	
+}
+h3.r-category-group-3 {
+	color: #a40301;	
+}
+
+/*Vandalismo*/
+div.r-category-group-4{
+	background:url(images/r-saneamiento.png) no-repeat left top;	
+}
+h3.r-category-group-4{
+	color: #c3c7c8;	
+}
+
+/*Urbanismo*/
+div.r-category-group-5{
 	background:url(images/r-basura.png) no-repeat left top;	
 }
-h3.r-category-group-36{
+h3.r-category-group-5{
 	color:#f47026;
 }
 
@@ -1936,9 +1922,11 @@ div.edit-profile .btn-social {
 }
 #edit-profile-cancel{
 	float: left;
+	margin-left: 10%;
 }
 #edit-profile-save{
 	float: right;
+	margin-right: 10%;
 }
 
 .social-control{
