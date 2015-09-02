@@ -17,67 +17,79 @@ $('.leave-comment').prev().css('border', 'none');
 $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px');
 
 //SCROLL EN EL LISTADO DE REPORTES		
-	var types = ['DOMMouseScroll', 'mousewheel', 'MozMousePixelScroll', 'wheel'];	
-		
-	var tr = $( "#top-reports").height();	
-	$('.c-scroll').css({'height':(($(window).height())-tr)});	
+var types = ['DOMMouseScroll', 'mousewheel', 'MozMousePixelScroll', 'wheel'];	
 	
-	$('div.scrolled').slimScroll({
-		position: 'right',
-		height: '80%',
-		railVisible: true,
-		alwaysVisible: true,
-		railOpacity:1,
-		distance:10,
-		railColor: '',
-		color: '#ACACAC',
-		size:'9px',
-		borderRadius:4,
-		opacity: 1,
-	});
+var tr = $( "#top-reports").height();	
+$('.c-scroll').css({'height':(($(window).height())-tr)});	
 
-	$('div.scrolled-88').slimScroll({
-		position: 'right',
-		height: '88%',
-		railVisible: true,
-		alwaysVisible: true,
-		railOpacity:1,
-		distance:10,
-		railColor: '',
-		color: '#ACACAC',
-		size:'9px',
-		borderRadius:4,
-		opacity: 1,
-	});
+$('div.scrolled').slimScroll({
+	position: 'right',
+	height: '80%',
+	railVisible: true,
+	alwaysVisible: true,
+	railOpacity:1,
+	distance:10,
+	railColor: '',
+	color: '#ACACAC',
+	size:'9px',
+	borderRadius:4,
+	opacity: 1,
+});
 
-	$('div.scrolled-95').slimScroll({
-		position: 'right',
-		height: '95%',
-		railVisible: true,
-		alwaysVisible: true,
-		railOpacity:1,
-		distance:10,
-		railColor: '',
-		color: '#ACACAC',
-		size:'9px',
-		borderRadius:4,
-		opacity: 1,
-	});
+$('div.scrolled-88').slimScroll({
+	position: 'right',
+	height: '88%',
+	railVisible: true,
+	alwaysVisible: true,
+	railOpacity:1,
+	distance:10,
+	railColor: '',
+	color: '#ACACAC',
+	size:'9px',
+	borderRadius:4,
+	opacity: 1,
+});
 
-	$('div.scrolled-100').slimScroll({
-		position: 'right',
-		height: '100%',
-		railVisible: true,
-		alwaysVisible: true,
-		railOpacity:1,
-		distance:10,
-		railColor: '',
-		color: '#ACACAC',
-		size:'9px',
-		borderRadius:4,
-		opacity: 1,
+$('div.scrolled-95').slimScroll({
+	position: 'right',
+	height: '95%',
+	railVisible: true,
+	alwaysVisible: true,
+	railOpacity:1,
+	distance:10,
+	railColor: '',
+	color: '#ACACAC',
+	size:'9px',
+	borderRadius:4,
+	opacity: 1,
+});
+
+$('div.scrolled-100').slimScroll({
+	position: 'right',
+	height: '100%',
+	railVisible: true,
+	alwaysVisible: true,
+	railOpacity:1,
+	distance:10,
+	railColor: '',
+	color: '#ACACAC',
+	size:'9px',
+	borderRadius:4,
+	opacity: 1,
+});
+
+function dashCheck(){
+	var dead_filter = $('input.deadline');
+	dead_filter.each(function(){
+		if ($(this).is(':checked')) {
+			$('tr.'+$(this).val()).show();
+		}
+		if (!$(this).is(':checked')) {
+			$('tr.'+$(this).val()).hide();
+		}
 	});
-	
+}
+
 
 //SCROLL AL INGRESAR UN REPORTE
 	$('div.scrolled-reportar').slimScroll({
@@ -279,23 +291,36 @@ $( document ).ready(function() {
 	  $(".btn-social").attr("disabled", !this.checked);
 	});
 	//DATE PICKERS
-	$( "#stats-start-date" ).datepicker({
-      defaultDate: "-1w",
-      changeMonth: true,
-      dateFormat: 'yy-mm-dd' ,
-      // This sets the other fields minDate to our date
-      onClose: function( selectedDate ) {
-        $( "#stats-end-date" ).datepicker( "option", "minDate", selectedDate );
-      }
-    });
-    $( "#stats-end-date" ).datepicker({
-     /// defaultDate: "+1w",
-      changeMonth: true,
-      dateFormat: 'yy-mm-dd' ,
-      onClose: function( selectedDate ) {
-        $( "#stats-start-date" ).datepicker( "option", "maxDate", selectedDate );
-      }
-    });
+	if ( $('#stats-start-date').length ){
+		$( "#stats-start-date" ).datepicker({
+	      defaultDate: "-1w",
+	      changeMonth: true,
+	      dateFormat: 'yy-mm-dd' ,
+	      // This sets the other fields minDate to our date
+	      onClose: function( selectedDate ) {
+	        $( "#stats-end-date" ).datepicker( "option", "minDate", selectedDate );
+	      }
+	    });
+	    $( "#stats-end-date" ).datepicker({
+	     /// defaultDate: "+1w",
+	      changeMonth: true,
+	      dateFormat: 'yy-mm-dd' ,
+	      onClose: function( selectedDate ) {
+	        $( "#stats-start-date" ).datepicker( "option", "maxDate", selectedDate );
+	      }
+	    });
+	};
+	//DASHBOARD
+	$('input.deadline').click(dashCheck);
+	var dead_filter = $('input.deadline');
+	dead_filter.each(function(){
+		if ($(this).is(':checked')) {
+			$('tr.'+$(this).val()).show();
+		}
+		if (!$(this).is(':checked')) {
+			$('tr.'+$(this).val()).hide();
+		}
+	});
 });
 
 /* FUNCIONES DE CAMBIO DE PIN PARA REPORTES EN MAPA */

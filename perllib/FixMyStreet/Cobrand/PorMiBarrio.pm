@@ -159,9 +159,9 @@ sub problems_clause {
 
 sub geocode_postcode {
     my ( $self, $s, $c ) = @_;
-    $c->log->debug(qq/GEOPOSTCODE/);
     #$response->{error} = ( { address => 'Direccion', latitude => 'latitud', longitude => 'longi' } ); 
     my $response = {};
+    $c->log->debug(qq/GEOPOSTCODE HARDCODED/);
     my @addresses;
     my $req;
     my $last = 0;
@@ -225,6 +225,31 @@ sub geocode_postcode {
     #$response->{latitude} = '1';
     $response->{error} = \@addresses; 
     return $response;
+}
+
+=head2 problem_rules
+
+Response is {group_id => [<objects arranged by time>]}
+
+=cut
+
+sub problem_rules {
+	return (
+		'6' => [
+			{
+				'max_time' => 10,
+				'action' => 'overdue'
+			},
+			{
+				'max_time' => 8,
+				'action' => 'alert'
+			},
+			{
+				'max_time' => 6,
+				'action' => 'warning'
+			}
+		]
+	);
 }
 
 1;

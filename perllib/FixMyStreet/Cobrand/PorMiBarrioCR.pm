@@ -92,4 +92,29 @@ sub problems_clause {
                 ]}};
 }
 
+=head2 problem_rules
+
+Response is {group_id => [<objects arranged by time>]}
+
+=cut
+
+sub problem_rules {
+	return (
+		'6' => [
+			{
+				'max_time' => 10,
+				'action' => 'overdue'
+			},
+			{
+				'max_time' => 8,
+				'action' => 'alert'
+			},
+			{
+				'max_time' => 6,
+				'action' => 'warning'
+			}
+		]
+	);
+}
+
 1;
