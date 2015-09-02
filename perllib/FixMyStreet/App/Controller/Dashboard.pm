@@ -4,7 +4,7 @@ use namespace::autoclean;
 
 use DateTime;
 use File::Slurp;
-
+use Data::Dumper;
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -233,6 +233,32 @@ sub updates_search : Private {
     $counts{not_marked} = $c->cobrand->problems->search( $params )->count;
 
     return \%counts;
+}
+
+sub deadlines : Local : Args(0) {
+    my ( $self, $c ) = @_;
+
+    #Get the bodies to filter
+    my $body = $c->forward('check_page_allowed');
+    #Get the groups and categories
+    my $area_id = $body->body_areas->first->area_id;
+    my $council_detail = mySociety::MaPit::call('area', $area_id );
+    $c->stash->{all_areas} = { $area_id => $council_detail };
+    $c->forward( '/report/new/setup_categories_and_bodies' );
+    #Get problems filtered
+    $c->stash->{category_group} = $c->req->param('category_group') if length $c->req->param('category_group');
+    $c->stash->{category} = $c->req->param('category');
+    $c->stash->{state} = $c->req->param('state');
+    $c->stash->{start_date} = $c->req->param('start_date');
+    $c->stash->{end_date} = $c->req->param('end_date');
+    my %deadline = map { $_ => 1 } $c->req->param('deadline');
+    $c->stash->{deadline} = \%deadline;
+    $c->stash->{body_id} = $body->id;
+    $c->stash->{fixed_states} = [ FixMyStreet::DB::Result::Problem->fixed_states() ];
+    my $problems = $c->forward( '/api/problems' );
+    $c->stash->{problems} = $problems;
+    #$c->log->debug(Dumper($problems));
+    return;
 }
 
 =head1 AUTHOR
