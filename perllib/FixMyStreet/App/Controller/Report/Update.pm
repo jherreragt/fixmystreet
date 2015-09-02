@@ -96,6 +96,10 @@ sub update_problem : Private {
         $problem->whensent(undef);
     }
 
+    if ( $c->user->belongs_to_body( $problem->bodies_str ) ){
+        $problem->lastupdate_council( \'ms_current_timestamp()' );
+    }
+
     $problem->lastupdate( \'ms_current_timestamp()' );
     $problem->update;
 
