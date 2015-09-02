@@ -2596,3 +2596,25 @@ input#getcounts{
 .st0{
 	fill:#FFFFFF;
 }
+
+/*DASHBOARD*/
+tr.overdue{
+	background-color: red;
+}
+tr.alert{
+	background-color: orange;
+}
+tr.warning{
+	background-color: yellow;
+}
+tr.noDeadLine{
+	background-color: violet;
+}
+.dash-filter{
+	width: 30%;
+	float: left;
+}
+.deadlines-filter{
+	width: 100%;
+	float: left;
+}

@@ -93,6 +93,18 @@ $('.leave-comment').prev('.imm-comment').css('borderBottom', '#ebebeb solid 1px'
 		borderRadius:4,
 		opacity: 1,
 	});
+
+function dashCheck(){
+	var dead_filter = $('input.deadline');
+	dead_filter.each(function(){
+		if ($(this).is(':checked')) {
+			$('tr.'+$(this).val()).show();
+		}
+		if (!$(this).is(':checked')) {
+			$('tr.'+$(this).val()).hide();
+		}
+	});
+}
 		
 $( document ).ready(function() {
 	//SCROLL EN EL REPORTE
@@ -279,7 +291,7 @@ $( document ).ready(function() {
 	  $(".btn-social").attr("disabled", !this.checked);
 	});
 	//DATE PICKERS
-	if (typeof fixmystreet === 'undefined') {
+	if ( $('#stats-start-date').length ){
 		$( "#stats-start-date" ).datepicker({
 	      defaultDate: "-1w",
 	      changeMonth: true,
@@ -374,6 +386,17 @@ $( document ).ready(function() {
 		var markers = fms_markers_list(fixmystreet.pins, true);
 		fixmystreet.markers.addFeatures(markers);
 		/*fixmystreet.pins.splice(-1,1);*/
+	});
+	//DASHBOARD
+	$('input.deadline').click(dashCheck);
+	var dead_filter = $('input.deadline');
+	dead_filter.each(function(){
+		if ($(this).is(':checked')) {
+			$('tr.'+$(this).val()).show();
+		}
+		if (!$(this).is(':checked')) {
+			$('tr.'+$(this).val()).hide();
+		}
 	});
 });
 

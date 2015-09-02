@@ -102,6 +102,8 @@ __PACKAGE__->add_columns(
   { data_type => "integer", default_value => 0, is_nullable => 1 },
   "subcategory",
   { data_type => "text", is_nullable => 1 },
+  "lastupdate_council",
+  { data_type => "timestamp", is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->has_many(

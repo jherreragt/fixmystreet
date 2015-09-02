@@ -735,7 +735,7 @@ sub setup_categories_and_bodies : Private {
 
 	$c->stash->{category_groups_json} = undef;
 	$c->stash->{category_currently_loaded} = undef;
-	$c->stash->{category_groups} = undef;
+	$c->stash->{category_groups} = \%groups_items;
 	$c->stash->{category_groups_seen} = undef;
 
     if ( scalar @array_groups_seen > 0 ) {
@@ -1088,7 +1088,7 @@ sub check_for_errors : Private {
     return 1 unless scalar keys %field_errors;
 
     $c->stash->{field_errors} = \%field_errors;
-
+    $c->log->debug(%field_errors);
     return;
 }
 
