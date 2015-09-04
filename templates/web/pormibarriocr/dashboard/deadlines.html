@@ -14,7 +14,7 @@
 	    </div>
 	    <div class="dash-filter">
 	        <label for="category_group">[% loc('Group') %]</label>
-	        <select name="category_group"><option value=''>All</option>
+	        <select id="category_group" class="bloq-select" name="category_group"><option value=''>All</option>
 	            [% FOR cg IN category_groups_seen %]
 	            	[% IF NOT loop.first %]
 	                	<option value="[% cg.0 %]"[% ' selected' IF cg.0 == category_group %]>[% cg.1 %]</option>
@@ -22,7 +22,7 @@
 	            [% END %]
 	        </select>
 	        <label for="category">[% loc('Category') %]</label>
-	        <select name="category"><option value=''>All</option>
+	        <select id="category" class="bloq-select" name="category"><option value=''>All</option>
 	            [% FOR cat_op IN category_options %]
 	            	[% IF NOT loop.first %]
 	                	<option value='[% cat_op | html %]'[% ' selected' IF category == cat_op %]>[% cat_op | html %]</option>
@@ -44,8 +44,8 @@
 	    </div>
 		<div class="deadlines-filter">
 			<label for="deadline">Deadline:</label>
-	            [% FOREACH deadlineElem IN [ ['overdue', loc('Overdue')], ['alert',
-	            loc('Alert')], ['warning', loc('Warning')], ['noDeadLine', loc('No Dead Line')] ] %]
+	            [% FOREACH deadlineElem IN [ ['problem-overdue', loc('Overdue')], ['problem-alert',
+	            loc('Alert')], ['problem-warning', loc('Warning')], ['noDeadLine', loc('No Dead Line')] ] %]
 	            <input type="checkbox" name="deadline" class="deadline" [% 'checked ' IF deadline.defined(deadlineElem.0) %] value="[% deadlineElem.0 %]">[% deadlineElem.1 %]</input>
 	            [% END %]
 	            <!-- if( $element ~~ @list ){ ... } -->
@@ -68,6 +68,29 @@
 <script src="[% start %][% version('/js/jquery-ui/js/jquery-ui-1.10.3.custom.min.js') %]" charset="utf-8"></script>
 <link rel="stylesheet" href="[% start %][% version('/js/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.min.css') %]">
 
+<script type="text/javascript">
+    $(".bloq-select").on('change', function(){
+        var selectedId = $(this).attr("id");
+        if ($(this).val()!="") {
+            //bloqueo el resto $(this).attr('id')
+            $(".bloq-select").each(function( index ) {
+              if(selectedId != $(this).attr("id")){
+                  $(this).prop("disabled",true);
+              }
+            });
+        }
+        else {
+            $(".bloq-select").each(function( index ) {
+              if(selectedId != $(this).attr("id")){
+                  $(this).prop("disabled",false);
+              }
+            });
+        }
+
+    });
+</script>
+
+</script>
 [% INCLUDE 'footer.html' %]
 
 [% BLOCK problemsb %]
