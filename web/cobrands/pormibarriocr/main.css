@@ -2033,6 +2033,11 @@ div.respuesta p{
 	margin-top:30px;	
 }
 
+div.respuesta li{
+	font-size:1.125em;
+	color:#7d7d7d;
+}
+
 div.respuesta p a{
 	color:#58bef7	
 }
@@ -2610,18 +2615,16 @@ select.locate{
 }
 
 /*DASHBOARD*/
-tr.overdue{
+tr.problem-overdue{
 	background-color: red;
 }
-tr.alert{
+tr.problem-alert{
 	background-color: orange;
 }
-tr.warning{
+tr.problem-warning{
 	background-color: yellow;
 }
-tr.noDeadLine{
-	background-color: violet;
-}
+
 .dash-filter{
 	width: 30%;
 	float: left;
