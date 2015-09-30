@@ -3,7 +3,7 @@ layout: default
 title: Welcome
 ---
 
-Welcome to FixMyStreet Platform
+Welcome to FixMyStreet Platforms
 ===============================
 
 <p class="lead">
